@@ -1,0 +1,69 @@
+# BigQuery Schema
+
+The crawler writes Solodit findings into two BigQuery tables:
+
+- `findings_staging`: batch load target for one crawler run.
+- `findings`: canonical upserted table keyed by `id`.
+
+The DDL lives in [../sql/create_tables.sql](../sql/create_tables.sql). The upsert query lives in [../sql/merge_findings.sql](../sql/merge_findings.sql).
+
+## Template Variables
+
+Replace these placeholders before running SQL:
+
+- `${PROJECT_ID}`: Google Cloud project id.
+- `${DATASET}`: BigQuery dataset name, for example `w3goaudit`.
+- `${LOCATION}`: BigQuery dataset location, for example `US` or `asia-southeast1`.
+
+## Table Design
+
+`findings` and `findings_staging` intentionally share the same columns so JSONL rows can be loaded into staging and merged without reshaping inside SQL.
+
+Typed columns are used for fields that are likely to be filtered, grouped, searched, or joined:
+
+- identity: `id`, `slug`
+- classification: `kind`, `impact`
+- source entities: `auditfirm_id`, `firm_name`, `protocol_id`, `protocol_name`
+- report metadata: `report_date`, `source_link`, `github_link`, `pdf_link`, `pdf_page_from`
+- scoring: `quality_score`, `general_score`
+- crawler metadata: `source_payload_hash`, `crawled_at`, `loaded_at`
+
+Nested or unstable Solodit response fragments are preserved as JSON:
+
+- `auditfirm`
+- `protocol`
+- `issue_finders`
+- `issue_tag_scores`
+- `source_payload`
+
+`finder_handles` is stored as `ARRAY<STRING>` because it is useful for filtering and aggregation.
+
+## Partitioning And Clustering
+
+Both tables are partitioned by `DATE(loaded_at)`.
+
+Both tables are clustered by:
+
+- `impact`
+- `firm_name`
+- `protocol_name`
+- `report_date`
+
+This keeps common dashboard and search queries cheaper without requiring ingestion-time partitions.
+
+## Upsert Semantics
+
+`sql/merge_findings.sql` deduplicates staging rows by `id`, keeping the newest row by `crawled_at` and `loaded_at`.
+
+Rows are inserted when `id` is new. Existing rows are updated only when `source_payload_hash` changes. This avoids rewriting unchanged rows during scheduled incremental crawls.
+
+## Next Mapper Contract
+
+The mapper should convert each validated `Finding` into one JSON object matching the table schema:
+
+- Dates must be `YYYY-MM-DD` or `null`.
+- Timestamps must be RFC3339 strings acceptable to BigQuery.
+- JSON columns may be emitted as JSON objects/arrays when using the BigQuery client API, or as JSON strings when loading newline-delimited JSON.
+- `source_payload_hash` should be a stable hash of the normalized source payload.
+- `crawled_at` should represent when Solodit was fetched.
+- `loaded_at` should represent when the row is prepared for BigQuery loading.

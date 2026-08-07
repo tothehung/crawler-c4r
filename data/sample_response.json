@@ -1,0 +1,241 @@
+{
+  "findings": [
+    {
+      "id": "66925",
+      "kind": "MARKDOWN",
+      "auditfirm_id": "30",
+      "impact": "LOW",
+      "finders_count": 1,
+      "protocol_id": "3895",
+      "title": "[L-03] `governanceCapActive` Unconditionally Disables the `emergencyCouncil` Circuit Breaker in `_distributeEnforced()`",
+      "content": "\n## Severity\n\nLow Risk\n\n## Description\n\nThe enforced-cap release logic is meant to have two independently triggerable safety mechanisms: a governance-set cap and an emergencyCouncil-set emergency cap, the latter existing specifically as a fast, independent circuit breaker. In practice, whenever a governance cap is marked active for a given gauge and epoch, the emergency cap is never consulted at all — not in the primary branch that decides the release percentage, and not in the secondary clamp that's supposed to additionally restrict the result. Both paths are structured so that the presence of an active governance cap fully bypasses the emergency-cap check, rather than the two caps being combined (e.g., taking the stricter of the two).\n\nThere is no separate function that lets emergencyCouncil clear or override a governance cap entry — only the governor can write to that state. So if a governance cap is on the books for a specific gauge and epoch (which can persist indefinitely once set — see the related expiry-logic finding), and an incident occurs on that exact gauge during that exact epoch, emergencyCouncil calling its emergency-cap function to halt emissions has no effect whatsoever. The release logic will still allow whatever the stale governance cap permits.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L771-L845](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L771-L845)\n\n```solidity\nfunction _distributeEnforced(address _gauge, uint256 _epoch, uint256 _nominal, uint256 _gaugeLeft) internal {\n  uint256 alreadyReleased = releasedByGaugeEpoch[_gauge][_epoch];\n  uint256 requestedCumulative = alreadyReleased + _nominal;\n  ControllerQuote memory quote = _safeQuoteGaugeCap(_gauge, _epoch, requestedCumulative, alreadyReleased);\n  bool governanceCapActive = _governanceGaugeCapActive(_gauge, _epoch);\n  bool reportUsable = quote.available && quote.status == REPORT_STATUS_VALID;\n  uint256 policyAllowed;\n\n  if (governanceCapActive) {\n      policyAllowed = (requestedCumulative * governanceGaugeCapBps[_gauge][_epoch]) / MAX_BPS;\n  } else if (reportUsable) {\n      policyAllowed = quote.allowedCumulativeEmission;\n  } else if (_capFallbackAllowed(quote)) {\n      if (emergencyGaugeCapActive[_gauge][_epoch]) {\n          policyAllowed = (requestedCumulative * emergencyGaugeCapBps[_gauge][_epoch]) / MAX_BPS;\n      } else if (defaultGaugeCapActive[_gauge]) {\n          policyAllowed = _fallbackPolicyAllowed(\n              _gauge,\n              _epoch,\n              requestedCumulative,\n              defaultGaugeCapBps[_gauge],\n              quote.status,\n              FALLBACK_REASON_DEFAULT_GAUGE_CAP\n          );\n      } else if (globalFallbackCapActive) {\n          policyAllowed = _fallbackPolicyAllowed(\n              _gauge,\n              _epoch,\n              requestedCumulative,\n              globalFallbackCapBps,\n              quote.status,\n              FALLBACK_REASON_GLOBAL_FALLBACK_CAP\n          );\n      } else {\n          policyAllowed = _fallbackPolicyAllowed(\n              _gauge,\n              _epoch,\n              requestedCumulative,\n              MAX_BPS,\n              quote.status,\n              FALLBACK_REASON_FAIL_OPEN_NOMINAL\n          );\n      }\n  }\n```\n\n## Impact\n\nIt won't let `emergencyCouncil` clear or override a governance cap entry — only the governor can write to that state.\n\n## Recommendation\n\nHave the emergency cap always participate as an additional restriction rather than being skipped whenever a governance cap is active.\n\n## Team Response\n\nAcknowledged.\n\n## [I-01] No Upper Bound on Emission Multiplier\n\n## Severity\n\nInformational Risk\n\n## Description\n\nBoth the global multiplier and per-gauge override only validate that the value is non-zero and different from the current value. There is no upper sanity bound. This multiplier scales directly into the emission cap formula in `quoteGaugeCap`. A single governor transaction can set this to an arbitrarily large value, instantly and effectively removing the emission cap for one gauge or the entire protocol. No timelock or multi-step delay is visible within this contract itself.\n\n## Location of Affected Code\n\nFile: [contracts/gauge-caps/GaugeCapController.sol#L178-L183](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L178-L183)\n\n```solidity\nfunction setMultiplierWad(uint256 _multiplierWad) external onlyGovernor {\n    if (_multiplierWad == 0) revert InvalidReport();\n    if (multiplierWad == _multiplierWad) revert SameValue();\n    multiplierWad = _multiplierWad;\n    emit GlobalMultiplierSet(_multiplierWad);\n}\n```\n\n## Recommendation\n\nAdd an explicit hard ceiling constant (e.g., `MAX_MULTIPLIER_WAD`) and enforce `require(_multiplierWad <= MAX_MULTIPLIER_WAD)` in both setters.\n\n## Team Response\n\nAcknowledged.\n\n## [I-02] CLTwapOracle.sol and `Gauge._pendingFees()` Are Unreferenced Dead Code\n\n## Severity\n\nInformational Risk\n\n## Description\n\nTwo unrelated pieces of code in this codebase are fully defined but never invoked from anywhere:\n\n`CLTwapOracle.sol` implements an on-chain Uniswap V3 TWAP-based price oracle (adapted TickMath/OracleLibrary logic). It is not imported by any other contract in scope, not referenced by `GaugeCapController.sol` (which is the contract that would plausibly need an on-chain price cross-check), and the only places it's mentioned anywhere in the repository are its own file and the attribution line in NOTICE.md. Verified via a repo-wide search: no other file imports or references it. This is notable because GaugeCapController's gauge-cap valuation is otherwise entirely trust-based (a governor-appointed publisher or signer-quorum submits values with no on-chain sanity check) — `CLTwapOracle` looks like it was built specifically to close that gap and then never wired in.\n\n`Gauge._pendingFees()` (contracts/gauges/Gauge.sol:106-130) is a defined internal function that computes pending fee amounts for the gauge's two underlying tokens. It is never called by any other function in `Gauge.sol`, and it's not exposed as an external/public function either, so there's no way to invoke it at all — internally or externally. Verified via a repo-wide search: `_pendingFees()` has no call sites anywhere in the codebase.\n\n## Location of Affected Code\n\nFile: [contracts/gauges/Gauge.sol#L106-L130](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauges/Gauge.sol#L106-L130)\n\n```solidity\nfunction _pendingFees() internal view returns (uint256 pending0, uint256 pending1, address token0, address token1) {\n    if (!isPool) {\n        return (0, 0, address(0), address(0));\n    }\n\n    IPool pool = IPool(stakingToken);\n    (token0, token1) = pool.tokens();\n    pending0 = fees0 + pool.claimable0(address(this));\n    pending1 = fees1 + pool.claimable1(address(this));\n\n    uint256 supplied = IERC20(stakingToken).balanceOf(address(this));\n    if (supplied == 0) {\n        return (pending0, pending1, token0, token1);\n    }\n\n    uint256 delta0 = pool.index0() - pool.supplyIndex0(address(this));\n    if (delta0 > 0) {\n        pending0 += (supplied * delta0) / PRECISION;\n    }\n\n    uint256 delta1 = pool.index1() - pool.supplyIndex1(address(this));\n    if (delta1 > 0) {\n        pending1 += (supplied * delta1) / PRECISION;\n    }\n}\n```\n\n## Recommendation\n\n- If `CLTwapOracle` was meant to backstop the trust-based gauge-cap valuation pipeline (`GaugeCapController.publishGaugeEpochValue()`), wire it in as a sanity check before launch, or remove it if the integration was deprioritized — shipping it unused is misleading scaffolding that could be mistaken for an active safeguard.\n\n- If `_pendingFees()` was meant to support a fee-accounting feature that didn't make it into this version, either finish wiring it in or remove it — an unreachable, unexposed function serves no purpose and adds audit surface for no benefit.\n\n## Team Response\n\nAcknowledged.\n\n## [I-03] `Voter.reset()` Authorizes Against Raw `msg.sender` Instead of `_msgSender()`, Breaking Meta-tx Calls\n\n## Severity\n\nInformational Risk\n\n## Description\n\nVoter inherits ERC2771Context with a real trusted forwarder. Every other approval-gated function resolves the caller through `_msgSender()`: `vote()`, `depositManaged()`, `withdrawManaged()`, `claimBribes()`, `claimFees()`. `reset()` is the one exception. When called through the trusted forwarder, `msg.sender` inside the contract is the forwarder's address, not the end user, so isApprovedOrOwner checks the forwarder's own (nonexistent) approval and reverts.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L308-L311](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L308-L311)\n\n```solidity\nfunction reset(uint256 _tokenId) external onlyNewEpoch(_tokenId) nonReentrant {\n    if (!IVotingEscrow(ve).isApprovedOrOwner(msg.sender, _tokenId)) revert NotApprovedOrOwner();  // contracts/Voter.sol:309 — raw msg.sender\n    _reset(_tokenId);\n}\n```\n\n## Impact\n\nWhen called through the trusted forwarder, `msg.sender` inside the contract is the forwarder's address, not the end user, so `isApprovedOrOwner()` checks the forwarder's own (nonexistent) approval and reverts.\n\n## Recommendation\n\nUse `_msgSender()` instead of `msg.sender`.\n\n## Team Response\n\nAcknowledged.\n\n## [I-04] Unescaped Token Symbols in On-Chain SVG Allow XML Injection and Broken NFT Metadata\n\n## Severity\n\nInformational Risk\n\n## Description\n\nThe `quoteTokenSymbol` and `baseTokenSymbol` are sourced from an `ERC20's symbol()` call. They are used in the `NFTSVG::generateSVG()` function that calls the [`generateTopText()`](https://github.com/prompter-byte/up-slipstream/blob/647f599031d5333ca5d000b57fe9b26ede0dc14a/contracts/periphery/libraries/NFTSVG.sol#L60) function to return the `svg`. The tokens are derived in `NonfungibleTokenPositionDescriptor::tokenURI()` function from the `positionManager.positions`. But the `positionManager` address is a user-supplied address and the function has no access control.\n\nIt is the same situation with `CLFactory::createPool()`, where anyone can create a pool with arbitrary tokens. This means that any attacker can deploy a token with a malicious `symbol()` return value and poison the on-chain metadata of every NFT minted against that pool.\n\n## Location of Affected Code\n\nFile: [contracts/periphery/libraries/NFTSVG.sol#L60-L86](https://github.com/prompter-byte/up-slipstream/blob/647f599031d5333ca5d000b57fe9b26ede0dc14a/contracts/periphery/libraries/NFTSVG.sol#L60-L86)\n\n```solidity\nfunction generateTopText(\n    string memory quoteTokenSymbol,\n    string memory baseTokenSymbol,\n    uint256 tokenId,\n    int24 tickSpacing\n) private pure returns (string memory svg) {\n    string memory poolId =\n        string(abi.encodePacked(\"CL\", tickToString(tickSpacing), \"-\", quoteTokenSymbol, \"/\", baseTokenSymbol));\n    string memory tokenIdStr = string(abi.encodePacked(\"ID #\", tokenId.toString()));\n    string memory id = string(abi.encodePacked(poolId, tokenIdStr));\n@>  svg = string(\n        abi.encodePacked(\n            '<g id=\"',\n            id,\n            '\">',\n            '<text ... ><tspan x=\"56\" y=\"85.5938\">',\n            poolId,\n            \"</tspan></text>\",\n            ...\n        )\n    );\n}\n\n```\n\n## Impact\n\nA token deployed with `symbol()` returning e.g. `\"></g><script>... ` breaks out of the `id=\"...\"` XML attribute and injects arbitrary markup, a symbol containing a bare `<` or `&` produces malformed XML that fails to render entirely. This permanently corrupts or hijacks the on-chain metadata for every NFT holder of that pool/gauge, not just the attacker, a griefing vector against any innocent LP who later stakes a position in that pool.\n\n## Proof of Concept\n\n1. Attacker deploys an ERC20 with `symbol()` returning `X\"><image href=x onerror=alert(1)//`.\n2. Attacker creates a CL pool pairing this token with a legitimate token.\n3. Any NFT minted on that pool calls `generateSVG`, which calls `generateTopText()`, embedding the hostile symbol unescaped into the `id` attribute and `<tspan>` text.\n4. The resulting `tokenURI JSON/SVG` is malformed or contains injected markup, breaking rendering in marketplaces or executing injected content in any renderer that doesn't sandbox SVG.\n\n## Recommendation\n\nEscape `\", ', <, >`, and `&` in every token-symbol derived string before interpolating it into SVG output (attribute or text-node context), e.g. via a byte-by-byte escaping helper analogous to Uniswap V3's `escapeQuotes`:\n\n```diff\n- string memory poolId =\n-     string(abi.encodePacked(\"CL\", tickToString(tickSpacing), \"-\", quoteTokenSymbol, \"/\", baseTokenSymbol));\n+ string memory poolId =\n+     string(abi.encodePacked(\"CL\", tickToString(tickSpacing), \"-\", _escapeXML(quoteTokenSymbol), \"/\", _escapeXML(baseTokenSymbol)));\n\n```\n\n## Team Response\n\nFixed.\n\n",
+      "summary": "",
+      "report_date": null,
+      "contest_prize_txt": "",
+      "contest_link": "",
+      "sponsor_name": null,
+      "sponsor_link": "",
+      "quality_score": 0,
+      "general_score": 0,
+      "source_link": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+      "github_link": "",
+      "pdf_link": "",
+      "pdf_page_from": 0,
+      "contest_id": "",
+      "slug": "l-03-governancecapactive-unconditionally-disables-the-emergencycouncil-circuit-breaker-in-_distributeenforced-shieldify-none-up-markdown",
+      "firm_name": "Shieldify",
+      "firm_logo_square": "Shieldify_square.png",
+      "protocol_name": "Up",
+      "bookmarked": false,
+      "read": false,
+      "issues_issue_finders": [
+        {
+          "wardens_warden": {
+            "handle": "Shieldify Security"
+          }
+        }
+      ],
+      "auditfirms_auditfirm": {
+        "name": "Shieldify",
+        "logo_square": "Shieldify_square.png"
+      },
+      "protocols_protocol": {
+        "name": "Up",
+        "protocols_protocolcategoryscore": []
+      },
+      "issues_issuetagscore": []
+    },
+    {
+      "id": "66924",
+      "kind": "MARKDOWN",
+      "auditfirm_id": "30",
+      "impact": "LOW",
+      "finders_count": 1,
+      "protocol_id": "3895",
+      "title": "[L-02] `expiredIndexFloor` Strands a Gauge's Emission Share Whenever a Full Epoch Is Missed, in Every Cap Mode",
+      "content": "\n## Severity\n\nLow Risk\n\n## Description\n\nThe `_settleExpiredEpochs()` (`contracts/Voter.sol:924-952`) rolls `activeCapEpoch` forward on every epoch boundary and unconditionally sets:\n\n```solidity\nexpiredIndexFloor = index;\n```\n\nat `contracts/Voter.sol:943`, regardless of `capMode`.\n\nThe `_updateFor()` (`contracts/Voter.sol:662-694`) then computes the gauge's starting index as:\n\n```solidity\nuint256 _supplyIndex = Math.max(supplyIndex[_gauge], expiredIndexFloor);\n```\n\nat `contracts/Voter.sol:672`, also unconditionally, regardless of `capMode`.\n\nPre-diff (base Aerodrome/Velodrome semantics), `_updateFor()` used the plain `supplyIndex[_gauge]` with no floor, so a gauge that wasn't touched for a while simply carried forward its full uncollected accrual — nothing was ever lost, only deferred.\n\nWith the floor in place, if a gauge is not touched by `_updateFor()`/`distribute()` at any point within a given epoch, the next epoch rollover moves `expiredIndexFloor` past that gauge's true `supplyIndex[_gauge]`. The next time `_updateFor` runs for that gauge, `_supplyIndex` is clamped up to `expiredIndexFloor`, so `_delta = _index - _supplyIndex` silently excludes the entire index range that accrued during the missed epoch. The corresponding `_share` for that interval is **never computed at all** — it is not credited to `nonEnforcedClaimable`, not credited to `enforcedClaimableByEpoch`, and not refunded to `minter`.\n\nIn `CapMode.Enforced`, the matching token amount happens to still get burned, because `notifyRewardAmount` credits `epochReserve[epoch]` independently of any per-gauge bookkeeping, and `_settleExpiredEpochs()` burns the full `epochReserve[expiredEpoch]` regardless of which gauges' shares were actually attributed. So in `Enforced` mode this is (at most) an accounting/attribution inconsistency, not a fund-loss bug.\n\nIn the launch-default `Disabled`/`ObserveOnly` modes, however, `epochReserve` is **never funded** — `notifyRewardAmount()` only does `epochReserve[epoch] += _amount` when `capMode == CapMode.Enforced` (`contracts/Voter.sol:620-621`). There is no reserve bucket for these modes to fall back on. The underlying `UP` tokens were already pulled into the Voter contract's balance via `safeTransferFrom()` in `notifyRewardAmount()` (`contracts/Voter.sol:615`), but the index-delta that would have routed them to `nonEnforcedClaimable` (for later claim) or to `minter` (for the dead-gauge refund branch) is discarded by the floor before it's ever computed. The tokens are not distributed, not refunded, and not burned — they simply sit in the Voter contract's balance, permanently unclaimable by anyone.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L924-L952](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L924-L952)\n\n```solidity\nfunction _settleExpiredEpochs() internal {\n    uint256 currentEpoch = ProtocolTimeLibrary.epochStart(block.timestamp);\n    if (activeCapEpoch == 0) {\n        activeCapEpoch = currentEpoch;\n        activeEpochStartIndex = index;\n        _applyQueuedCapModeFor(currentEpoch);\n        return;\n    }\n    if (activeCapEpoch >= currentEpoch) {\n        _applyQueuedCapModeFor(currentEpoch);\n        return;\n    }\n\n    uint256 expiredEpoch = activeCapEpoch;\n    uint256 burnAmount = epochReserve[expiredEpoch];\n    epochReserve[expiredEpoch] = 0;\n    epochBurned[expiredEpoch] += burnAmount;\n    epochSettled[expiredEpoch] = true;\n    if (burnAmount != 0) liveAccountedReserve -= burnAmount;\n    expiredIndexFloor = index;\n    activeCapEpoch = currentEpoch;\n    activeEpochStartIndex = index;\n    _applyQueuedCapModeFor(currentEpoch);\n\n    if (burnAmount != 0) {\n        IUp(rewardToken).burnFrom(address(this), burnAmount);\n    }\n    emit EpochCapSettled(expiredEpoch, expiredIndexFloor, burnAmount, liveAccountedReserve);\n}\n```\n\n## Impact\n\nUnder `Disabled`/`ObserveOnly` mode (the modes the protocol launches in), any gauge that goes a full epoch without being touched by `_updateFor()`/`distribute()`/`vote()`/`reset()`/`poke()` loses its entire pro-rata emission share for that epoch. The tokens become permanently stuck in the `Voter` contract with no code path to recover them.\n\n## Recommendation\n\nOnly apply the expired-index floor when it is actually backed by a burn mechanism, i.e. in `Enforced` mode. For all other modes, fall back to the original unfloored behavior so a gauge's uncollected accrual simply carries forward instead of being discarded.\n\n## Team Response\n\nAcknowledged.\n\n",
+      "summary": "",
+      "report_date": null,
+      "contest_prize_txt": "",
+      "contest_link": "",
+      "sponsor_name": null,
+      "sponsor_link": "",
+      "quality_score": 0,
+      "general_score": 0,
+      "source_link": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+      "github_link": "",
+      "pdf_link": "",
+      "pdf_page_from": 0,
+      "contest_id": "",
+      "slug": "l-02-expiredindexfloor-strands-a-gauges-emission-share-whenever-a-full-epoch-is-missed-in-every-cap-mode-shieldify-none-up-markdown",
+      "firm_name": "Shieldify",
+      "firm_logo_square": "Shieldify_square.png",
+      "protocol_name": "Up",
+      "bookmarked": false,
+      "read": false,
+      "issues_issue_finders": [
+        {
+          "wardens_warden": {
+            "handle": "Shieldify Security"
+          }
+        }
+      ],
+      "auditfirms_auditfirm": {
+        "name": "Shieldify",
+        "logo_square": "Shieldify_square.png"
+      },
+      "protocols_protocol": {
+        "name": "Up",
+        "protocols_protocolcategoryscore": []
+      },
+      "issues_issuetagscore": []
+    },
+    {
+      "id": "66923",
+      "kind": "MARKDOWN",
+      "auditfirm_id": "30",
+      "impact": "LOW",
+      "finders_count": 1,
+      "protocol_id": "3895",
+      "title": "[L-01] Provenance Fields Can Be Silently Rewritten on Locked Reports",
+      "content": "\n## Severity\n\nLow Risk\n\n## Description\n\nThe \"does this update expand capacity\" check only inspects **feeValueWeth**, **bribeValueWeth**, and **conservativeUpPriceWeth**. It does not consider `sourceEpoch`, `sourceBlockNumber`, `sourceBlockHash`, `routeConfigHash`, or `sourceDataHash`, all of which are provenance/audit-trail fields establishing what dataset and block a report's figures came from. Since **publishGaugeEpochValue** unconditionally overwrites all stored fields (including these) whenever the capacity check passes, an authorized publisher can rewrite a locked report's provenance data, pointing it at an entirely different source block or dataset, as long as the resulting emission-relevant values don't increase.\n\n## Location of Affected Code\n\nFile: [contracts/gauge-caps/GaugeCapController.sol#L340-L352](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L340-L352)\n\n```solidity\nfunction _reportExpandsCapacity(\n    StoredReport storage stored,\n    GaugeEpochValueReport calldata _report\n) internal view returns (bool) {\n    if (_report.status != REPORT_STATUS_VALID) return false;\n    if (stored.status != REPORT_STATUS_VALID) return true;\n    uint256 oldDenominator = stored.feeValueWeth + stored.bribeValueWeth;\n    uint256 newDenominator = _report.feeValueWeth + _report.bribeValueWeth;\n    if (newDenominator > oldDenominator) return true;\n    if (stored.conservativeUpPriceWeth == 0) return true;\n    return _report.conservativeUpPriceWeth < stored.conservativeUpPriceWeth;\n}\n```\n\n## Recommendation\n\nExtend `_reportExpandsCapacity()` (or add a parallel check) to also freeze provenance fields once `stored.locked == true`, i.e., disallow changes to `sourceEpoch`, `sourceBlockHash`, `routeConfigHash`, and `sourceDataHash` after locking, independent of whether the financial values are being corrected downward.\n\n## Team Response\n\nAcknowledged.\n\n",
+      "summary": "",
+      "report_date": null,
+      "contest_prize_txt": "",
+      "contest_link": "",
+      "sponsor_name": null,
+      "sponsor_link": "",
+      "quality_score": 0,
+      "general_score": 0,
+      "source_link": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+      "github_link": "",
+      "pdf_link": "",
+      "pdf_page_from": 0,
+      "contest_id": "",
+      "slug": "l-01-provenance-fields-can-be-silently-rewritten-on-locked-reports-shieldify-none-up-markdown",
+      "firm_name": "Shieldify",
+      "firm_logo_square": "Shieldify_square.png",
+      "protocol_name": "Up",
+      "bookmarked": false,
+      "read": false,
+      "issues_issue_finders": [
+        {
+          "wardens_warden": {
+            "handle": "Shieldify Security"
+          }
+        }
+      ],
+      "auditfirms_auditfirm": {
+        "name": "Shieldify",
+        "logo_square": "Shieldify_square.png"
+      },
+      "protocols_protocol": {
+        "name": "Up",
+        "protocols_protocolcategoryscore": []
+      },
+      "issues_issuetagscore": []
+    },
+    {
+      "id": "66922",
+      "kind": "MARKDOWN",
+      "auditfirm_id": "30",
+      "impact": "MEDIUM",
+      "finders_count": 1,
+      "protocol_id": "3895",
+      "title": "[M-03] Enforced-mode Gauge-cap Enforcement Can Be Bypassed Via Permissionless `updateFor`",
+      "content": "\n## Severity\n\nMedium Risk\n\n## Description\n\nThe contract tracks a gauge's accrued-but-uncollected reward index in one internal function, and that function decides which of two payout buckets to credit the accrual into based on whatever the current enforcement mode happens to be in storage at that exact moment. One of those buckets is subject to the enforced cap system (oracle checks, governance caps, emergency caps, fallback policy); the other is paid out later in full, with no cap check of any kind, regardless of what the enforcement mode is by the time it's actually paid.\n\nThe problem is that this internal function is the only place that decides which bucket an accrual goes into, but it is not one of the functions responsible for keeping the enforcement mode up to date. Several other entry points do refresh the enforcement mode before doing any accounting, but this particular function, and everything that calls it directly, does not. That includes a set of fully public, unrestricted functions with no access control, as well as the normal voting-related actions (voting, poking, resetting a vote, and moving a position into or out of a managed vault), all of which call into this same accrual function as a side effect of their own logic.\n\nGovernance can queue a switch into enforced mode to take effect starting immediately in the current epoch. Until some other function actually applies that queued switch, the enforcement mode stored on-chain still reflects the old, unenforced setting. In that window, anyone can call one of the public, access-control-free entry points (or simply vote/poke/reset on any position touching the target gauge) to trigger the accrual function while it's still reading the stale, unenforced mode. Any backlog of unsynced rewards the gauge was carrying gets credited into the always-pays-out-in-full bucket instead of the capped one, and once it's there, it is permanently exempt from the cap system that governance just turned on, no matter what the enforcement mode becomes afterwards.\n\nBecause the vulnerable entry points require no special permission and the exploit is purely a matter of transaction timing at the epoch boundary, this can be executed by anyone. It can also be set up in advance: deliberately avoiding syncing a chosen gauge for one or more epochs before a known enforced-mode activation lets an attacker accumulate a larger backlog, then flush all of it into the uncapped bucket the instant the new epoch begins.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L722-L725](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L722-L725)\n\n```solidity\nfunction _distribute(address _gauge) internal {\n    _settleExpiredEpochs();\n    _applyQueuedCapModeFor(ProtocolTimeLibrary.epochStart(block.timestamp));\n    _updateFor(_gauge);\n    // code\n}\n```\n\n## Impact\n\nAnyone can front-run a governance-queued switch into enforced mode by calling the permissionless updateFor (or voting/poking/resetting) in the window before the mode refreshes, permanently routing a gauge's backlog into the uncapped payout bucket and fully bypassing the emission cap.\n\n## Recommendation\n\nHave the accrual function apply any pending, due enforcement-mode change for the current epoch before it reads the mode to decide which bucket to use — the same refresh step that the other, already-correct entry points perform. This closes the timing window entirely, since no code path would then be able to observe a stale enforcement mode when deciding how to bucket a gauge's accrual.\n\n## Team Response\n\nAcknowledged.\n\n",
+      "summary": "\nThe bug report describes a medium risk issue in a contract that tracks the accrued-but-uncollected reward index. The problem is that the internal function responsible for deciding which payout bucket to credit the accrual into does not update the enforcement mode before making its decision. This means that if someone calls a public entry point or performs a voting-related action at the exact moment when the enforcement mode is changing, the accrual may be routed into the wrong bucket, bypassing the emission cap. This can be exploited by anyone and can be set up in advance. The recommendation is to have the accrual function apply any pending enforcement-mode changes before making its decision, which would close the timing window and prevent the bug from being exploited. The team has acknowledged the issue.",
+      "report_date": null,
+      "contest_prize_txt": "",
+      "contest_link": "",
+      "sponsor_name": null,
+      "sponsor_link": "",
+      "quality_score": 0,
+      "general_score": 0,
+      "source_link": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+      "github_link": "",
+      "pdf_link": "",
+      "pdf_page_from": 0,
+      "contest_id": "",
+      "slug": "m-03-enforced-mode-gauge-cap-enforcement-can-be-bypassed-via-permissionless-updatefor-shieldify-none-up-markdown",
+      "firm_name": "Shieldify",
+      "firm_logo_square": "Shieldify_square.png",
+      "protocol_name": "Up",
+      "bookmarked": false,
+      "read": false,
+      "issues_issue_finders": [
+        {
+          "wardens_warden": {
+            "handle": "Shieldify Security"
+          }
+        }
+      ],
+      "auditfirms_auditfirm": {
+        "name": "Shieldify",
+        "logo_square": "Shieldify_square.png"
+      },
+      "protocols_protocol": {
+        "name": "Up",
+        "protocols_protocolcategoryscore": []
+      },
+      "issues_issuetagscore": []
+    },
+    {
+      "id": "66921",
+      "kind": "MARKDOWN",
+      "auditfirm_id": "30",
+      "impact": "MEDIUM",
+      "finders_count": 1,
+      "protocol_id": "3895",
+      "title": "[M-02] Invalidating a Locked Report Can Trigger Uncapped (\"Fail-Open\") Emission Release",
+      "content": "\n## Severity\n\nMedium Risk\n\n## Description\n\n**publishGaugeEpochValue()** explicitly blocks any update to a locked report that would expand its allowed emission capacity (`_reportExpandsCapacity` check). However, **invalidateGaugeEpochReport()** has no equivalent locked check, governor or emergencyCouncil can flip the status of an already-locked, already-used report to REPORT_STATUS_INVALID at any time, with no restriction based on lock state.\n\nIn `Voter._capFallbackAllowed()`, any non-VALID status is treated identically to \"no report exists,\" and is routed into the fallback-cap chain (emergency cap → default cap → global fallback cap). Since `defaultGaugeCapActive` and `globalFallbackCapActive` both default to false and must be explicitly configured by governance, an invalidation performed on a locked report, with no fallback cap active — causes any subsequent `quoteGaugeCap` call in the same epoch to fail open, allowing release of up to 100% of the requested cumulative emission, uncapped.\n\n## Location of Affected Code\n\nFile: [contracts/gauge-caps/GaugeCapController.sol#L224-L229](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L224-L229)\n\n```solidity\nfunction invalidateGaugeEpochReport(address _gauge, uint256 _releaseEpoch) external onlyAuthorizedInvalidator {\n    StoredReport storage stored = reports[_gauge][_releaseEpoch];\n    if (stored.reportVersion == 0) revert InvalidReport();\n    stored.status = REPORT_STATUS_INVALID;\n    emit GaugeValueReportInvalidated(_gauge, _releaseEpoch, msg.sender);\n}\n```\n\n## Impact\n\nAn action intended to flag untrustworthy data (\"stop trusting this report\") can produce the functional opposite of its intent: removing the cap entirely rather than restricting it. If a second distribution pass or partial release occurs in the same epoch after invalidation, a gauge can receive uncapped emissions instead of a reduced or blocked amount — directly undermining the purpose of the cap system.\n\n## Recommendation\n\nBlock invalidation of locked reports entirely (`if (stored.locked) revert InvalidReport();`), forcing corrections through the existing `_reportExpandsCapacity-gated` republish path instead.\n\n## Team Response\n\nAcknowledged.\n\n",
+      "summary": "\nThe report describes a bug in the code where a function called `invalidateGaugeEpochReport()` does not have proper checks in place to prevent an issue with another function called `publishGaugeEpochValue()`. This can lead to a situation where a gauge can receive more emissions than intended, undermining the purpose of the cap system. The recommended solution is to block invalidation of locked reports entirely and force corrections through a different path. The team has acknowledged the issue.",
+      "report_date": null,
+      "contest_prize_txt": "",
+      "contest_link": "",
+      "sponsor_name": null,
+      "sponsor_link": "",
+      "quality_score": 5,
+      "general_score": 0,
+      "source_link": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+      "github_link": "",
+      "pdf_link": "",
+      "pdf_page_from": 0,
+      "contest_id": "",
+      "slug": "m-02-invalidating-a-locked-report-can-trigger-uncapped-fail-open-emission-release-shieldify-none-up-markdown",
+      "firm_name": "Shieldify",
+      "firm_logo_square": "Shieldify_square.png",
+      "protocol_name": "Up",
+      "bookmarked": false,
+      "read": false,
+      "issues_issue_finders": [
+        {
+          "wardens_warden": {
+            "handle": "Shieldify Security"
+          }
+        }
+      ],
+      "auditfirms_auditfirm": {
+        "name": "Shieldify",
+        "logo_square": "Shieldify_square.png"
+      },
+      "protocols_protocol": {
+        "name": "Up",
+        "protocols_protocolcategoryscore": []
+      },
+      "issues_issuetagscore": []
+    }
+  ],
+  "metadata": {
+    "totalResults": 46135,
+    "currentPage": 1,
+    "pageSize": 5,
+    "totalPages": 9227,
+    "elapsed": 13.13207849700004
+  },
+  "rateLimit": {
+    "limit": 20,
+    "remaining": 19,
+    "reset": 1785585420
+  }
+}
