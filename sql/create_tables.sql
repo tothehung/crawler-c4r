@@ -98,3 +98,18 @@ CLUSTER BY impact, firm_name, protocol_name, report_date
 OPTIONS (
   description = 'Batch staging table for Solodit findings before MERGE into findings.'
 );
+
+CREATE TABLE IF NOT EXISTS `${PROJECT_ID}.${DATASET}.findings_sync_state`
+(
+  state_name STRING NOT NULL,
+  next_page INT64 NOT NULL,
+  last_completed_page INT64,
+  pages_written INT64 NOT NULL,
+  records_written INT64 NOT NULL,
+  total_pages INT64,
+  completed BOOL NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+)
+OPTIONS (
+  description = 'Persistent crawler checkpoints for resumable Solodit sync jobs.'
+);

@@ -37,8 +37,9 @@ records or update changed records without duplicating old findings.
 ## GitHub Actions
 
 The workflow in `.github/workflows/crawl.yml` is ready for scheduled
-incremental sync. It runs daily at `19:00 UTC` and can also be started manually
-from the Actions tab.
+backfill sync. It runs daily at `19:00 UTC` and can also be started manually
+from the Actions tab. Scheduled runs resume from the persistent checkpoint in
+BigQuery, so each run continues from the last successfully loaded page.
 
 Add these repository secrets before enabling the workflow:
 
@@ -54,12 +55,15 @@ Optional repository variables:
 
 ```text
 SOLODIT_PAGE_SIZE=50
+SOLODIT_BACKFILL_MAX_PAGES=50
 SOLODIT_INCREMENTAL_MAX_PAGES=10
 SOLODIT_RATE_LIMIT_PER_MINUTE=20
 SOLODIT_BASE_URL=https://solodit.cyfrin.io
+SOLODIT_CHECKPOINT_BACKEND=bigquery
+SOLODIT_CHECKPOINT_STATE_NAME=backfill
 ```
 
-Scheduled runs use incremental mode. Manual runs can choose `backfill`, but
-GitHub-hosted runners do not preserve `data/checkpoints/findings_export.json`
-between runs, so backfill in Actions is only appropriate for a bounded one-run
-job unless checkpoint persistence is moved to BigQuery or GCS.
+Scheduled runs use `backfill` mode by default. Each run crawls at most
+`SOLODIT_PAGE_SIZE * SOLODIT_BACKFILL_MAX_PAGES` findings, loads them into
+BigQuery, and then persists the next page in the `findings_sync_state` table.
+Manual runs can still choose `incremental` to scan the newest pages from page 1.

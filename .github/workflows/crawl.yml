@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Sync mode. Backfill in Actions does not persist checkpoint between runs."
+        description: "Sync mode. Backfill resumes from the BigQuery checkpoint."
         required: true
-        default: "incremental"
+        default: "backfill"
         type: choice
         options:
           - incremental
@@ -44,6 +44,9 @@ jobs:
       SOLODIT_PAGE_SIZE: ${{ github.event.inputs.page_size || vars.SOLODIT_PAGE_SIZE || '50' }}
       SOLODIT_RATE_LIMIT_PER_MINUTE: ${{ vars.SOLODIT_RATE_LIMIT_PER_MINUTE || '20' }}
       SOLODIT_INCREMENTAL_MAX_PAGES: ${{ vars.SOLODIT_INCREMENTAL_MAX_PAGES || '10' }}
+      SOLODIT_BACKFILL_MAX_PAGES: ${{ vars.SOLODIT_BACKFILL_MAX_PAGES || '50' }}
+      SOLODIT_CHECKPOINT_BACKEND: ${{ vars.SOLODIT_CHECKPOINT_BACKEND || 'bigquery' }}
+      SOLODIT_CHECKPOINT_STATE_NAME: ${{ vars.SOLODIT_CHECKPOINT_STATE_NAME || 'backfill' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,11 +83,25 @@ jobs:
 
       - name: Sync findings
         env:
-          SYNC_MODE: ${{ github.event.inputs.mode || 'incremental' }}
-          MAX_PAGES: ${{ github.event.inputs.max_pages }}
+          SYNC_MODE: ${{ github.event.inputs.mode || 'backfill' }}
+          MAX_PAGES_INPUT: ${{ github.event.inputs.max_pages }}
           CREATE_TABLES: ${{ github.event.inputs.create_tables || false }}
         run: |
-          args=("scripts/sync.py" "$SYNC_MODE" "--page-size" "$SOLODIT_PAGE_SIZE")
+          if [ -n "$MAX_PAGES_INPUT" ]; then
+            MAX_PAGES="$MAX_PAGES_INPUT"
+          elif [ "$SYNC_MODE" = "backfill" ]; then
+            MAX_PAGES="$SOLODIT_BACKFILL_MAX_PAGES"
+          else
+            MAX_PAGES="$SOLODIT_INCREMENTAL_MAX_PAGES"
+          fi
+
+          args=(
+            "scripts/sync.py"
+            "$SYNC_MODE"
+            "--page-size" "$SOLODIT_PAGE_SIZE"
+            "--checkpoint-backend" "$SOLODIT_CHECKPOINT_BACKEND"
+            "--checkpoint-state-name" "$SOLODIT_CHECKPOINT_STATE_NAME"
+          )
           if [ -n "$MAX_PAGES" ]; then
             args+=("--max-pages" "$MAX_PAGES")
           fi

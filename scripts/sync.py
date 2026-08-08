@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import sys
@@ -114,6 +115,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Load staging only and skip merge into findings.",
     )
+    parser.add_argument(
+        "--checkpoint-backend",
+        choices=["local", "bigquery"],
+        default=os.getenv("SOLODIT_CHECKPOINT_BACKEND", "local"),
+        help="Checkpoint storage for backfill mode. Defaults to SOLODIT_CHECKPOINT_BACKEND or local.",
+    )
+    parser.add_argument(
+        "--checkpoint-state-name",
+        default=os.getenv("SOLODIT_CHECKPOINT_STATE_NAME", "backfill"),
+        help="BigQuery checkpoint state name for backfill mode.",
+    )
     return parser.parse_args()
 
 
@@ -190,6 +202,57 @@ def build_repository(args: argparse.Namespace) -> BigQueryFindingsRepository:
     )
 
 
+def restore_bigquery_checkpoint(
+    repository: BigQueryFindingsRepository,
+    *,
+    checkpoint_path: Path,
+    state_name: str,
+) -> None:
+    checkpoint = repository.read_findings_checkpoint(state_name=state_name)
+    if checkpoint is None:
+        if checkpoint_path.exists():
+            checkpoint_path.unlink()
+        logger.info("No BigQuery findings checkpoint found")
+        return
+
+    checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+    checkpoint_path.write_text(
+        json.dumps(checkpoint, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    logger.info(
+        "Restored BigQuery findings checkpoint",
+        extra={
+            "state_name": state_name,
+            "checkpoint_path": str(checkpoint_path),
+            "next_page": checkpoint["next_page"],
+            "completed": checkpoint["completed"],
+        },
+    )
+
+
+def persist_bigquery_checkpoint(
+    repository: BigQueryFindingsRepository,
+    *,
+    checkpoint_path: Path,
+    state_name: str,
+) -> None:
+    if not checkpoint_path.exists():
+        logger.info("No local findings checkpoint to persist")
+        return
+
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    repository.write_findings_checkpoint(checkpoint, state_name=state_name)
+    logger.info(
+        "Persisted findings checkpoint to BigQuery",
+        extra={
+            "state_name": state_name,
+            "next_page": checkpoint["next_page"],
+            "completed": checkpoint["completed"],
+        },
+    )
+
+
 def main() -> None:
     configure_logging()
     load_dotenv(PROJECT_ROOT / ".env")
@@ -210,7 +273,16 @@ def main() -> None:
         output_path=effective_output_path,
         checkpoint_path=args.checkpoint,
     )
-    load_service = FindingLoadService(build_repository(args))
+    repository = build_repository(args)
+    if mode == FindingSyncMode.BACKFILL and args.checkpoint_backend == "bigquery":
+        repository.create_schema_and_tables()
+        restore_bigquery_checkpoint(
+            repository,
+            checkpoint_path=args.checkpoint,
+            state_name=args.checkpoint_state_name,
+        )
+
+    load_service = FindingLoadService(repository)
     sync_service = FindingSyncService(exporter=export_service, loader=load_service)
 
     logger.info(
@@ -225,6 +297,8 @@ def main() -> None:
             "create_tables": args.create_tables,
             "truncate_staging": not args.no_truncate,
             "merge": not args.no_merge,
+            "checkpoint_backend": args.checkpoint_backend,
+            "checkpoint_state_name": args.checkpoint_state_name,
         },
     )
 
@@ -244,6 +318,14 @@ def main() -> None:
             truncate_staging=not args.no_truncate,
             merge=not args.no_merge,
         )
+
+    if mode == FindingSyncMode.BACKFILL and args.checkpoint_backend == "bigquery":
+        if result.load_result is not None or result.exported_records == 0:
+            persist_bigquery_checkpoint(
+                repository,
+                checkpoint_path=args.checkpoint,
+                state_name=args.checkpoint_state_name,
+            )
 
     logger.info(
         "Finished findings sync",

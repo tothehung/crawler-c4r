@@ -38,6 +38,10 @@ class BigQueryFindingsRepository:
     def findings_table_id(self) -> str:
         return self.table_id("findings")
 
+    @property
+    def sync_state_table_id(self) -> str:
+        return self.table_id("findings_sync_state")
+
     def table_id(self, table_name: str) -> str:
         return f"{self.project_id}.{self.dataset}.{table_name}"
 
@@ -72,6 +76,138 @@ class BigQueryFindingsRepository:
         sql_path: Path = DEFAULT_MERGE_FINDINGS_SQL_PATH,
     ) -> None:
         self.execute_sql_file(sql_path)
+
+    def read_findings_checkpoint(
+        self,
+        *,
+        state_name: str = "backfill",
+    ) -> dict[str, Any] | None:
+        bigquery = self._bigquery_module()
+        query_job = self.client.query(
+            f"""
+            SELECT
+              next_page,
+              last_completed_page,
+              pages_written,
+              records_written,
+              total_pages,
+              completed
+            FROM `{self.sync_state_table_id}`
+            WHERE state_name = @state_name
+            LIMIT 1
+            """,
+            job_config=bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("state_name", "STRING", state_name)
+                ]
+            ),
+            location=self.location,
+        )
+        rows = list(query_job.result())
+        if not rows:
+            return None
+
+        row = rows[0]
+        return {
+            "next_page": row["next_page"],
+            "last_completed_page": row["last_completed_page"],
+            "pages_written": row["pages_written"],
+            "records_written": row["records_written"],
+            "total_pages": row["total_pages"],
+            "completed": row["completed"],
+        }
+
+    def write_findings_checkpoint(
+        self,
+        checkpoint: dict[str, Any],
+        *,
+        state_name: str = "backfill",
+    ) -> None:
+        bigquery = self._bigquery_module()
+        query_job = self.client.query(
+            f"""
+            MERGE `{self.sync_state_table_id}` AS target
+            USING (
+              SELECT
+                @state_name AS state_name,
+                @next_page AS next_page,
+                @last_completed_page AS last_completed_page,
+                @pages_written AS pages_written,
+                @records_written AS records_written,
+                @total_pages AS total_pages,
+                @completed AS completed,
+                CURRENT_TIMESTAMP() AS updated_at
+            ) AS source
+            ON target.state_name = source.state_name
+            WHEN MATCHED THEN
+              UPDATE SET
+                next_page = source.next_page,
+                last_completed_page = source.last_completed_page,
+                pages_written = source.pages_written,
+                records_written = source.records_written,
+                total_pages = source.total_pages,
+                completed = source.completed,
+                updated_at = source.updated_at
+            WHEN NOT MATCHED THEN
+              INSERT (
+                state_name,
+                next_page,
+                last_completed_page,
+                pages_written,
+                records_written,
+                total_pages,
+                completed,
+                updated_at
+              )
+              VALUES (
+                source.state_name,
+                source.next_page,
+                source.last_completed_page,
+                source.pages_written,
+                source.records_written,
+                source.total_pages,
+                source.completed,
+                source.updated_at
+              )
+            """,
+            job_config=bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("state_name", "STRING", state_name),
+                    bigquery.ScalarQueryParameter(
+                        "next_page",
+                        "INT64",
+                        checkpoint["next_page"],
+                    ),
+                    bigquery.ScalarQueryParameter(
+                        "last_completed_page",
+                        "INT64",
+                        checkpoint.get("last_completed_page"),
+                    ),
+                    bigquery.ScalarQueryParameter(
+                        "pages_written",
+                        "INT64",
+                        checkpoint["pages_written"],
+                    ),
+                    bigquery.ScalarQueryParameter(
+                        "records_written",
+                        "INT64",
+                        checkpoint["records_written"],
+                    ),
+                    bigquery.ScalarQueryParameter(
+                        "total_pages",
+                        "INT64",
+                        checkpoint.get("total_pages"),
+                    ),
+                    bigquery.ScalarQueryParameter(
+                        "completed",
+                        "BOOL",
+                        checkpoint["completed"],
+                    ),
+                ]
+            ),
+            location=self.location,
+        )
+        query_job.result()
 
     def execute_sql_file(self, sql_path: Path) -> None:
         self.execute_sql(self.render_sql(sql_path.read_text(encoding="utf-8")))

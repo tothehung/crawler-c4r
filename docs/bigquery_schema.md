@@ -1,9 +1,10 @@
 # BigQuery Schema
 
-The crawler writes Solodit findings into two BigQuery tables:
+The crawler writes Solodit findings and sync state into three BigQuery tables:
 
 - `findings_staging`: batch load target for one crawler run.
 - `findings`: canonical upserted table keyed by `id`.
+- `findings_sync_state`: persistent checkpoints for resumable backfill runs.
 
 The DDL lives in [../sql/create_tables.sql](../sql/create_tables.sql). The upsert query lives in [../sql/merge_findings.sql](../sql/merge_findings.sql).
 
@@ -51,11 +52,22 @@ Both tables are clustered by:
 
 This keeps common dashboard and search queries cheaper without requiring ingestion-time partitions.
 
+`findings_sync_state` is not partitioned because it stores only a small number
+of checkpoint rows keyed by `state_name`.
+
 ## Upsert Semantics
 
 `sql/merge_findings.sql` deduplicates staging rows by `id`, keeping the newest row by `crawled_at` and `loaded_at`.
 
 Rows are inserted when `id` is new. Existing rows are updated only when `source_payload_hash` changes. This avoids rewriting unchanged rows during scheduled incremental crawls.
+
+## Backfill Checkpointing
+
+GitHub Actions scheduled runs use backfill mode with a BigQuery-backed
+checkpoint. The workflow restores `findings_sync_state.state_name = 'backfill'`
+before crawling and updates it only after the exported JSONL has been loaded and
+merged successfully. If a run times out before load, the next run repeats the
+same chunk instead of skipping unloaded pages.
 
 ## Next Mapper Contract
 
