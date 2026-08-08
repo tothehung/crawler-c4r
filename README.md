@@ -1,6 +1,6 @@
 # W3GoAudit Crawler
 
-Dockerized Celery service for crawling Solodit data into a local dataset.
+Python crawler for syncing Solodit findings into BigQuery.
 
 ## Setup
 
@@ -11,46 +11,6 @@ Copy-Item .env.example .env
 ```
 
 Then set `CYFRIN_API_KEY` in `.env`.
-
-## Run Infrastructure
-
-```powershell
-docker compose up -d postgres redis
-```
-
-## Build Image
-
-```powershell
-docker compose build crawler-worker
-```
-
-## Run Worker
-
-The worker expects the Celery app module at `app.celery_app`.
-
-```powershell
-docker compose up -d crawler-worker
-```
-
-## Optional Scheduler
-
-```powershell
-docker compose --profile scheduler up -d crawler-beat
-```
-
-## Output
-
-Crawler exports should write to:
-
-```text
-E:\dacn\dataset\solodit
-```
-
-Inside containers this path is mounted as:
-
-```text
-/data/solodit
-```
 
 ## Local Sync
 
