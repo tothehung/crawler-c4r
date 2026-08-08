@@ -92,3 +92,13 @@ jobs:
             args+=("--create-tables")
           fi
           python "${args[@]}"
+
+      - name: Print findings count
+        if: always()
+        run: |
+          for file in data/findings_incremental.jsonl data/findings.jsonl; do
+            if [ -f "$file" ]; then
+              count=$(grep -cve '^[[:space:]]*$' "$file")
+              echo "$file findings_count=$count"
+            fi
+          done
