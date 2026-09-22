@@ -64,9 +64,26 @@ To extract only specific severities (e.g. High and Medium risk issues):
 py scripts\crawl_code4rena.py --severities "HIGH,MEDIUM"
 ```
 
+### Load Directly Into BigQuery
+
+To crawl and automatically load/merge records into the canonical BigQuery `findings` table (like Solodit sync):
+
+```powershell
+py scripts\crawl_code4rena.py --load-bigquery
+```
+
+### GitHub Actions (Automated Cloud Crawling)
+
+A dedicated GitHub Actions workflow is provided at `.github/workflows/crawl_code4rena.yml`:
+- Runs automatically daily at `21:00 UTC` (or triggered manually via **Run workflow**).
+- Resumes progress automatically using cached checkpoints.
+- Reuses the existing GCP secrets (`BIGQUERY_PROJECT_ID`, `BIGQUERY_DATASET`, `BIGQUERY_LOCATION`, `GCP_SERVICE_ACCOUNT_JSON`).
+- Automatically loads and merges findings into BigQuery without requiring a local machine running.
+
 ### Options Reference
 
 - `--max-contests <N>`: Limit number of contests to process in this run.
+- `--load-bigquery`: Automatically load and merge JSONL into BigQuery after crawling.
 - `--reset`: Reset checkpoint and output file to start over from scratch.
 - `--output <path>`: Custom output JSONL path (defaults to `data/findings_code4rena.jsonl`).
 - `--checkpoint <path>`: Custom checkpoint file path (defaults to `data/checkpoints/code4rena_checkpoint.json`).
