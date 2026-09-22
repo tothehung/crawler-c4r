@@ -61,35 +61,33 @@ class Code4renaExportService:
         resume: bool = True,
         allowed_severities: set[str] | None = None,
     ) -> Code4renaExportResult:
-        """Export findings from Code4rena contests to JSONL with checkpointing."""
         checkpoint = self.read_checkpoint() if resume else None
-
-        if checkpoint and checkpoint.completed:
-            logger.info("Code4rena export already marked completed in checkpoint.")
-            return Code4renaExportResult(
-                output_path=self.output_path,
-                checkpoint_path=self.checkpoint_path,
-                contests_processed=checkpoint.contests_processed,
-                records_written=checkpoint.records_written,
-                total_contests=checkpoint.total_contests,
-                completed=True,
-            )
-
         if checkpoint is None:
             self.reset_output()
             checkpoint = Code4renaCheckpoint()
 
         completed_slugs_set = set(checkpoint.completed_slugs)
 
-        # 1. Fetch contest list
+        # 1. Fetch live contest list from Code4rena
         all_contests = self.client.fetch_all_contests()
         checkpoint.total_contests = len(all_contests)
         logger.info("Total Code4rena contests available: %d", len(all_contests))
 
-        # Filter contests that have not yet been processed
+        # Filter contests that have not yet been processed (supports both initial backfill & incremental new contests)
         pending_contests = [c for c in all_contests if c.slug not in completed_slugs_set]
         logger.info("Pending contests to process: %d", len(pending_contests))
 
+        if not pending_contests:
+            logger.info("All Code4rena contests are up to date. No new reports found.")
+            checkpoint.completed = True
+            return Code4renaExportResult(
+                output_path=self.output_path,
+                checkpoint_path=self.checkpoint_path,
+                contests_processed=0,
+                records_written=0,
+                total_contests=len(all_contests),
+                completed=True,
+            )
         if max_contests is not None and max_contests > 0:
             pending_contests = pending_contests[:max_contests]
             logger.info("Limited to %d contests for this run", len(pending_contests))
