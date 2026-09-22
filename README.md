@@ -34,6 +34,46 @@ Incremental mode starts from page 1, writes to
 `data/findings_incremental.jsonl`, and relies on the BigQuery merge to insert new
 records or update changed records without duplicating old findings.
 
+## Code4rena Crawler
+
+Dedicated crawler for directly scraping all audited contest reports from Code4rena (`https://code4rena.com/reports`). No API key is required.
+
+### Crawl All Contests
+
+Crawl all available contests (~412 contests) with automated streaming to `data/findings_code4rena.jsonl` and checkpointing:
+
+```powershell
+py scripts\crawl_code4rena.py
+```
+
+If the process is interrupted, re-running the command will automatically continue from the last completed contest.
+
+### Crawl In Batches
+
+To crawl a specific number of contests (e.g. 10 contests):
+
+```powershell
+py scripts\crawl_code4rena.py --max-contests 10
+```
+
+### Filter By Severity
+
+To extract only specific severities (e.g. High and Medium risk issues):
+
+```powershell
+py scripts\crawl_code4rena.py --severities "HIGH,MEDIUM"
+```
+
+### Options Reference
+
+- `--max-contests <N>`: Limit number of contests to process in this run.
+- `--reset`: Reset checkpoint and output file to start over from scratch.
+- `--output <path>`: Custom output JSONL path (defaults to `data/findings_code4rena.jsonl`).
+- `--checkpoint <path>`: Custom checkpoint file path (defaults to `data/checkpoints/code4rena_checkpoint.json`).
+- `--severities <list>`: Comma-separated severities (`HIGH,MEDIUM,LOW,INFORMATIONAL,GAS`) or `all`.
+- `--delay <sec>`: Delay in seconds between requests (defaults to `0.5`).
+
+
 ## GitHub Actions
 
 The workflow in `.github/workflows/crawl.yml` is ready for scheduled
