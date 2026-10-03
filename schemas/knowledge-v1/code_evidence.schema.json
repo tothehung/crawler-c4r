@@ -1,0 +1,296 @@
+{
+  "$defs": {
+    "LineRange": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "start_line": {
+          "minimum": 1,
+          "title": "Start Line",
+          "type": "integer"
+        },
+        "end_line": {
+          "minimum": 1,
+          "title": "End Line",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_line",
+        "end_line"
+      ],
+      "title": "LineRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "evidence_id": {
+      "minLength": 1,
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "origin_kind": {
+      "enum": [
+        "github_file",
+        "github_diff",
+        "gist",
+        "inline"
+      ],
+      "title": "Origin Kind",
+      "type": "string"
+    },
+    "origin_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Origin Url"
+    },
+    "repo": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Repo"
+    },
+    "commit_sha": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Commit Sha"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "gist_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gist Id"
+    },
+    "gist_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gist Revision"
+    },
+    "origin_snapshot_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Origin Snapshot Id"
+    },
+    "locator": {
+      "minLength": 1,
+      "title": "Locator",
+      "type": "string"
+    },
+    "source_range": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LineRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "language": {
+      "default": "Solidity",
+      "minLength": 1,
+      "title": "Language",
+      "type": "string"
+    },
+    "raw_snippet": {
+      "minLength": 1,
+      "title": "Raw Snippet",
+      "type": "string"
+    },
+    "normalized_snippet": {
+      "title": "Normalized Snippet",
+      "type": "string"
+    },
+    "normalization_version": {
+      "minLength": 1,
+      "title": "Normalization Version",
+      "type": "string"
+    },
+    "extractor_version": {
+      "minLength": 1,
+      "title": "Extractor Version",
+      "type": "string"
+    },
+    "transformations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Transformations",
+      "type": "array"
+    },
+    "contract_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Contract Name"
+    },
+    "function_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Function Name"
+    },
+    "function_signature": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Function Signature"
+    },
+    "selector_4byte": {
+      "anyOf": [
+        {
+          "pattern": "^0x[0-9a-f]{8}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Selector 4Byte"
+    },
+    "solidity_pragma": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Solidity Pragma"
+    },
+    "syntax_status": {
+      "default": "not_checked",
+      "enum": [
+        "not_checked",
+        "parsed",
+        "invalid",
+        "insufficient_context"
+      ],
+      "title": "Syntax Status",
+      "type": "string"
+    },
+    "parser_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parser Version"
+    },
+    "diagnostics": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Diagnostics",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "origin_kind",
+    "locator",
+    "raw_snippet",
+    "normalized_snippet",
+    "normalization_version",
+    "extractor_version",
+    "created_at"
+  ],
+  "title": "CodeEvidence",
+  "type": "object"
+}

@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "revision_id": {
+      "minLength": 1,
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "previous_status": {
+      "minLength": 1,
+      "title": "Previous Status",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "needs_review",
+        "approved",
+        "rejected"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "reviewer": {
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "note": {
+      "minLength": 1,
+      "title": "Note",
+      "type": "string"
+    },
+    "reviewed_at": {
+      "format": "date-time",
+      "title": "Reviewed At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "revision_id",
+    "sequence",
+    "previous_status",
+    "status",
+    "reviewer",
+    "note",
+    "reviewed_at"
+  ],
+  "title": "KnowledgeReviewEvent",
+  "type": "object"
+}

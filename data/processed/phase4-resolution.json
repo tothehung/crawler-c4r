@@ -1,0 +1,275 @@
+{
+  "mode": "recorded_http_only",
+  "pipeline_version": "evidence-resolver-v1",
+  "scored_findings": 34,
+  "quarantined": [
+    "solodit-66925"
+  ],
+  "states": {
+    "partial": 32,
+    "succeeded": 2
+  },
+  "unique_evidence": 100,
+  "links": 154,
+  "resolution_status": {
+    "resolved": 101,
+    "retryable_error": 53
+  },
+  "error_codes": {
+    "fixture_missing": 53
+  },
+  "evidence_kinds": {
+    "inline": 77,
+    "github_file": 22,
+    "gist": 1
+  },
+  "syntax_status": {
+    "not_checked": 100
+  },
+  "cases": [
+    {
+      "case_id": "solodit-66924",
+      "processing_key": "prc_7d500ef36e6c1d55a391e250a959357796a9e831b952928104cd5b5f6017cffb",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66923",
+      "processing_key": "prc_b2d9c9b5f24b22c7077916f4e93d4442b2835871bd40e9c424497e49d91d5ae2",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66922",
+      "processing_key": "prc_e832f0d4905ad46bda689ec35ee45312ec46fbb87afa8d1c92e83724cc1fb978",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66921",
+      "processing_key": "prc_f13f85909241ed2de306b62b9364781303e8ae28e62c6302397282f55c46da29",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66920",
+      "processing_key": "prc_646d682fc78f0a6d6b2193e7e0068c50f6318c233819c8386e41994b86855a21",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66900",
+      "processing_key": "prc_5876aaae36aeb2033caa98ba49c24855d6897bbed9c8ac8c6be0862c0f0da275",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66899",
+      "processing_key": "prc_d258587cfc174ea39e412d2b6b5452649ef72aa79035e8c366cabd5dea7d233b",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66898",
+      "processing_key": "prc_468af4c95fc08621bfe8b481d67a7e81e6d0d938ffc67bc865ba4109c321541e",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66897",
+      "processing_key": "prc_03399c803d126668e4cab642d99f7e3953448183703a4431353d9e900b0c59c7",
+      "status": "partial",
+      "resolved": 4,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66896",
+      "processing_key": "prc_ab070c3df5cad4726f2511e37e9dd7fcc5e0fead3269a0a2f189fd088040c90a",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66895",
+      "processing_key": "prc_7ac17c6f60ad92a3def0455ed8df8f6070712ddc91b1d118092084f33d539421",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66894",
+      "processing_key": "prc_aa6110d21901b2fde50b6508224d9f71fe9ab1f77da19172b9372ca2f35cf18c",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66893",
+      "processing_key": "prc_8061bcdf5bf722d092c9d30f5076208b02df86b6afd41dfd6f2d65d1d96d199f",
+      "status": "partial",
+      "resolved": 1,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66892",
+      "processing_key": "prc_eb6767b04bf9d016434c2c15b4bd67a19654bf62b607fdb56eea2200987d2eee",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66891",
+      "processing_key": "prc_40800042f22965f963b981c44dc76a45a50dfadb948486a5acf34d585111987c",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66890",
+      "processing_key": "prc_02eac9ab0dbaa4eddb6f8d9b5ff88c545136b288c98d8b86d0cf7179a609acf1",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66889",
+      "processing_key": "prc_f0db869f71791f91d7ab78f029c7a922f5453d939ba2bab046a60d7c073f8dff",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66888",
+      "processing_key": "prc_ee7a47b1b27bd73dd8b7db8445b3aab301591258a056bbc76fadd97d1f89e547",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "solodit-66887",
+      "processing_key": "prc_b2dd984063914ff337b768c3a5f7f118cc0be734ee0992436db004bc668142ed",
+      "status": "partial",
+      "resolved": 0,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-04-caviar-h-01-royalty-receiver-can-drain-a-private-pool",
+      "processing_key": "prc_e5e62774ed3678af39f1fbe4f609db0090ba286d66e760a9e6b310bd85185dbb",
+      "status": "partial",
+      "resolved": 16,
+      "unresolved": 3
+    },
+    {
+      "case_id": "c4-2023-04-caviar-h-02-privatepool-owner-can-steal-all-erc20-and-nft-from-user-via-arbitrary-execution",
+      "processing_key": "prc_7d23ff9cea83be593b7ed3218567e298eb23b46fdeb167631eb4df2726f7a39f",
+      "status": "partial",
+      "resolved": 5,
+      "unresolved": 2
+    },
+    {
+      "case_id": "c4-2023-04-caviar-h-03-risk-of-silent-overflow-in-reserves-update",
+      "processing_key": "prc_86e2a4439b51088014186f868fd2f2d77c4a5f5c1904d62dec846acc9f96e209",
+      "status": "partial",
+      "resolved": 7,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-04-caviar-m-01-the-buy-functions-mechanism-enables-users-to-acquire-flash-loans-at-a-cheaper-fee-rate",
+      "processing_key": "prc_67c05f0dba02ed4f06ca948a7c4a5d7d4ff8b3775d75c9bd62547eadd9a2ebe5",
+      "status": "succeeded",
+      "resolved": 3,
+      "unresolved": 0
+    },
+    {
+      "case_id": "c4-2023-04-caviar-m-02-ethrouter-cant-perform-multiple-changes",
+      "processing_key": "prc_319c9b69944e964d55f3616a289eef27a9edde1b6efb415fcf86e2fc055b16ca",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-04-caviar-m-03-flash-loan-fee-is-incorrect-in-private-pool-contract",
+      "processing_key": "prc_692ff560b0ef227fc5bb82a55c23a0ee07f679fbe60e9ccbb4097883410bf89a",
+      "status": "partial",
+      "resolved": 5,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-04-caviar-m-04-changefeequote-will-fail-for-low-decimal-erc20-tokens",
+      "processing_key": "prc_975536dacb17f5f0cca7ddbc34e462f9ae08ca03979fc099ef8ba54a72ae99f7",
+      "status": "succeeded",
+      "resolved": 6,
+      "unresolved": 0
+    },
+    {
+      "case_id": "c4-2023-05-juicebox-m-01-delegate-architecture-forces-users-to-set-zero-slippage",
+      "processing_key": "prc_ddb8019eb8a8da7f51e638a3e5aa4ef93294ecadaa6174398607992336915f20",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 3
+    },
+    {
+      "case_id": "c4-2023-05-juicebox-m-02-low-liquidity-in-uniswap-v3-pool-can-lead-to-eth-lockup-in-jbxbuybackdelegate-contract",
+      "processing_key": "prc_1f7ba69275d1c50e4e005affbf2cb0b0084937cebf3802d96aeada054b18e337",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-05-juicebox-m-03-funding-cycles-that-use-jbxbuybackdelegate-as-a-redeem-data-source-or-any-derived-class-will-slash-all-redeemable-tokens",
+      "processing_key": "prc_12b5fe1b3e5885658dd0e266bc5fd8968bea71ff932be92106b48c71a5124dea",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-01-astaria-h-01-lientoken-lender-and-liquidator-can-collude-to-block-auction-and-seize-collateral",
+      "processing_key": "prc_8f7bb3b02dd06c824eece8dedf0a71c9f989c676ba361144b4fae54e843a051d",
+      "status": "partial",
+      "resolved": 7,
+      "unresolved": 1
+    },
+    {
+      "case_id": "c4-2023-01-astaria-h-02-erc4626cloned-deposit-and-mint-logic-differ-on-first-deposit",
+      "processing_key": "prc_d4b8706e06ec4313986f0b0c17f6908554523ba20268e52956684b3090e197dc",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 2
+    },
+    {
+      "case_id": "c4-2023-01-astaria-h-03-improper-validations-in-clearinghouse-possible-to-lock-collateral-nft-in-contract",
+      "processing_key": "prc_7e568dbbfef029bfc929afbac6f80ab62d40d6b8c4e19432dea700411a0dbbdd",
+      "status": "partial",
+      "resolved": 12,
+      "unresolved": 8
+    },
+    {
+      "case_id": "c4-2023-01-astaria-h-04-strategist-can-fail-to-withdraw-asset-token-from-a-private-vault",
+      "processing_key": "prc_029c523f2637b6181bf46ee0fe684b2a0eda2e5ee684b30932e5321b017a8df6",
+      "status": "partial",
+      "resolved": 4,
+      "unresolved": 3
+    },
+    {
+      "case_id": "c4-2023-01-astaria-h-05-vault-may-be-drained-after-a-liquidated-nft-was-claimed-by-the-liquidator",
+      "processing_key": "prc_c38c73cd9bae40792ed2ffed5f6fb372668bd573386085471448194f257af7f0",
+      "status": "partial",
+      "resolved": 3,
+      "unresolved": 7
+    }
+  ],
+  "limitations": [
+    "Missing recorded requests are fixture_missing, not real HTTP failures.",
+    "Candidate recall is assessed separately; this is not vulnerability accuracy.",
+    "Diff immutable metadata/source paths require synthetic coverage beyond the 7 recorded responses.",
+    "Engine syntax validation and role accuracy evaluation remain separate."
+  ]
+}

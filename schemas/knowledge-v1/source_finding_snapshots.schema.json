@@ -1,0 +1,176 @@
+{
+  "$defs": {
+    "Severity": {
+      "enum": [
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "INFORMATIONAL",
+        "GAS",
+        "UNKNOWN"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "Source": {
+      "enum": [
+        "solodit",
+        "code4rena"
+      ],
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "source_key": {
+      "minLength": 1,
+      "title": "Source Key",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "source_id": {
+      "minLength": 1,
+      "title": "Source Id",
+      "type": "string"
+    },
+    "legacy_finding_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Legacy Finding Id"
+    },
+    "canonical_finding_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Canonical Finding Id"
+    },
+    "source_url": {
+      "minLength": 1,
+      "title": "Source Url",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "content": {
+      "title": "Content",
+      "type": "string"
+    },
+    "severity_original": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Severity Original"
+    },
+    "severity": {
+      "$ref": "#/$defs/Severity",
+      "default": "UNKNOWN"
+    },
+    "source_quality_score": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Quality Score"
+    },
+    "source_quality_scale": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Quality Scale"
+    },
+    "payload_kind": {
+      "enum": [
+        "api_json",
+        "report_html",
+        "legacy_normalized_json"
+      ],
+      "title": "Payload Kind",
+      "type": "string"
+    },
+    "raw_payload": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Raw Payload"
+    },
+    "raw_payload_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Raw Payload Hash",
+      "type": "string"
+    },
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "source_key",
+    "source",
+    "source_id",
+    "source_url",
+    "title",
+    "content",
+    "payload_kind",
+    "raw_payload",
+    "raw_payload_hash",
+    "captured_at"
+  ],
+  "title": "SourceFindingSnapshot",
+  "type": "object"
+}

@@ -1,0 +1,5 @@
+{
+  "contract_version": "1.0",
+  "resolver_mode": "explicit_manifest",
+  "normalization_version": "identity-v1"
+}

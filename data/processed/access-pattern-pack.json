@@ -1,0 +1,238 @@
+{
+  "local_source_hashes": {
+    "executions": "124e628a31398fc9776b61174763eb74c0d465fb07f1311975a0bb0d264d266e",
+    "fragment": "5713a6b92c1e760880864ae08fcb8406279e6ab5e66d0e9ab1465a5b70bb140f",
+    "guarded": "fdfd6c6c88b63bee35ddb326c0fc077bafda3ecf63c0f2ba0b574ddbef812d64",
+    "historical_code": "5f644f4b69d19c3843bbde4cf4c566f4f0a733737030a9d63789ba652a0f7e7e",
+    "historical_report": "c8f8ecf8fb7d5ca662d5fdd6c8581c33c2ffb9173dd1b334d18839ff0bf9b683",
+    "unsafe": "ce008c3d8a7979093394d5dbc68d7e733e9d49a23f483a4dce202b30aa3ade89"
+  },
+  "note": "Technical consistency checked; remains needs_review. No database import or original-protocol PoC.",
+  "pattern": {
+    "cases": [
+      {
+        "case_id": "unsafe",
+        "contract": "UnsafeFeeConfig",
+        "expected_verdict": "confirmed",
+        "missing_context": [],
+        "reason": "An outsider changes configuration contrary to the deployer-only policy."
+      },
+      {
+        "case_id": "guarded",
+        "contract": "GuardedFeeConfig",
+        "expected_verdict": "false_positive_for_this_pattern",
+        "missing_context": [],
+        "reason": "The only setter checks the immutable owner; owner calls succeed and outsider calls revert without state change."
+      },
+      {
+        "case_id": "fragment",
+        "contract": null,
+        "expected_verdict": "insufficient_context",
+        "missing_context": [
+          "all callers and entry points",
+          "authorization policy",
+          "state declarations",
+          "role initialization and lifecycle"
+        ],
+        "reason": "Authorization may be enforced by callers; the isolated internal write cannot decide this."
+      }
+    ],
+    "historical_reference": {
+      "citations": [
+        {
+          "end_line": 11,
+          "source": "historical_report",
+          "start_line": 11
+        },
+        {
+          "end_line": 55,
+          "source": "historical_report",
+          "start_line": 55
+        },
+        {
+          "end_line": 222,
+          "source": "historical_code",
+          "start_line": 216
+        }
+      ],
+      "database_binding": null,
+      "manifest": "tests/fixtures/patterns/missing-access-control/source/manifest.json",
+      "manifest_sha256": "c4c6a6426699428a00989e93dac4834160129b3edf8e46ced4632edca1946540",
+      "relation": "Analogous missing authorization on a privileged state setter; historical code changes pool activation, not feeRecipient.",
+      "source_url": "https://github.com/sherlock-audit/2023-09-Gitcoin-judging/issues/458",
+      "storage_status": "supplementary_source_only"
+    },
+    "knowledge": {
+      "detection_signals": [
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "fragment",
+            "language_spec"
+          ],
+          "text": "Trace public/external entry points to writes of protected state, including internal functions and inherited code. Identify the intended principal and inspect effective checks on every relevant path, rather than matching modifier names."
+        }
+      ],
+      "exploit_conditions": [
+        {
+          "basis": [
+            "unsafe",
+            "executions"
+          ],
+          "text": "In the unsafe fixture a non-owner supplies a valid nonzero recipient, calls setFeeRecipient directly and changes state. No stolen key or owner cooperation is needed in this fixture."
+        }
+      ],
+      "impact": [
+        {
+          "basis": [
+            "unsafe",
+            "executions"
+          ],
+          "text": "Tests establish unauthorized configuration changes only. They contain no payout function and do not demonstrate diverted fees, financial loss or a severity level. Downstream consumers must be examined separately."
+        }
+      ],
+      "limitations": [
+        {
+          "basis": [
+            "guarded",
+            "fragment",
+            "language_spec"
+          ],
+          "text": "Caller checks, inherited modifiers, role checks or a genuinely permissionless specification can exclude this pattern. Public visibility or a missing modifier name alone does not confirm a bug."
+        },
+        {
+          "basis": [
+            "fragment",
+            "executions"
+          ],
+          "text": "The isolated internal fragment does not establish all callers, storage declarations or the authorization policy. Two hypothetical completions demonstrate opposite outcomes; neither is asserted to be its real original context."
+        },
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "executions"
+          ],
+          "text": "Fixture results do not reproduce the historical protocol attack or establish whole-contract security. Deployment, proxy initialization, delegated execution, role lifecycle and meta-transaction sender handling need separate analysis."
+        },
+        {
+          "basis": [
+            "historical_report"
+          ],
+          "text": "The historical source is stored as a separate captured reference. It is not inserted into the 34-finding corpus or existing SourceFindingSnapshot tables; their source enum currently supports Solodit and Code4rena only."
+        }
+      ],
+      "observed_behavior": [
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "executions"
+          ],
+          "text": "Two distinct outsiders successfully change feeRecipient on the unsafe paths. Guarded paths reject outsider transactions for unauthorized access and preserve state; owner updates succeed."
+        }
+      ],
+      "preconditions": [
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "language_spec"
+          ],
+          "text": "A specification requires restricted writes; an unprivileged actor can reach the write after deployment. Being public/external or lacking a named onlyOwner modifier is insufficient evidence by itself."
+        }
+      ],
+      "remediation": [
+        {
+          "basis": [
+            "guarded",
+            "language_spec",
+            "executions"
+          ],
+          "text": "Enforce the intended owner or role before the write on every reachable path. The fixture uses an immutable deployer owner and msg.sender equality; test authorized calls as well as rejected outsiders so the repair does not disable the feature."
+        }
+      ],
+      "root_cause": [
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "executions"
+          ],
+          "text": "A reachable external setter changes privileged configuration without validating the caller's authority. Input validity checks such as a nonzero recipient do not establish authorization."
+        },
+        {
+          "basis": [
+            "historical_report",
+            "historical_code"
+          ],
+          "text": "The historical Sherlock report describes missing pool-manager authorization on setPoolActive; this motivates the general mechanism, not a fee-recipient finding in that protocol."
+        }
+      ]
+    },
+    "pattern_id": "SOL-MISSING-ACCESS-CONTROL-001",
+    "review_status": "needs_review",
+    "rule_ids": [],
+    "schema_version": "1.0",
+    "scope": "Synthetic feeRecipient setter: only the deployer is authorized to modify configuration after deployment. Proxy initialization, ownership transfer, meta-transactions and financial impact are outside the pilot.",
+    "scope_exclusions": [
+      "embedding",
+      "rule generation",
+      "LLM integration",
+      "automatic approval",
+      "original protocol PoC reproduction"
+    ],
+    "sources": {
+      "executions": "data/processed/access-pattern-validation.json",
+      "fragment": "tests/fixtures/patterns/missing-access-control/UnknownFragment.sol",
+      "guarded": "tests/fixtures/patterns/missing-access-control/GuardedFeeConfig.sol",
+      "historical_code": "tests/fixtures/patterns/missing-access-control/source/RFPSimpleStrategy.sol",
+      "historical_report": "tests/fixtures/patterns/missing-access-control/source/report.md",
+      "language_spec": "https://docs.soliditylang.org/en/v0.8.24/common-patterns.html#restricting-access",
+      "unsafe": "tests/fixtures/patterns/missing-access-control/UnsafeFeeConfig.sol"
+    },
+    "title": "Unauthorized updates to privileged configuration after deployment",
+    "version": 1
+  },
+  "pattern_sha256": "8390312a36d5ce47937ec5e8c04b21648d0a055afda7811a9eaae833e207ac32",
+  "schema_version": "1.0",
+  "source_binding": {
+    "citations": [
+      {
+        "end_line": 11,
+        "quote": "The comment on line 217 in RFPSimpleStrategy.sol says that `'msg.sender' must be a pool manager` in order to be able to call `RFPSimpleStrategy.setPoolActive()`. However, the necessary `onlyPoolManager(msg.sender)` modifier is missing.",
+        "source": "historical_report",
+        "source_sha256": "c8f8ecf8fb7d5ca662d5fdd6c8581c33c2ffb9173dd1b334d18839ff0bf9b683",
+        "start_line": 11
+      },
+      {
+        "end_line": 55,
+        "quote": "Consider adding the missing access modifier `onlyPoolManager(msg.sender)` to `RFPSimpleStrategy.setPoolActive()`.",
+        "source": "historical_report",
+        "source_sha256": "c8f8ecf8fb7d5ca662d5fdd6c8581c33c2ffb9173dd1b334d18839ff0bf9b683",
+        "start_line": 55
+      },
+      {
+        "end_line": 222,
+        "quote": "    /// @notice Toggle the status between active and inactive.\n    /// @dev 'msg.sender' must be a pool manager to close the pool. Emits a 'PoolActive()' event.\n    /// @param _flag The flag to set the pool to active or inactive\n    function setPoolActive(bool _flag) external {\n        _setPoolActive(_flag);\n        emit PoolActive(_flag);\n    }",
+        "source": "historical_code",
+        "source_sha256": "5f644f4b69d19c3843bbde4cf4c566f4f0a733737030a9d63789ba652a0f7e7e",
+        "start_line": 216
+      }
+    ],
+    "code_url": "https://github.com/sherlock-audit/2023-09-Gitcoin/blob/6430c8004017e96ae2f5aac365bdefd0b6eeea72/allo-v2/contracts/strategies/rfp-simple/RFPSimpleStrategy.sol",
+    "commit_sha": "6430c8004017e96ae2f5aac365bdefd0b6eeea72",
+    "database_binding": null,
+    "source_snapshot_id": "external_sha256:42ddc0c7d1077e09e944db510b838e023f7d2024575c81284db50dd607c2a33c",
+    "source_url": "https://github.com/sherlock-audit/2023-09-Gitcoin-judging/issues/458",
+    "storage_status": "supplementary_source_only"
+  },
+  "status": "validated_candidate",
+  "validation": {
+    "checks": 24,
+    "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+    "report": "data/processed/access-pattern-validation.json",
+    "sha256": "124e628a31398fc9776b61174763eb74c0d465fb07f1311975a0bb0d264d266e"
+  }
+}

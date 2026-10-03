@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "Source": {
+      "enum": [
+        "solodit",
+        "code4rena"
+      ],
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "membership_id": {
+      "minLength": 1,
+      "title": "Membership Id",
+      "type": "string"
+    },
+    "group_id": {
+      "minLength": 1,
+      "title": "Group Id",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "source_key": {
+      "minLength": 1,
+      "title": "Source Key",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "method": {
+      "enum": [
+        "source_identity",
+        "finding_url",
+        "content_exact",
+        "title_exact"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "confirmed",
+        "candidate"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "normalized_key": {
+      "minLength": 1,
+      "title": "Normalized Key",
+      "type": "string"
+    },
+    "dedup_version": {
+      "minLength": 1,
+      "title": "Dedup Version",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "membership_id",
+    "group_id",
+    "snapshot_id",
+    "source_key",
+    "source",
+    "method",
+    "decision",
+    "normalized_key",
+    "dedup_version",
+    "created_at"
+  ],
+  "title": "FindingMembership",
+  "type": "object"
+}

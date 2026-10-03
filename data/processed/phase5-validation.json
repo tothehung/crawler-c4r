@@ -1,0 +1,2633 @@
+{
+  "parser_version": "solast-go@v0.1.4/strict-evidence-v1/binary-sha256:1aa47c9b4143303993f238a359ef5f9cf5e883dc7409fc57b0fa10d8e00549d6",
+  "next_after": "evd_fc1ff9e928f763c7c6466f1c5c7efcb3f03d31ac041906963952c82b351ad111",
+  "validated": 100,
+  "skipped": 0,
+  "errors": 0,
+  "results": [
+    {
+      "evidence_id": "evd_0111dafc19ed8a08dba48c832bcbea80afae596df0b41f9ce8749b90f0d98779",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_0111dafc19ed8a08dba48c832bcbea80afae596df0b41f9ce8749b90f0d98779",
+        "input_sha256": "7a6349be808c0f9e47bc42cdf4e2242b9d5ff654e4547d1f92e6a1f1efd04bcd",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_04051c4886aab1a2381c6918fa97d6599bc408a57a4c89451229ad6842dc63e0",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_04051c4886aab1a2381c6918fa97d6599bc408a57a4c89451229ad6842dc63e0",
+        "input_sha256": "7de3cb9d2809c83bbd49d9a67c79f18a0a32a017d92525966da2bc5d656f352a",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 2,
+            "column": 12
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_0600910f6b8898c653d629bf3c20a1cd63eeb027cec94de1f26e1d79cc6f50c7",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_0600910f6b8898c653d629bf3c20a1cd63eeb027cec94de1f26e1d79cc6f50c7",
+        "input_sha256": "a65fdb3c91f73a7668a5fed1006a515472610eaab4a63100171954724b081c01",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: (",
+            "snippet_line": 3,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_099915ea186e015be73fe96c9c72a50c3731071af980e4b7bf1d88a9fda21443",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_099915ea186e015be73fe96c9c72a50c3731071af980e4b7bf1d88a9fda21443",
+        "input_sha256": "67163228c2b92c17310125cf063643fc77d35bd137506bd24cf92de7fd238553",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '='",
+            "snippet_line": 1,
+            "column": 26
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_0b024b79db5030f2246bcfaf69297ae723eaee37c7c356860081efc52caa638c",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_0b024b79db5030f2246bcfaf69297ae723eaee37c7c356860081efc52caa638c",
+        "input_sha256": "ba6d2d14c2ee91075a410c74a0501722bd851dd6e0ab9561bb5ff38adec2557e",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '139'",
+            "snippet_line": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_0d0fcc6e7f5aa87d424d21aefd979fa0a281df7c2ed8078d03518d78a4f06f0a",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_0d0fcc6e7f5aa87d424d21aefd979fa0a281df7c2ed8078d03518d78a4f06f0a",
+        "input_sha256": "dab02d44e4f3a503a84b289e01631f851bd5b5ad3c19d86298af4b4790c6b1ff",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: #",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_0f734a7b181bf51d09f3499bf363069841622bb427dc390234e3cf9719a7cd8f",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_0f734a7b181bf51d09f3499bf363069841622bb427dc390234e3cf9719a7cd8f",
+        "input_sha256": "c07401c79cc82b3bd52912799778b637a3777dee07473e901075cc32b4b393ed",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_1585eab4956dce2437fe92cfbadb0044e5657b736c08125c816425754f2264d9",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_1585eab4956dce2437fe92cfbadb0044e5657b736c08125c816425754f2264d9",
+        "input_sha256": "c4ea0bf82f296b556e49e3292c127fde270500741255c2ef4e209af59d5b98e7",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_18f27fa6c31ed5f5d861f9892db759c3a8537d2ab7fc6cebac075039af24b8b1",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_18f27fa6c31ed5f5d861f9892db759c3a8537d2ab7fc6cebac075039af24b8b1",
+        "input_sha256": "86fda65cbb1c7848891cc953d0591b24da8d0dc617a8d9e4149c43f05f2b9a23",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: #",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_1b62db639ea6740c31aabad3d07b71a4e4321e5ada8ce292d0a0e8dd8802e7d3",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_1b62db639ea6740c31aabad3d07b71a4e4321e5ada8ce292d0a0e8dd8802e7d3",
+        "input_sha256": "43ae1046077e7ab202d284a44d013b62869e48fdd3feb992fcea235f47c124df",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: try",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_1bbd99698e8c2c97eaa0173faf9fad3408647c07d6ba841a93a077ff191cbb22",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_1bbd99698e8c2c97eaa0173faf9fad3408647c07d6ba841a93a077ff191cbb22",
+        "input_sha256": "1d81d069fce06bb220029c410b9bcd7747696eb2ced83885ce6652cfbc00129e",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '504'",
+            "snippet_line": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_1e6336dc92d5af9673844dfeb8020e74bfca23a29964b07ecb5621e7ff1d49ed",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_1e6336dc92d5af9673844dfeb8020e74bfca23a29964b07ecb5621e7ff1d49ed",
+        "input_sha256": "9a2a9e6ff2f0e820b2cf28018638579efdb9061b8ac442bb702b9d6af1936b81",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '='",
+            "snippet_line": 1,
+            "column": 18
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_20a4fdae4a2072a426c81dd508a3f5b1a3d59be1f68c1b9cfed3ddeff512cf85",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_20a4fdae4a2072a426c81dd508a3f5b1a3d59be1f68c1b9cfed3ddeff512cf85",
+        "input_sha256": "1616455fdb2d0e110c48163b7d94a75f5ccac27f5b712d3c925de3e6f5042cb2",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 94",
+            "snippet_line": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_21c079c19a496addcded0d4dee6ad4093c45b9354576d936028a6e8cd2ef01b9",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_21c079c19a496addcded0d4dee6ad4093c45b9354576d936028a6e8cd2ef01b9",
+        "input_sha256": "6a64a6a603ba3417980b4d9cb526a97d02ad505c177056ac5e05fdd4af961eb5",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got 'storage'",
+            "snippet_line": 3,
+            "column": 25
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_22576cd610f46043781899d1188201600495859fd7dcc949f7e99ade2aaa1d21",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_22576cd610f46043781899d1188201600495859fd7dcc949f7e99ade2aaa1d21",
+        "input_sha256": "8b77de83f251121452862db2e839eaa3248de00b4dbc118bcbb22e18d8a486cd",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: --",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_22e58f40dbb2022c0ef8269c85a83d08b81ee8866e3ec5269add84f003753752",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_22e58f40dbb2022c0ef8269c85a83d08b81ee8866e3ec5269add84f003753752",
+        "input_sha256": "01fd33b56aa093cc9728a864e29d79b1eda145eda43341c6673b16b9d003b367",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got ':'",
+            "snippet_line": 1,
+            "column": 4
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_25246816afd6dfa4a85c0dd65869a77e62effe6616268e7f7e0306237a273ba8",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_25246816afd6dfa4a85c0dd65869a77e62effe6616268e7f7e0306237a273ba8",
+        "input_sha256": "7d0461570ac640b1de561928a5bf94f6078b17c5a678bf01a0e645e42aae4fe8",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected ';', got 'memory'",
+            "snippet_line": 18,
+            "column": 23
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_2603beb8a58d9daac03bc865362bb22c47e2acdd0ee82b71e331ea9504a24ad8",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_2603beb8a58d9daac03bc865362bb22c47e2acdd0ee82b71e331ea9504a24ad8",
+        "input_sha256": "179a363b0309ddab1d6b00651062ffe503f6d2cb35c04b43a014fc0411c9ccb2",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected expression",
+            "snippet_line": 13,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_2679e6807f4a9cd3555fb443ba5b50c3fbd0c19a98de82b67ce17a68a258ebcd",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_2679e6807f4a9cd3555fb443ba5b50c3fbd0c19a98de82b67ce17a68a258ebcd",
+        "input_sha256": "7246b52355ab3e10c13cf523dd7f11effab44bd5de9d99efdae84015fb215ad6",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 1,
+            "column": 9
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_26debfbbcb179fd40f017e0f7266368f0198da9453c6c3f6e9bbf459d1a17da8",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_26debfbbcb179fd40f017e0f7266368f0198da9453c6c3f6e9bbf459d1a17da8",
+        "input_sha256": "d669bbd05f6d54e0454bc00e8aa084dd5a1ea9c6a6060d4f0b8df385091052ab",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_271717a40600c576c0bcdebbb6fd1822e13fe73b570c15cb7146325f0d7b83cc",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_271717a40600c576c0bcdebbb6fd1822e13fe73b570c15cb7146325f0d7b83cc",
+        "input_sha256": "de2e9c4c6d00013e0b2c05a112e7cd513cb3b7f6bf9252ef9cce689c99a83021",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 731",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_27b8ae91e384f3e69a60ffdfe49cc99e7c62ffac4d45a8024352509f84a117a3",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_27b8ae91e384f3e69a60ffdfe49cc99e7c62ffac4d45a8024352509f84a117a3",
+        "input_sha256": "e9ca1559aa9df46182d0340ddb4c08b3bd80d48050031eeb955ce5eb30c6d2fa",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_2a75edb8ab5a79963b74d9fc88f03b157a4ff24ce4dc369c62b5b265d5c6a9d2",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_2a75edb8ab5a79963b74d9fc88f03b157a4ff24ce4dc369c62b5b265d5c6a9d2",
+        "input_sha256": "323000e4084dd26f6fd80edd7a4681f12e1ad81f4eb4267c61478d69914d4401",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected ';', got ','",
+            "snippet_line": 1,
+            "column": 24
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_2e34c8d62290c6b1e30be1b8527be972f890b16ee8f4a5c70fefb54443f92a54",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_2e34c8d62290c6b1e30be1b8527be972f890b16ee8f4a5c70fefb54443f92a54",
+        "input_sha256": "16855cedea8cdd7ee988e06f611e1134b31b2c4a1ee63f64884a5be26a8d8926",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: .",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_2ef2e3305dc8a6d4ac22c2b37422fe8717c73815f4a99d8c5f3b5b3e3733280c",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_2ef2e3305dc8a6d4ac22c2b37422fe8717c73815f4a99d8c5f3b5b3e3733280c",
+        "input_sha256": "efbe2dc0de99ecef08f6afba793bdc200e158fad2c216760934d5eba0f035b7f",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 87",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_30f6910af4549395674c5976dce2280d7a7855bcbb8562432c437cad162753a6",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_30f6910af4549395674c5976dce2280d7a7855bcbb8562432c437cad162753a6",
+        "input_sha256": "0b1aebc9270db793874161f76b890f616b2fbaea8d3092698609e03a987d4af0",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '/'",
+            "snippet_line": 1,
+            "column": 7
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_34e2eac68c31ab373bca4407aa18119faec73ffb6c1cdd75f3ca03db04e77b77",
+      "action": "validated",
+      "syntax_status": "invalid",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_34e2eac68c31ab373bca4407aa18119faec73ffb6c1cdd75f3ca03db04e77b77",
+        "input_sha256": "02a32326f4976dc9cb3d9afa9c8904a99b13ac0bbba7286244d49f950ab69e00",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "invalid",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected ';', got 'memory'",
+            "snippet_line": 209,
+            "column": 25
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_3ba313e1b49a252789308cf26eff5ed176b7b93434357a20a67b857339d8dc52",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_3ba313e1b49a252789308cf26eff5ed176b7b93434357a20a67b857339d8dc52",
+        "input_sha256": "5774077d2f76448562b9fc6bdef972b915045bd8be6876aaaa6e8e099dae3cc5",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got 'storage'",
+            "snippet_line": 2,
+            "column": 25
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_3c2fad35a0f116da3a96a803e24d7d4a587c855be96a0fcf4b9a4ef051590b83",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_3c2fad35a0f116da3a96a803e24d7d4a587c855be96a0fcf4b9a4ef051590b83",
+        "input_sha256": "060d4816dd63d44cc331006c4f330b9d6b88c6ad921797decfcaae1e5c8c678d",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: #",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_3d373c40ef3adaf3e49e64ce46c574929b3f415fca4c8276e736ee683b1b28c1",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_3d373c40ef3adaf3e49e64ce46c574929b3f415fca4c8276e736ee683b1b28c1",
+        "input_sha256": "eb0868072e3fee7f7dc596b5c959c0aa1903b8c8e835a74216fe2dae032d3c38",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_4b9f7884456ee7d1b192ded5568e9d65bdaf0077791b259cae27caf6036b9c20",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_4b9f7884456ee7d1b192ded5568e9d65bdaf0077791b259cae27caf6036b9c20",
+        "input_sha256": "123b9735827943215c4bc8c7bc61754824dbe719836bf541e1aece68d050c409",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '+='",
+            "snippet_line": 4,
+            "column": 33
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_4efadabcc6dd79b0a7cf01d906698aebcb13a3379d5930d9c35e929aff14d66a",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_4efadabcc6dd79b0a7cf01d906698aebcb13a3379d5930d9c35e929aff14d66a",
+        "input_sha256": "6c3192ad705463b2949a06fc92de377a89b8e8e7ae2c92613383551da8fad881",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: }",
+            "snippet_line": 5,
+            "column": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_50586af99d2c19680ecd9b9c179d54b010beb5d2af4804c362efb71888fac255",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_50586af99d2c19680ecd9b9c179d54b010beb5d2af4804c362efb71888fac255",
+        "input_sha256": "3a946fd0f4a290e6167aea919106c8d5af8f2251eeba7c50bcf1aca62ea690c5",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_51ba871464bef8d8f48a1a61eb7a1bf94bd9a03fed48d16f7d51bb7e46c2cca2",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_51ba871464bef8d8f48a1a61eb7a1bf94bd9a03fed48d16f7d51bb7e46c2cca2",
+        "input_sha256": "90ffeb9085fbe464f0bcceb1c985b43cde5f29d837c08b8479e546fe7abe2b2f",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: return",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_52686b768fa1de97b81eb8a885b19d500f8c9681f2d7ca5b93fab47c04aff704",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_52686b768fa1de97b81eb8a885b19d500f8c9681f2d7ca5b93fab47c04aff704",
+        "input_sha256": "1dc09250e35ddbf3f2afd4c3994f01de97d8d9404a1b939eb5853fbf2cd1d2a2",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 3,
+            "column": 12
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_559fdfe0fdf9c7fc8fbcb7830e84765f7d83d69dd02642859752d60fbfaaa751",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_559fdfe0fdf9c7fc8fbcb7830e84765f7d83d69dd02642859752d60fbfaaa751",
+        "input_sha256": "5ee761b8ce0e128e6d4810807b1f31647c1a02c8efae26077394dec6a4a07d27",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_55d6a4a5def9f7dfc367ac31bd9e0671dba275ed6541eb1c41dd315193e694cf",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_55d6a4a5def9f7dfc367ac31bd9e0671dba275ed6541eb1c41dd315193e694cf",
+        "input_sha256": "23a994799ad6084f76df2597b5b96ffefc6f2f2ab1f6f3e145f5dda5acc89e3b",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 1,
+            "column": 16
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_57f1b1c3dcd0a6d389ca7eb5b729240b91a0131d1cea995e601656c5eaffab05",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_57f1b1c3dcd0a6d389ca7eb5b729240b91a0131d1cea995e601656c5eaffab05",
+        "input_sha256": "3915cf923be37edd5d090924f21d445b81022f5ceae37440afc236138c87b706",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_5886593a78d6b0f91933c72a0d700fecd9936b2e2db1909096db3037c8f68215",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_5886593a78d6b0f91933c72a0d700fecd9936b2e2db1909096db3037c8f68215",
+        "input_sha256": "2bf05d6ed87e4e5ff0e3b99f4631e1a45b10aef6678808ea670e0882cf1889f5",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_59b0b104974e116b87a4423164f1ae1a4d37c6f6a565068e0ce7ab4cb9033597",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_59b0b104974e116b87a4423164f1ae1a4d37c6f6a565068e0ce7ab4cb9033597",
+        "input_sha256": "293681fde74e311029875e0f8fd5aff60f772ffc4cab203e4a427a8ef6a94ee4",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [
+          "MockERC20",
+          "TestERC4626",
+          "AuditTest"
+        ],
+        "functions": [
+          {
+            "contract_name": "MockERC20",
+            "function_name": "mint",
+            "function_signature": "mint(address,uint256)",
+            "selector_4byte": "0x40c10f19",
+            "snippet_start_line": 2,
+            "snippet_end_line": 4
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "constructor",
+            "snippet_start_line": 10,
+            "snippet_end_line": 12
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "asset",
+            "function_signature": "asset()",
+            "selector_4byte": "0x38d52e0f",
+            "snippet_start_line": 14,
+            "snippet_end_line": 16
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "minDepositAmount",
+            "function_signature": "minDepositAmount()",
+            "selector_4byte": "0x645006ca",
+            "snippet_start_line": 18,
+            "snippet_end_line": 20
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "totalAssets",
+            "function_signature": "totalAssets()",
+            "selector_4byte": "0x01e1d114",
+            "snippet_start_line": 22,
+            "snippet_end_line": 24
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "symbol",
+            "function_signature": "symbol()",
+            "selector_4byte": "0x95d89b41",
+            "snippet_start_line": 26,
+            "snippet_end_line": 28
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "name",
+            "function_signature": "name()",
+            "selector_4byte": "0x06fdde03",
+            "snippet_start_line": 29,
+            "snippet_end_line": 31
+          },
+          {
+            "contract_name": "TestERC4626",
+            "function_name": "decimals",
+            "function_signature": "decimals()",
+            "selector_4byte": "0x313ce567",
+            "snippet_start_line": 33,
+            "snippet_end_line": 35
+          },
+          {
+            "contract_name": "AuditTest",
+            "function_name": "test_ERC4626Cloned_DepositMintDiscrepancy",
+            "function_signature": "test_ERC4626Cloned_DepositMintDiscrepancy()",
+            "selector_4byte": "0x2e4a5f57",
+            "snippet_start_line": 39,
+            "snippet_end_line": 59
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_5adaea30d1080a5bdca4af95a6b30f479c497b2af70cac20125f9c672b67b141",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_5adaea30d1080a5bdca4af95a6b30f479c497b2af70cac20125f9c672b67b141",
+        "input_sha256": "ba519ee49ed6e52d2d71793f51e6f37aa9448813154f97ac7905b61df6f4fadc",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 1,
+            "column": 38
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_5f2ad0639442988459fafad4e94615008ca1345b05fc2c9be1cc7450603844f3",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_5f2ad0639442988459fafad4e94615008ca1345b05fc2c9be1cc7450603844f3",
+        "input_sha256": "a7f62462b49a1773a5ddb020d23e2087cedd9a9f7d5898a590ab2f8b35ed211e",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_64a4b602053a2d44a5ad0d5818e52f3232c10128ab434fdac46fa1cb1584998b",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_64a4b602053a2d44a5ad0d5818e52f3232c10128ab434fdac46fa1cb1584998b",
+        "input_sha256": "d315df3921f83cd66aab4abd08b5811f5abf014b9f1892ba2edd36e15a7497f1",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 1,
+            "column": 4
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_6ac86fe59ee3763538d5ac49651a4bcd2de771ab89938fc2599b105da10c687e",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_6ac86fe59ee3763538d5ac49651a4bcd2de771ab89938fc2599b105da10c687e",
+        "input_sha256": "ee8cd01c3e9af4a5034d722c43065da6758c48baf39e3a25e2307c92bc083eaa",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [
+          "MyToken"
+        ],
+        "functions": [
+          {
+            "contract_name": "MyToken",
+            "function_name": "constructor",
+            "snippet_start_line": 2,
+            "snippet_end_line": 2
+          },
+          {
+            "contract_name": "MyToken",
+            "function_name": "mint",
+            "function_signature": "mint(address,uint256)",
+            "selector_4byte": "0x40c10f19",
+            "snippet_start_line": 4,
+            "snippet_end_line": 6
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_71c39415b4a60a843a6330fc619996ed7e8d121669288bd3fe75d18372235045",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_71c39415b4a60a843a6330fc619996ed7e8d121669288bd3fe75d18372235045",
+        "input_sha256": "3c2c3b555f44c1118bdfbba60c614d604ec478a1c8293b5ed1bb8d3f9f42a5cb",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 0",
+            "snippet_line": 1,
+            "column": 6
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_72a2b243168ac02802eb87b3583b3f2fadf1eb3275d43b8edc576a597be6723e",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_72a2b243168ac02802eb87b3583b3f2fadf1eb3275d43b8edc576a597be6723e",
+        "input_sha256": "dc9eaf68eeff848444208effc92c79ef5a0c7baafb38bbbfbd98b528498ba04f",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_73db3690f98fab946358e2379c877a46bc16e7e6a159bb677b5eaceccfaa365c",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_73db3690f98fab946358e2379c877a46bc16e7e6a159bb677b5eaceccfaa365c",
+        "input_sha256": "944a8748ae98a97d131e434c65d71d3d15963600a4ed8665c1d58a11a0e8c840",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 2,
+            "column": 12
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_7ab7df869dfeb30f81793f742d5666b874c7d6f0e6ef600447444af46e71ebd1",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_7ab7df869dfeb30f81793f742d5666b874c7d6f0e6ef600447444af46e71ebd1",
+        "input_sha256": "476a453a8c4239b41c048ae0e8f0b1f231e768511d4edbdcb3e6cb6e81223995",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 2,
+            "column": 12
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_7aed0c060035659192736bf679ca1d0544b9360e8e2f609adf99c9b82a1f14db",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_7aed0c060035659192736bf679ca1d0544b9360e8e2f609adf99c9b82a1f14db",
+        "input_sha256": "7603ced63e31092f92f27eb2478984fcdc89ed11d5c1f42b373bfe73d495a1fb",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected '}', got ''",
+            "snippet_line": 22
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_7b712e074201abc938d56a71a7b010930c7fdbd869fd9e4fcf0094ff486c90aa",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_7b712e074201abc938d56a71a7b010930c7fdbd869fd9e4fcf0094ff486c90aa",
+        "input_sha256": "725a05a6f37a477d889e945ae081713c45c21b3406dda11b4247f7d562d2052d",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: .",
+            "snippet_line": 3
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_7f3902f04a0b9e58c71d82aa78be65a57bb60d17989e4e662a229deadf00f788",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_7f3902f04a0b9e58c71d82aa78be65a57bb60d17989e4e662a229deadf00f788",
+        "input_sha256": "c330e41563e444c0a720e54d8ce656474f0afb2c3e1b92ae2f0507c6b34ed3e0",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [
+          "HighDecimalsToken"
+        ],
+        "functions": [
+          {
+            "contract_name": "HighDecimalsToken",
+            "function_name": "constructor",
+            "snippet_start_line": 2,
+            "snippet_end_line": 2
+          }
+        ],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_81d206514e00c301babdc993e9a354288628ca80d55dbc75bdb1a148c5577a05",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_81d206514e00c301babdc993e9a354288628ca80d55dbc75bdb1a148c5577a05",
+        "input_sha256": "36905942f076c10473acaaa0b1d0a218c56126ed063ce81db80588c7a406a71b",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 7,
+            "column": 11
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_891b954466880df3dc0002d7ade4a35e56f3bc98de7caf3c1dac8d2a87753d43",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_891b954466880df3dc0002d7ade4a35e56f3bc98de7caf3c1dac8d2a87753d43",
+        "input_sha256": "2628cf163542775ddb9aee0a47b801f38790d38308fa77ae2eba9fa16bef75da",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_9338814a435bec1b996f9871c93cdee172eb8e2f750cae239709586c846faafb",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_9338814a435bec1b996f9871c93cdee172eb8e2f750cae239709586c846faafb",
+        "input_sha256": "b38cb5577ce2a64efdfd1c9e4f42bf88230be6b0d2dd8a49b99ca2aa1c57dedf",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: .",
+            "snippet_line": 1,
+            "column": 6
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_958eed545b539dfe74d1a3bfbe03992695519ec88dc23c9f6297dc047a8acb2f",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_958eed545b539dfe74d1a3bfbe03992695519ec88dc23c9f6297dc047a8acb2f",
+        "input_sha256": "a1c95c45b27762c732b2df1bcdcc668aa6147f28dca708b59c070516e3fe5770",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 2,
+            "column": 20
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_95ddfc94382dc7be657b26c78bd56428c2b55115ecad2d8c3e03f0e340f4a65c",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_95ddfc94382dc7be657b26c78bd56428c2b55115ecad2d8c3e03f0e340f4a65c",
+        "input_sha256": "d8d177eaf1dde998e6e7a73fe0addcd7c56b8f3d164374ba17a2a0af62dd20a0",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: for",
+            "snippet_line": 7,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_97f3863b33a788df16ad00ffbd7c33c09a24042b2b741a686e1c6c5a9c07fdd5",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_97f3863b33a788df16ad00ffbd7c33c09a24042b2b741a686e1c6c5a9c07fdd5",
+        "input_sha256": "ab8d835d87aba1faac8f7b983ed10621e822b5b69b7e0ac7c325e2e30946ac50",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_9bd05c4a1fbf3296568d381cbcc82cf44ce58623626a300712d96bb8c313bdab",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_9bd05c4a1fbf3296568d381cbcc82cf44ce58623626a300712d96bb8c313bdab",
+        "input_sha256": "2bb96c932f320907c669322bc2ed8d0c4ef7bcf2f41174536341555a307b5b78",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_9ea03e0225d999259cc6b264da0cfd51f2f017bf9be231f48d18e0b04a7dfd35",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_9ea03e0225d999259cc6b264da0cfd51f2f017bf9be231f48d18e0b04a7dfd35",
+        "input_sha256": "7217bf3a0a34b93028a10d71960b68c84780f7be24f524600eddea1660db8055",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 3,
+            "column": 12
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_a04024c637df333e8fffa2fec96494fe9cee34d18817438bdc857cae3a18c064",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_a04024c637df333e8fffa2fec96494fe9cee34d18817438bdc857cae3a18c064",
+        "input_sha256": "5597bdbe7b6ecf7d0396c3b800293e1278cc2451c7c0f650e0a7f1018042cb90",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_a0fff18df1200ce8b08de930e4d80cfa7f6f40204d005c18c8cc4153c2b0f602",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_a0fff18df1200ce8b08de930e4d80cfa7f6f40204d005c18c8cc4153c2b0f602",
+        "input_sha256": "a5eab9d8a232329e5d1d27c3d8a65b92ac7e9e6c266222bea8c6d3c20318279c",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 6,
+            "column": 4
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_a254e435ca551e71d0b521e177d8ec2fab3c9f3fde31bc6e165bc3496698554d",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_a254e435ca551e71d0b521e177d8ec2fab3c9f3fde31bc6e165bc3496698554d",
+        "input_sha256": "f6666a2ed7afadb00a5670c495fdd589c18f9fe0b688d54496d6f8ea925bcb12",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: .",
+            "snippet_line": 1,
+            "column": 6
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_a4e1704c3b3478483c550225180c73c668bde6828e3552c0d105e7f7c84ff077",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_a4e1704c3b3478483c550225180c73c668bde6828e3552c0d105e7f7c84ff077",
+        "input_sha256": "6d7f1bf67dc9adbc3cf8a9b1601802e92cf817453c971fcfc2bad029a0700162",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_a7b9e5e2a8311f56abd3472bc8a9d813accb5051afea42f5cf9789cc151f8518",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_a7b9e5e2a8311f56abd3472bc8a9d813accb5051afea42f5cf9789cc151f8518",
+        "input_sha256": "310c47c5698e3999c58c1f5597554ec17b6f91eeef013c6d3b46673d041d7f7d",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: .",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_aa47c7ea04e9d14b3d245829fc0e931f8fbabe478a299fae94ff44da3f97d340",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_aa47c7ea04e9d14b3d245829fc0e931f8fbabe478a299fae94ff44da3f97d340",
+        "input_sha256": "f69ee9368b1797cf41c598bb9792100af6b25294d017e95dd67575dcb5289abf",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 1,
+            "column": 11
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_ac244c5277b7d1b78da74c4e8ac16362cc34355d0d032683e131742e833b75d5",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_ac244c5277b7d1b78da74c4e8ac16362cc34355d0d032683e131742e833b75d5",
+        "input_sha256": "f87daaf609c12021c45eb96c05837809837156b33360da34c8a9649de1fd8e79",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 144",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_b321496a2d5369daacf6d60533071cb4ef01a3d06d2bc7202e1debf01c7b45d0",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_b321496a2d5369daacf6d60533071cb4ef01a3d06d2bc7202e1debf01c7b45d0",
+        "input_sha256": "70ac3cd4370d8af45f3f5105ed56ab474f00dd5663a9cd779448fbd2067a6952",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_b3ecfd99381cff95599a1604e8befd2809c7037637d08ca87ee9df934ef601c2",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_b3ecfd99381cff95599a1604e8befd2809c7037637d08ca87ee9df934ef601c2",
+        "input_sha256": "3d6692e59fbb8a611577adec1afe1d906fa115f046c0fa7bd392938d6c6f5762",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 750",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_b81242cef8020522837794b535f00f1a4762c195befd8498185b7bfb2bbb00b7",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_b81242cef8020522837794b535f00f1a4762c195befd8498185b7bfb2bbb00b7",
+        "input_sha256": "78819e7a31fdc558b74dcb1007a49dc08b0bddc110d58681beadd2cc4af12fc6",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: 0",
+            "snippet_line": 1,
+            "column": 6
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_b87162050fd312a858f4ac6f744a51ab7711017cf5c01797ca99f918a63a75e7",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_b87162050fd312a858f4ac6f744a51ab7711017cf5c01797ca99f918a63a75e7",
+        "input_sha256": "b300d43f242e41e51c941ab3dd23b8d1600d655c9655b83eb189680d5a43e011",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_bc2cca0b63fd5deeb9d2386db471626cb8661bd45e02ffa2ed83a0a8b8e002ef",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_bc2cca0b63fd5deeb9d2386db471626cb8661bd45e02ffa2ed83a0a8b8e002ef",
+        "input_sha256": "eb5d75bf18397cbdd5113b036e72cd8c7850f794076f490a88648d34c5b44abe",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '+='",
+            "snippet_line": 1,
+            "column": 33
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_bf8aeceb226de3ab0145210ffa50005a4c0c72d455bf57b42d3cac615bcf48e2",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_bf8aeceb226de3ab0145210ffa50005a4c0c72d455bf57b42d3cac615bcf48e2",
+        "input_sha256": "dc8d407931b5388561688ff85276b14b5d351b756f81fe26c99a9957a57126b9",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_bfe2302ad232e367ae928444d1657512e5ca692357d696d5b78ee245ef6fc367",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_bfe2302ad232e367ae928444d1657512e5ca692357d696d5b78ee245ef6fc367",
+        "input_sha256": "4eb7b49a40571258d4c52b29aafbe45fffce677838bfd1c04c44fec3cbd95bd0",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c05cb617bdd36c6fcb9e57f68bc700f4243ef6aa4b510b280dd6096f8a8cbceb",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c05cb617bdd36c6fcb9e57f68bc700f4243ef6aa4b510b280dd6096f8a8cbceb",
+        "input_sha256": "3953863e1d8ff9864494584fb35fe550ed6d490b1ad6e23d3f638eb7c97ba24f",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '153'",
+            "snippet_line": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c0ea3f42ab96d06126273895003d63aafbb4367037e3b4901fe822c3b7ebbb25",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c0ea3f42ab96d06126273895003d63aafbb4367037e3b4901fe822c3b7ebbb25",
+        "input_sha256": "70958546f15c59b5d98af1b12fa29ac569add2998c4ea725cb4b907e5eafb628",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: }",
+            "snippet_line": 6,
+            "column": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c1053746d22c3e192a278ad5391329d5f1c38e42300581806de0808f88c33c3f",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c1053746d22c3e192a278ad5391329d5f1c38e42300581806de0808f88c33c3f",
+        "input_sha256": "f5a290f09992e0418f803fd669a6eb09462212d663950e2b51f5fe4718dfdf4e",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c55e15c1014ecc0a9e5783c75825acbba7985fb7ebaf278cdae2e722f9055519",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c55e15c1014ecc0a9e5783c75825acbba7985fb7ebaf278cdae2e722f9055519",
+        "input_sha256": "c6f391b6bc248e6543b6187fb7fd0fb7ad729f32849708f6eb2050903c392ea4",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: (",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c5667eb198405b2120c003380eec4d5f78ce2a9e91b3e8b87578283de8f87fae",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c5667eb198405b2120c003380eec4d5f78ce2a9e91b3e8b87578283de8f87fae",
+        "input_sha256": "6e5795bcd19b024c19414d53ea7c819dc17b5aecfbbe3dc027ffb0b321640b28",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: #",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c5be29c13123d4dc0853754ffc246f56650d2dfe547f7172d895c5b8ec36240d",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c5be29c13123d4dc0853754ffc246f56650d2dfe547f7172d895c5b8ec36240d",
+        "input_sha256": "e0e89f943d3d538f805ae1837078b043a5377a1e8e6c8f6e3f4e690707b30347",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_c6c6c46f351ddb0a46bef6ac4e24f7fbef632ca764880a7d8aba8d74e74686a6",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_c6c6c46f351ddb0a46bef6ac4e24f7fbef632ca764880a7d8aba8d74e74686a6",
+        "input_sha256": "b58a275a7e915cb1514f18da45cd548a448313525755dcdb596afbb93a832195",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 1,
+            "column": 14
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_ca49f437870dc04211eeaac7c63376e021d8094afbdf67084e86406314e88e70",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_ca49f437870dc04211eeaac7c63376e021d8094afbdf67084e86406314e88e70",
+        "input_sha256": "a950e5727c3f7a4f61a464b627509b9d62d7ea9a6b327cde94974e64fca368dc",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got 'storage'",
+            "snippet_line": 3,
+            "column": 25
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_cb19e9e89a35ed5efc8062c92151aa0adfa355ace878bcd378f7181d11a7e518",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_cb19e9e89a35ed5efc8062c92151aa0adfa355ace878bcd378f7181d11a7e518",
+        "input_sha256": "96961056c3b38dc4cb4357d0c00a54780c55e7a60cf5bacbd6f61854f164d95c",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: while",
+            "snippet_line": 2
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_d75a2f3d105689783beefef667720a9b07d6af14a7c61be46c6d0ef796fcba56",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_d75a2f3d105689783beefef667720a9b07d6af14a7c61be46c6d0ef796fcba56",
+        "input_sha256": "4797a87a97d9ca7e6522fee3312684e3217206be6c4364899d64936d50bb4ee9",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 8,
+            "column": 11
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_d8276c4269d7d35806eeafdc4727162037547f43af89d7d471c7ee57595e4f3a",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_d8276c4269d7d35806eeafdc4727162037547f43af89d7d471c7ee57595e4f3a",
+        "input_sha256": "43b2147745f2e3428e4be3cdbca75eee0d48cd5a22ac07f80a7ca3f129df4b8a",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_d99423ec31511a5ced0b987f94afc4dd06c3069c652ccb18fe41d816806f6904",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_d99423ec31511a5ced0b987f94afc4dd06c3069c652ccb18fe41d816806f6904",
+        "input_sha256": "0962c996cec7fc927db488c5bdc7b27b5cdf91c7a5a56b82e080e8423334efcf",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_da3a66ef28fcd161e861f34ae8d9275ce7ed66e8c803b8a67f5e357c38eeadda",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_da3a66ef28fcd161e861f34ae8d9275ce7ed66e8c803b8a67f5e357c38eeadda",
+        "input_sha256": "809f577098770b6f1afaf1388d1d94badeb449141687091c5677664abfc57ec5",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_dc298c8c8c7d0f7f81d79c92861e26415c725f1388cdfd76585d9e0ae9465b52",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_dc298c8c8c7d0f7f81d79c92861e26415c725f1388cdfd76585d9e0ae9465b52",
+        "input_sha256": "c5e99ac9a1284b0f1a958329c02aec54ca8d2b0df0ef743139e7d698ee87d1c2",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_dee4d0b5f407299264c6e7f214fcc84e8a37ba5883418db2143822cf87b14e1b",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_dee4d0b5f407299264c6e7f214fcc84e8a37ba5883418db2143822cf87b14e1b",
+        "input_sha256": "2c9b25b54a0182664958900c0826139b1f67486a801afd022df52f1a6281fbf1",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_e101685cb1c28ca95cafb2d19bf7effede06d5be45d3740fac98a654f8437f06",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_e101685cb1c28ca95cafb2d19bf7effede06d5be45d3740fac98a654f8437f06",
+        "input_sha256": "57bae62c3e76a3151a17447324cc8647d20ec491450fc3cb733e087ca2a23a5d",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_e23f6b7794161385ca479f3a4379acfe3e5f277d3bf91696ea4e698fb84d0001",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_e23f6b7794161385ca479f3a4379acfe3e5f277d3bf91696ea4e698fb84d0001",
+        "input_sha256": "6ad9ef672a0d1ed27b4939a4616a41ad1d6a17d974f1873a6fa1f98f076ddbf4",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_e2e752a1711ddccc47f18d14f6a47f30d9b14a28f394ab15a75ae06bec744876",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_e2e752a1711ddccc47f18d14f6a47f30d9b14a28f394ab15a75ae06bec744876",
+        "input_sha256": "14c39c63f7d9723a9e2a50a28ee34580cfb18f885d373b35b3a9b58a52f09eb2",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: #",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_e304116da0fd00c036c85246eec1457188f2658fefe192df7ad897c413163515",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_e304116da0fd00c036c85246eec1457188f2658fefe192df7ad897c413163515",
+        "input_sha256": "0bed0f56b4cac16374200ad5f0a796015434739a6f56ac09bab419f6bd47aabd",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: #",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_e899146b44426a3abcd6cf47f4ead1d12f8827e5b4effeb2ecdb00cda614896c",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_e899146b44426a3abcd6cf47f4ead1d12f8827e5b4effeb2ecdb00cda614896c",
+        "input_sha256": "6b32473c3cfd9651dcb385feb2c02cfe2a510aab68fc036bf215e628ec639fbf",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: for",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_eabcc0ec34f22066f133d3fb54af4802ae38e8ab25b4b940d05697b013e8d5be",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_eabcc0ec34f22066f133d3fb54af4802ae38e8ab25b4b940d05697b013e8d5be",
+        "input_sha256": "612db86214ed97ea726199c8c6f8680c8f81352b89ab3b74f4b3ca1a85db8ff6",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: if",
+            "snippet_line": 1
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          },
+          {
+            "code": "wrapper_probe_only",
+            "message": "A temporary wrapper parses; original text was not repaired or marked parsed."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_ee5993741cc6f2c255e2f99aaf3d083d78d9291c7feba35946b22d1d324a8b75",
+      "action": "validated",
+      "syntax_status": "parsed",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_ee5993741cc6f2c255e2f99aaf3d083d78d9291c7feba35946b22d1d324a8b75",
+        "input_sha256": "07c738341f90eeca0bac91cc334074cceed5277f07deb7f835693e97ef60be8b",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "parsed",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_f050c84747526ac26dfe6efe2503ebf5aaaa522ec84cf95266519a6915c071d2",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_f050c84747526ac26dfe6efe2503ebf5aaaa522ec84cf95266519a6915c071d2",
+        "input_sha256": "7892513176f369fafb765ba56d26938cb63e656ab189ca8048438c8389c09402",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got 'storage'",
+            "snippet_line": 2,
+            "column": 25
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_f2cdbc9d9c0dc5a90e6f0668c38f1588b72e4e4c4f60ce7e2c86d716a276e842",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_f2cdbc9d9c0dc5a90e6f0668c38f1588b72e4e4c4f60ce7e2c86d716a276e842",
+        "input_sha256": "d48efee36b38fe1ba313f56c0b4a18c204d3651f78deacba153b33d1c067443b",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "unexpected token: }",
+            "snippet_line": 1,
+            "column": 8
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_f6ba90399dc6fb328e1c6cead0aeb8d0ae460eca13cfa59865422cb8dbca2070",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_f6ba90399dc6fb328e1c6cead0aeb8d0ae460eca13cfa59865422cb8dbca2070",
+        "input_sha256": "10ce31fb2cbd223c05020c6f3f0591b8bdc17ba75bfd92002d4f22d8cd84a504",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_fb70fb11de53e4d19d0bcc52b6199a47be49e1a7acc714991800264153dc728a",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_fb70fb11de53e4d19d0bcc52b6199a47be49e1a7acc714991800264153dc728a",
+        "input_sha256": "34e67c813ce441acec62c8c8551852bc791bc275e4627b742b2e33ff22098529",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "missing_contract",
+            "message": "Function visibility requires an enclosing contract."
+          },
+          {
+            "code": "syntax_only",
+            "message": "Parsing is not compilation, dependency resolution, WQL coverage, or exploit verification."
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "evd_fc1ff9e928f763c7c6466f1c5c7efcb3f03d31ac041906963952c82b351ad111",
+      "action": "validated",
+      "syntax_status": "insufficient_context",
+      "detail": {
+        "protocol_version": "1.0",
+        "evidence_id": "evd_fc1ff9e928f763c7c6466f1c5c7efcb3f03d31ac041906963952c82b351ad111",
+        "input_sha256": "ea8aa3a11a491a319e28526799312743b8461047292f7f477ebd167a176b95b9",
+        "parser_version": "solast-go@v0.1.4/strict-evidence-v1",
+        "syntax_status": "insufficient_context",
+        "contracts": [],
+        "functions": [],
+        "diagnostics": [
+          {
+            "code": "strict_parse_error",
+            "message": "expected 'IDENTIFIER', got '('",
+            "snippet_line": 1,
+            "column": 18
+          },
+          {
+            "code": "fragment_rejected",
+            "message": "Strict parse rejected this fragment; full source context is required."
+          }
+        ]
+      }
+    }
+  ]
+}

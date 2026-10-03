@@ -1,0 +1,208 @@
+{
+  "historical_binding": {
+    "content_hash": "c7f7a469f1693a5365351441a9693dc35ca02d4449039368ad6fe63d77570235",
+    "evidence_bindings": {
+      "lnk_1bad63fd90ae1b35cddf4aec0739d910f26e506951417a19d40904b59a5dd6f8": "evd_7f3902f04a0b9e58c71d82aa78be65a57bb60d17989e4e662a229deadf00f788",
+      "lnk_1e98aeabf73aa753b99ea9ec526975af4ae18498613590125605a609fc3d8690": "evd_22e58f40dbb2022c0ef8269c85a83d08b81ee8866e3ec5269add84f003753752",
+      "lnk_5955827b01a09b5b29d79b26c7a5e944c872ae82009716f41fd0b85aec3b1c5f": "evd_c55e15c1014ecc0a9e5783c75825acbba7985fb7ebaf278cdae2e722f9055519",
+      "lnk_c6465bdf07807d84e20a26a5c70a723936591c39896c1b35c65c20006254559c": "evd_b321496a2d5369daacf6d60533071cb4ef01a3d06d2bc7202e1debf01c7b45d0",
+      "lnk_e24d882f337f0b5a6007b1f9a6ae0d7c2a24e84d1cd82c3a4284673f1d88b65a": "evd_0600910f6b8898c653d629bf3c20a1cd63eeb027cec94de1f26e1d79cc6f50c7",
+      "lnk_f2a5e99aa174021c8714a205bf2c2ddc625bf811e3ce3824e0bde7031b3df660": "evd_2603beb8a58d9daac03bc865362bb22c47e2acdd0ee82b71e331ea9504a24ad8",
+      "lnk_f52017c76c340e3405198af082100bce7bd0165675ad82224f9c3f6a3e20f8a8": "evd_7aed0c060035659192736bf679ca1d0544b9360e8e2f609adf99c9b82a1f14db"
+    },
+    "review_status": "needs_review",
+    "revision_id": "krv_9da3e09fbf40cf2ca95d51610641e75346673ea4c340f88e774086f1606d71ac",
+    "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c"
+  },
+  "local_source_hashes": {
+    "executions": "839c8a87c81256197e28d532bb03c2d7260bf99b3a9882f248c9bdfd4c6e72a0",
+    "fragment": "24acf595af4f924d16fd81c83941fdf4e6146ff33664a6e841288084ec74b1dd",
+    "guarded": "ef7e414c2eb07996ee1cfb564992ea441cd9e1a34e98aa8c75898b908dfe1b05",
+    "historical_report": "2736e64244a5dee2a27816fb5902bc291738795fa68a304de039f63f6e88605d",
+    "unsafe": "9b731462526db385c5b155db7072b5639e7e00e63d15b5d272573d3be1f80937"
+  },
+  "note": "Technical validation only; no human approval or original-protocol reproduction.",
+  "pattern": {
+    "cases": [
+      {
+        "case_id": "unsafe",
+        "contract": "UnsafeReserve",
+        "expected_verdict": "confirmed",
+        "missing_context": [],
+        "reason": "External unbounded input reaches narrowing without a guard; an input of 2^128 succeeds but is stored as zero.",
+        "requirement": "A successful record(amount) must store the complete amount."
+      },
+      {
+        "case_id": "guarded",
+        "contract": "GuardedReserve",
+        "expected_verdict": "false_positive_for_this_pattern",
+        "missing_context": [],
+        "reason": "The only path checks the original amount before casting. Accepted values are in range; rejected transactions leave reserve unchanged.",
+        "requirement": "Store the complete accepted amount; revert for amounts outside uint128."
+      },
+      {
+        "case_id": "fragment",
+        "contract": null,
+        "expected_verdict": "insufficient_context",
+        "missing_context": [
+          "all callers/entry paths",
+          "constraints on amount",
+          "state declarations",
+          "downstream invariant and intended use"
+        ],
+        "reason": "Both guarded and unguarded full programs are compatible with this exact fragment; do not assign a positive or negative verdict from syntax alone.",
+        "requirement": "Cannot determine reachability or exact-value requirements from the fragment alone."
+      }
+    ],
+    "historical_knowledge": {
+      "draft_manifest": "data/processed/phase7-overflow-draft.json",
+      "scope": "Historical report motivating this pattern; synthetic cases do not reproduce the original protocol.",
+      "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+      "source_url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/167"
+    },
+    "knowledge": {
+      "detection_signals": [
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "fragment"
+          ],
+          "text": "A uint128(...) cast into accounting state is a candidate signal. Confirm it only after tracing the cast expression, incoming paths, range restrictions and downstream exactness requirement."
+        }
+      ],
+      "exploit_conditions": [
+        {
+          "basis": [
+            "unsafe",
+            "executions"
+          ],
+          "text": "In the unsafe synthetic case, anyone can call record(2^128); the transaction succeeds and stores zero, violating the exact-recording requirement. No financial exploit is claimed by this fixture."
+        }
+      ],
+      "impact": [
+        {
+          "basis": [
+            "unsafe",
+            "executions",
+            "historical_report"
+          ],
+          "text": "The fixture demonstrates corrupted accounting values. The historical Caviar finding describes possible reserve/pricing invariant disruption; economic loss and severity require analysis of the target protocol's downstream use and reachable state."
+        }
+      ],
+      "limitations": [
+        {
+          "basis": [
+            "guarded",
+            "executions"
+          ],
+          "text": "A dominating bound or a proven caller/type invariant can make the cast safe for this pattern. The supplied guarded contract has one entry path and checks the same unchanged amount immediately before conversion."
+        },
+        {
+          "basis": [
+            "fragment",
+            "executions"
+          ],
+          "text": "An internal fragment without its callers and state declaration is insufficient for either confirmation or rejection: the same fragment behaves differently with guarded and unguarded callers."
+        },
+        {
+          "basis": [
+            "language_spec",
+            "unsafe"
+          ],
+          "text": "Intentional modulo behavior is outside this pattern's exact-value requirement. Intent must be supported by design and downstream invariants, not inferred from an unchecked block or a code comment alone."
+        },
+        {
+          "basis": [
+            "unsafe",
+            "guarded",
+            "executions",
+            "historical_report"
+          ],
+          "text": "This card covers unsigned uint256-to-uint128 conversion only. The tests do not establish whole-contract security, financial severity, or the original Caviar PoC. Finite tests are supplemented by the guard's local range argument."
+        }
+      ],
+      "observed_behavior": [
+        {
+          "basis": [
+            "unsafe",
+            "language_spec",
+            "executions"
+          ],
+          "text": "For the tested unsafe contracts, the stored result is amount modulo 2^128. Boundary 2^128-1 is preserved; 2^128 becomes zero and 2^128+1 becomes one."
+        }
+      ],
+      "preconditions": [
+        {
+          "basis": [
+            "unsafe",
+            "guarded"
+          ],
+          "text": "The conversion target is uint128, the original value is uint256, and the affected operation requires exact value preservation rather than intentional modulo arithmetic."
+        },
+        {
+          "basis": [
+            "unsafe",
+            "fragment",
+            "executions"
+          ],
+          "text": "There is a reachable path on which the actual expression being cast can exceed 2^128-1. A large declared input type alone does not prove this path exists."
+        }
+      ],
+      "remediation": [
+        {
+          "basis": [
+            "guarded",
+            "language_spec",
+            "historical_report",
+            "executions"
+          ],
+          "text": "Check the original wide expression against type(uint128).max before narrowing on every reachable path, then reject out-of-range inputs or use a reviewed checked conversion. A check applied to an already truncated value is insufficient."
+        }
+      ],
+      "root_cause": [
+        {
+          "basis": [
+            "language_spec",
+            "arithmetic_spec",
+            "unsafe",
+            "executions"
+          ],
+          "text": "Explicit narrowing discards bits above bit 127. A successful cast therefore need not preserve its uint256 input; ordinary checked arithmetic does not supply a range check for this conversion."
+        }
+      ]
+    },
+    "pattern_id": "SOL-UINT128-NARROWING-001",
+    "review_status": "needs_review",
+    "rule_ids": [],
+    "schema_version": "1.0",
+    "scope": "Unsigned uint256 converted to uint128 where successful processing must preserve the complete input value. Not all narrowing casts are vulnerabilities.",
+    "scope_exclusions": [
+      "embedding",
+      "retrieval",
+      "rule generation",
+      "LLM verifier integration",
+      "automatic approval"
+    ],
+    "sources": {
+      "arithmetic_spec": "https://docs.soliditylang.org/en/v0.8.24/control-structures.html#checked-or-unchecked-arithmetic",
+      "executions": "data/processed/uint128-pattern-validation.json",
+      "fragment": "tests/fixtures/patterns/uint128-narrowing/UnknownFragment.sol",
+      "guarded": "tests/fixtures/patterns/uint128-narrowing/GuardedReserve.sol",
+      "historical_report": "data/processed/phase7-overflow-draft.json",
+      "language_spec": "https://docs.soliditylang.org/en/v0.8.24/types.html#explicit-conversions",
+      "unsafe": "tests/fixtures/patterns/uint128-narrowing/UnsafeReserve.sol"
+    },
+    "title": "Unchecked uint256 to uint128 narrowing in exact-value accounting",
+    "version": 1
+  },
+  "pattern_sha256": "4bce57bc75dff9d31df7322c48f41ab141644c737fffaa26df3b314946e33c67",
+  "schema_version": "1.0",
+  "status": "validated_candidate",
+  "validation": {
+    "checks": 156,
+    "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+    "report": "data/processed/uint128-pattern-validation.json",
+    "sha256": "839c8a87c81256197e28d532bb03c2d7260bf99b3a9882f248c9bdfd4c6e72a0"
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "$defs": {
+    "EvidenceRole": {
+      "enum": [
+        "vulnerable",
+        "fix",
+        "poc",
+        "context",
+        "unknown"
+      ],
+      "title": "EvidenceRole",
+      "type": "string"
+    },
+    "LineRange": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "start_line": {
+          "minimum": 1,
+          "title": "Start Line",
+          "type": "integer"
+        },
+        "end_line": {
+          "minimum": 1,
+          "title": "End Line",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_line",
+        "end_line"
+      ],
+      "title": "LineRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "link_id": {
+      "minLength": 1,
+      "title": "Link Id",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "processing_key": {
+      "minLength": 1,
+      "title": "Processing Key",
+      "type": "string"
+    },
+    "candidate_locator": {
+      "minLength": 1,
+      "title": "Candidate Locator",
+      "type": "string"
+    },
+    "candidate_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Candidate Url"
+    },
+    "evidence_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Id"
+    },
+    "role": {
+      "$ref": "#/$defs/EvidenceRole",
+      "default": "unknown"
+    },
+    "role_basis": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Role Basis"
+    },
+    "related_link_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Related Link Id"
+    },
+    "reported_range": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LineRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "report_context": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Report Context"
+    },
+    "resolution_status": {
+      "enum": [
+        "resolved",
+        "partial",
+        "unavailable",
+        "retryable_error"
+      ],
+      "title": "Resolution Status",
+      "type": "string"
+    },
+    "evidence_confidence": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Confidence"
+    },
+    "confidence_method": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confidence Method"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Code"
+    },
+    "error_message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Message"
+    },
+    "retryable": {
+      "default": false,
+      "title": "Retryable",
+      "type": "boolean"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "link_id",
+    "snapshot_id",
+    "processing_key",
+    "candidate_locator",
+    "resolution_status",
+    "created_at"
+  ],
+  "title": "FindingEvidenceLink",
+  "type": "object"
+}

@@ -1,0 +1,1314 @@
+{
+  "pattern_id": "SOL-UINT128-NARROWING-001",
+  "schema_version": "1.0",
+  "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "runtime": "ganache@7.9.2",
+  "node": "v22.20.0",
+  "settings": {
+    "optimizer": {
+      "enabled": false
+    },
+    "evmVersion": "shanghai",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode.object"
+        ]
+      }
+    }
+  },
+  "synthetic": true,
+  "public_network_used": false,
+  "fixture_hashes": {
+    "UnsafeReserve.sol": "9b731462526db385c5b155db7072b5639e7e00e63d15b5d272573d3be1f80937",
+    "GuardedReserve.sol": "ef7e414c2eb07996ee1cfb564992ea441cd9e1a34e98aa8c75898b908dfe1b05",
+    "UnknownFragment.sol": "24acf595af4f924d16fd81c83941fdf4e6146ff33664a6e841288084ec74b1dd"
+  },
+  "generated_context_harness": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.24;\ncontract GuardedCaller {\n  uint128 public reserve;\n  function record(uint256 amount) external {\n    require(amount <= type(uint128).max, \"amount exceeds uint128\");\n    _record(amount);\n  }\n  function _record(uint256 amount) internal {\n    reserve = uint128(amount);\n}\n\n}\ncontract UnguardedCaller {\n  uint128 public reserve;\n  function record(uint256 amount) external { _record(amount); }\n  function _record(uint256 amount) internal {\n    reserve = uint128(amount);\n}\n\n}",
+  "executions": [
+    {
+      "contract": "UnsafeReserve",
+      "bytecode_sha256": "1ff7e1842c699090b9f0831c815e4be61129e29514c8f2abf64b0130864fbe55",
+      "observations": [
+        {
+          "input": "0",
+          "before": "0",
+          "after": "0",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "1",
+          "before": "0",
+          "after": "1",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211454",
+          "before": "1",
+          "after": "340282366920938463463374607431768211454",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211455",
+          "before": "340282366920938463463374607431768211454",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211456",
+          "before": "340282366920938463463374607431768211455",
+          "after": "0",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "340282366920938463463374607431768211457",
+          "before": "0",
+          "after": "1",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "before": "1",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "260783958562663498878305416254285240960",
+          "before": "340282366920938463463374607431768211455",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "2383283109091262920977856138360501544436252545632713422400829501525423643264",
+          "before": "260783958562663498878305416254285240960",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "223176356728316534435278976018033745993",
+          "before": "260783958562663498878305416254285240960",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "7545640369941540490482566678041932939469307338113159980895933979270845374537",
+          "before": "223176356728316534435278976018033745993",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "152666890040319343708846015726321389517",
+          "before": "223176356728316534435278976018033745993",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "65397155227721795286633768372809915727533790069380869396351593869382906269645",
+          "before": "152666890040319343708846015726321389517",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "227724854267972899247215198305920967717",
+          "before": "152666890040319343708846015726321389517",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "10218790349830587460757972014007043347591445151739494920281578343061252695077",
+          "before": "227724854267972899247215198305920967717",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "120282608085570719249590562389761431248",
+          "before": "227724854267972899247215198305920967717",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "42287839789284192346826603055478286042642622689704745241681174206537520092880",
+          "before": "120282608085570719249590562389761431248",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "95775314898694626141247842757224880045",
+          "before": "120282608085570719249590562389761431248",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "22035454531276017663460130660481147439129975322922849653636562457463753725869",
+          "before": "95775314898694626141247842757224880045",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "243377367333873705689348526298279970274",
+          "before": "95775314898694626141247842757224880045",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "51176186816740997570728241474094147471661823373613482887121989682008864851426",
+          "before": "243377367333873705689348526298279970274",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "237273395176614953238942206068892365566",
+          "before": "243377367333873705689348526298279970274",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "98680820078386551403764546329000265809989752047418581440966910488347632988926",
+          "before": "237273395176614953238942206068892365566",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "60004081642921560147718167138616678339",
+          "before": "237273395176614953238942206068892365566",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "12662652518687288163326603585651545466626760754262059221992623235135137322947",
+          "before": "60004081642921560147718167138616678339",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "168903373594956194127855219677440515360",
+          "before": "60004081642921560147718167138616678339",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "48703053645262011248683634780923650152601268813060410683496565022355705830688",
+          "before": "168903373594956194127855219677440515360",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "28008149070300308782222056778046140487",
+          "before": "168903373594956194127855219677440515360",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "81367153230334889070816916350711085793637238272862844845895081349141848158279",
+          "before": "28008149070300308782222056778046140487",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "14628130909989786263744300751986752318",
+          "before": "28008149070300308782222056778046140487",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "64852774520122917037550665580190236500712169148394309150316790501076544912190",
+          "before": "14628130909989786263744300751986752318",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "335344009470570962715583597183338636765",
+          "before": "14628130909989786263744300751986752318",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "84805114236539896049711387298468038077851147867157842175658039970183681762781",
+          "before": "335344009470570962715583597183338636765",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115219492379631483565921989263409952792",
+          "before": "335344009470570962715583597183338636765",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "24088134267241394247915742613851404689227302730952628853173513340428157073432",
+          "before": "115219492379631483565921989263409952792",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "224748873139450757809706823475065851098",
+          "before": "115219492379631483565921989263409952792",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "111403204361612358511482313488733171988523474900934238830219173230015713709274",
+          "before": "224748873139450757809706823475065851098",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "130521548018429240059971433166685650660",
+          "before": "224748873139450757809706823475065851098",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "21025204826790330089308454253665833807600295898985651187045687349430204808932",
+          "before": "130521548018429240059971433166685650660",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        }
+      ]
+    },
+    {
+      "contract": "GuardedReserve",
+      "bytecode_sha256": "7e53d37c96440d5c1ae315879c7f09bb4820137f8b103de6558c35e021163bae",
+      "observations": [
+        {
+          "input": "0",
+          "before": "0",
+          "after": "0",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "1",
+          "before": "0",
+          "after": "1",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211454",
+          "before": "1",
+          "after": "340282366920938463463374607431768211454",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211455",
+          "before": "340282366920938463463374607431768211454",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211456",
+          "before": "340282366920938463463374607431768211455",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "340282366920938463463374607431768211457",
+          "before": "340282366920938463463374607431768211455",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "before": "340282366920938463463374607431768211455",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "260783958562663498878305416254285240960",
+          "before": "340282366920938463463374607431768211455",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "2383283109091262920977856138360501544436252545632713422400829501525423643264",
+          "before": "260783958562663498878305416254285240960",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "223176356728316534435278976018033745993",
+          "before": "260783958562663498878305416254285240960",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "7545640369941540490482566678041932939469307338113159980895933979270845374537",
+          "before": "223176356728316534435278976018033745993",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "152666890040319343708846015726321389517",
+          "before": "223176356728316534435278976018033745993",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "65397155227721795286633768372809915727533790069380869396351593869382906269645",
+          "before": "152666890040319343708846015726321389517",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "227724854267972899247215198305920967717",
+          "before": "152666890040319343708846015726321389517",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "10218790349830587460757972014007043347591445151739494920281578343061252695077",
+          "before": "227724854267972899247215198305920967717",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "120282608085570719249590562389761431248",
+          "before": "227724854267972899247215198305920967717",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "42287839789284192346826603055478286042642622689704745241681174206537520092880",
+          "before": "120282608085570719249590562389761431248",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "95775314898694626141247842757224880045",
+          "before": "120282608085570719249590562389761431248",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "22035454531276017663460130660481147439129975322922849653636562457463753725869",
+          "before": "95775314898694626141247842757224880045",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "243377367333873705689348526298279970274",
+          "before": "95775314898694626141247842757224880045",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "51176186816740997570728241474094147471661823373613482887121989682008864851426",
+          "before": "243377367333873705689348526298279970274",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "237273395176614953238942206068892365566",
+          "before": "243377367333873705689348526298279970274",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "98680820078386551403764546329000265809989752047418581440966910488347632988926",
+          "before": "237273395176614953238942206068892365566",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "60004081642921560147718167138616678339",
+          "before": "237273395176614953238942206068892365566",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "12662652518687288163326603585651545466626760754262059221992623235135137322947",
+          "before": "60004081642921560147718167138616678339",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "168903373594956194127855219677440515360",
+          "before": "60004081642921560147718167138616678339",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "48703053645262011248683634780923650152601268813060410683496565022355705830688",
+          "before": "168903373594956194127855219677440515360",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "28008149070300308782222056778046140487",
+          "before": "168903373594956194127855219677440515360",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "81367153230334889070816916350711085793637238272862844845895081349141848158279",
+          "before": "28008149070300308782222056778046140487",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "14628130909989786263744300751986752318",
+          "before": "28008149070300308782222056778046140487",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "64852774520122917037550665580190236500712169148394309150316790501076544912190",
+          "before": "14628130909989786263744300751986752318",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "335344009470570962715583597183338636765",
+          "before": "14628130909989786263744300751986752318",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "84805114236539896049711387298468038077851147867157842175658039970183681762781",
+          "before": "335344009470570962715583597183338636765",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115219492379631483565921989263409952792",
+          "before": "335344009470570962715583597183338636765",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "24088134267241394247915742613851404689227302730952628853173513340428157073432",
+          "before": "115219492379631483565921989263409952792",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "224748873139450757809706823475065851098",
+          "before": "115219492379631483565921989263409952792",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "111403204361612358511482313488733171988523474900934238830219173230015713709274",
+          "before": "224748873139450757809706823475065851098",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "130521548018429240059971433166685650660",
+          "before": "224748873139450757809706823475065851098",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "21025204826790330089308454253665833807600295898985651187045687349430204808932",
+          "before": "130521548018429240059971433166685650660",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        }
+      ]
+    },
+    {
+      "contract": "GuardedCaller",
+      "bytecode_sha256": "d513300ba3d043ad40ed6fcb2952129bde50645925d684d4d02c9056406bcb99",
+      "observations": [
+        {
+          "input": "0",
+          "before": "0",
+          "after": "0",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "1",
+          "before": "0",
+          "after": "1",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211454",
+          "before": "1",
+          "after": "340282366920938463463374607431768211454",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211455",
+          "before": "340282366920938463463374607431768211454",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211456",
+          "before": "340282366920938463463374607431768211455",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "340282366920938463463374607431768211457",
+          "before": "340282366920938463463374607431768211455",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "before": "340282366920938463463374607431768211455",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "260783958562663498878305416254285240960",
+          "before": "340282366920938463463374607431768211455",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "2383283109091262920977856138360501544436252545632713422400829501525423643264",
+          "before": "260783958562663498878305416254285240960",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "223176356728316534435278976018033745993",
+          "before": "260783958562663498878305416254285240960",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "7545640369941540490482566678041932939469307338113159980895933979270845374537",
+          "before": "223176356728316534435278976018033745993",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "152666890040319343708846015726321389517",
+          "before": "223176356728316534435278976018033745993",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "65397155227721795286633768372809915727533790069380869396351593869382906269645",
+          "before": "152666890040319343708846015726321389517",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "227724854267972899247215198305920967717",
+          "before": "152666890040319343708846015726321389517",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "10218790349830587460757972014007043347591445151739494920281578343061252695077",
+          "before": "227724854267972899247215198305920967717",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "120282608085570719249590562389761431248",
+          "before": "227724854267972899247215198305920967717",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "42287839789284192346826603055478286042642622689704745241681174206537520092880",
+          "before": "120282608085570719249590562389761431248",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "95775314898694626141247842757224880045",
+          "before": "120282608085570719249590562389761431248",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "22035454531276017663460130660481147439129975322922849653636562457463753725869",
+          "before": "95775314898694626141247842757224880045",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "243377367333873705689348526298279970274",
+          "before": "95775314898694626141247842757224880045",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "51176186816740997570728241474094147471661823373613482887121989682008864851426",
+          "before": "243377367333873705689348526298279970274",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "237273395176614953238942206068892365566",
+          "before": "243377367333873705689348526298279970274",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "98680820078386551403764546329000265809989752047418581440966910488347632988926",
+          "before": "237273395176614953238942206068892365566",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "60004081642921560147718167138616678339",
+          "before": "237273395176614953238942206068892365566",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "12662652518687288163326603585651545466626760754262059221992623235135137322947",
+          "before": "60004081642921560147718167138616678339",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "168903373594956194127855219677440515360",
+          "before": "60004081642921560147718167138616678339",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "48703053645262011248683634780923650152601268813060410683496565022355705830688",
+          "before": "168903373594956194127855219677440515360",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "28008149070300308782222056778046140487",
+          "before": "168903373594956194127855219677440515360",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "81367153230334889070816916350711085793637238272862844845895081349141848158279",
+          "before": "28008149070300308782222056778046140487",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "14628130909989786263744300751986752318",
+          "before": "28008149070300308782222056778046140487",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "64852774520122917037550665580190236500712169148394309150316790501076544912190",
+          "before": "14628130909989786263744300751986752318",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "335344009470570962715583597183338636765",
+          "before": "14628130909989786263744300751986752318",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "84805114236539896049711387298468038077851147867157842175658039970183681762781",
+          "before": "335344009470570962715583597183338636765",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115219492379631483565921989263409952792",
+          "before": "335344009470570962715583597183338636765",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "24088134267241394247915742613851404689227302730952628853173513340428157073432",
+          "before": "115219492379631483565921989263409952792",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "224748873139450757809706823475065851098",
+          "before": "115219492379631483565921989263409952792",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "111403204361612358511482313488733171988523474900934238830219173230015713709274",
+          "before": "224748873139450757809706823475065851098",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "130521548018429240059971433166685650660",
+          "before": "224748873139450757809706823475065851098",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "21025204826790330089308454253665833807600295898985651187045687349430204808932",
+          "before": "130521548018429240059971433166685650660",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": true,
+          "transaction_status": 0,
+          "exact_value_preserved": false
+        }
+      ]
+    },
+    {
+      "contract": "UnguardedCaller",
+      "bytecode_sha256": "08a6bffd46576467ed38cac778e3076de0ea464028c21e393559c6f6a3a17862",
+      "observations": [
+        {
+          "input": "0",
+          "before": "0",
+          "after": "0",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "1",
+          "before": "0",
+          "after": "1",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211454",
+          "before": "1",
+          "after": "340282366920938463463374607431768211454",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211455",
+          "before": "340282366920938463463374607431768211454",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "340282366920938463463374607431768211456",
+          "before": "340282366920938463463374607431768211455",
+          "after": "0",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "340282366920938463463374607431768211457",
+          "before": "0",
+          "after": "1",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "before": "1",
+          "after": "340282366920938463463374607431768211455",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "260783958562663498878305416254285240960",
+          "before": "340282366920938463463374607431768211455",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "2383283109091262920977856138360501544436252545632713422400829501525423643264",
+          "before": "260783958562663498878305416254285240960",
+          "after": "260783958562663498878305416254285240960",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "223176356728316534435278976018033745993",
+          "before": "260783958562663498878305416254285240960",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "7545640369941540490482566678041932939469307338113159980895933979270845374537",
+          "before": "223176356728316534435278976018033745993",
+          "after": "223176356728316534435278976018033745993",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "152666890040319343708846015726321389517",
+          "before": "223176356728316534435278976018033745993",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "65397155227721795286633768372809915727533790069380869396351593869382906269645",
+          "before": "152666890040319343708846015726321389517",
+          "after": "152666890040319343708846015726321389517",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "227724854267972899247215198305920967717",
+          "before": "152666890040319343708846015726321389517",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "10218790349830587460757972014007043347591445151739494920281578343061252695077",
+          "before": "227724854267972899247215198305920967717",
+          "after": "227724854267972899247215198305920967717",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "120282608085570719249590562389761431248",
+          "before": "227724854267972899247215198305920967717",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "42287839789284192346826603055478286042642622689704745241681174206537520092880",
+          "before": "120282608085570719249590562389761431248",
+          "after": "120282608085570719249590562389761431248",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "95775314898694626141247842757224880045",
+          "before": "120282608085570719249590562389761431248",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "22035454531276017663460130660481147439129975322922849653636562457463753725869",
+          "before": "95775314898694626141247842757224880045",
+          "after": "95775314898694626141247842757224880045",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "243377367333873705689348526298279970274",
+          "before": "95775314898694626141247842757224880045",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "51176186816740997570728241474094147471661823373613482887121989682008864851426",
+          "before": "243377367333873705689348526298279970274",
+          "after": "243377367333873705689348526298279970274",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "237273395176614953238942206068892365566",
+          "before": "243377367333873705689348526298279970274",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "98680820078386551403764546329000265809989752047418581440966910488347632988926",
+          "before": "237273395176614953238942206068892365566",
+          "after": "237273395176614953238942206068892365566",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "60004081642921560147718167138616678339",
+          "before": "237273395176614953238942206068892365566",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "12662652518687288163326603585651545466626760754262059221992623235135137322947",
+          "before": "60004081642921560147718167138616678339",
+          "after": "60004081642921560147718167138616678339",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "168903373594956194127855219677440515360",
+          "before": "60004081642921560147718167138616678339",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "48703053645262011248683634780923650152601268813060410683496565022355705830688",
+          "before": "168903373594956194127855219677440515360",
+          "after": "168903373594956194127855219677440515360",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "28008149070300308782222056778046140487",
+          "before": "168903373594956194127855219677440515360",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "81367153230334889070816916350711085793637238272862844845895081349141848158279",
+          "before": "28008149070300308782222056778046140487",
+          "after": "28008149070300308782222056778046140487",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "14628130909989786263744300751986752318",
+          "before": "28008149070300308782222056778046140487",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "64852774520122917037550665580190236500712169148394309150316790501076544912190",
+          "before": "14628130909989786263744300751986752318",
+          "after": "14628130909989786263744300751986752318",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "335344009470570962715583597183338636765",
+          "before": "14628130909989786263744300751986752318",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "84805114236539896049711387298468038077851147867157842175658039970183681762781",
+          "before": "335344009470570962715583597183338636765",
+          "after": "335344009470570962715583597183338636765",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "115219492379631483565921989263409952792",
+          "before": "335344009470570962715583597183338636765",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "24088134267241394247915742613851404689227302730952628853173513340428157073432",
+          "before": "115219492379631483565921989263409952792",
+          "after": "115219492379631483565921989263409952792",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "224748873139450757809706823475065851098",
+          "before": "115219492379631483565921989263409952792",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "111403204361612358511482313488733171988523474900934238830219173230015713709274",
+          "before": "224748873139450757809706823475065851098",
+          "after": "224748873139450757809706823475065851098",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        },
+        {
+          "input": "130521548018429240059971433166685650660",
+          "before": "224748873139450757809706823475065851098",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": true
+        },
+        {
+          "input": "21025204826790330089308454253665833807600295898985651187045687349430204808932",
+          "before": "130521548018429240059971433166685650660",
+          "after": "130521548018429240059971433166685650660",
+          "reverted": false,
+          "transaction_status": 1,
+          "exact_value_preserved": false
+        }
+      ]
+    }
+  ],
+  "checks": 156,
+  "expected_labels": {
+    "unsafe": "confirmed",
+    "guarded": "false_positive_for_this_pattern",
+    "fragment": "insufficient_context"
+  },
+  "limitations": [
+    "Labels concern exact-value-preserving narrowing only, not whole-contract security.",
+    "Synthetic examples do not reproduce the Caviar PoC or establish its financial severity.",
+    "Finite executions accompany a local range argument; missing-fragment context is not inferred from wrappers."
+  ]
+}

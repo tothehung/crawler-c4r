@@ -2,7 +2,44 @@
 
 Python crawler for syncing Solodit findings into BigQuery.
 
+## Knowledge Base Contract (Phase 1)
+
+The opt-in [knowledge data contract v1](docs/knowledge-data-contract-v1.md)
+defines source snapshots, shared evidence, finding/evidence links, processing
+state and knowledge candidates. It includes generated JSON schemas, synthetic
+examples and an additive BigQuery migration. Existing crawler commands continue
+to use the legacy tables; the new migration is not applied automatically.
+
+```powershell
+py scripts/export_knowledge_contract.py --check
+```
+
 ## Setup
+
+The original eight-phase plan is preserved in [ROADMAP.md](ROADMAP.md).
+Phase 5 also supports [repository context enrichment](PHASE5_CONTEXT.md).
+
+Phase 6 adds [finding deduplication, resumable batch sweeps and quality reports](PHASE6.md).
+Phase 7 adds [grounded, versioned knowledge for finding/evidence](PHASE7.md),
+with review and export. Embeddings and retrieval are excluded from the revised scope.
+
+Phase 5 adds [strict engine validation](PHASE5.md). Build the Go engine and run
+`scripts/validate_evidence.py` to annotate stored evidence with parser diagnostics
+and unambiguous function metadata while preserving its content and identity.
+
+Phase 4 adds [live evidence resolution](PHASE4.md) for Markdown, GitHub files/diffs,
+and Gists. `scripts/process_knowledge.py run` connects these resolvers to the
+transactional pipeline; recorded HTTP mode supports offline verification.
+
+Phase 3 adds [transactional knowledge processing](PHASE3.md): immutable snapshots,
+versioned processing keys, fenced worker leases, atomic evidence/link/state writes,
+bounded retries, and SQLite/BigQuery backends. The resolver input is an explicit
+complete result manifest for manual integrations; phase 4 also supports live resolvers.
+
+Phase 2 provides an [offline evidence benchmark](tests/fixtures/evidence_benchmark_v1/README.md)
+with 35 real findings, reviewed target annotations, recorded HTTP responses and
+separate synthetic controls. Run `py scripts/benchmark_evidence.py --output data/processed/evidence-current.json`
+to compare the current candidate extractor with the saved baseline.
 
 Create a local environment file:
 

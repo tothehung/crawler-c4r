@@ -1,0 +1,125 @@
+{
+  "claims": [
+    {
+      "category": "root_cause",
+      "citations": [
+        {
+          "end_line": 9,
+          "link_id": null,
+          "quote": "The ``[buy()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L211) and ``[sell()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L301) functions update the `virtualBaseTokenReserves` and `virtualNftReserves` variables during each trade. However, these two variables are of type `uint128`, while the values that update them are of type `uint256`. This means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 9
+        }
+      ],
+      "text": "Theo báo cáo, buy/sell ép giá trị uint256 xuống uint128 để cập nhật virtual reserves mà chưa kiểm tra giá trị có nằm trong miền uint128."
+    },
+    {
+      "category": "preconditions",
+      "citations": [
+        {
+          "end_line": 41,
+          "link_id": null,
+          "quote": "        // Setting up pool and base token HDT with high decimals number - 30",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 41
+        }
+      ],
+      "text": "Kịch bản minh họa của báo cáo sử dụng base token có 30 decimals; đây là cấu hình PoC, không phải kết luận rằng chỉ token 30 decimals mới gặp lỗi."
+    },
+    {
+      "category": "exploit_conditions",
+      "citations": [
+        {
+          "end_line": 9,
+          "link_id": null,
+          "quote": "The ``[buy()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L211) and ``[sell()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L301) functions update the `virtualBaseTokenReserves` and `virtualNftReserves` variables during each trade. However, these two variables are of type `uint128`, while the values that update them are of type `uint256`. This means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 9
+        },
+        {
+          "end_line": 93,
+          "link_id": null,
+          "quote": "Add checks that the casting value is not greater than the `uint128` type max value:",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 93
+        }
+      ],
+      "text": "Điều kiện cần xem xét là giá trị tại phép ép kiểu vượt type(uint128).max mà không bị kiểm tra trước đó; cần xác minh khả năng đạt giá trị này trong luồng giao dịch đầy đủ."
+    },
+    {
+      "category": "observed_behavior",
+      "citations": [
+        {
+          "end_line": 9,
+          "link_id": null,
+          "quote": "The ``[buy()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L211) and ``[sell()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L301) functions update the `virtualBaseTokenReserves` and `virtualNftReserves` variables during each trade. However, these two variables are of type `uint128`, while the values that update them are of type `uint256`. This means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 9
+        }
+      ],
+      "text": "Báo cáo mô tả giá trị có thể bị cắt khi ép xuống uint128 trước khi cập nhật virtualBaseTokenReserves hoặc virtualNftReserves."
+    },
+    {
+      "category": "impact",
+      "citations": [
+        {
+          "end_line": 33,
+          "link_id": null,
+          "quote": "If the reserves variables are updated with a silent overflow, it can lead to a breakdown of the xy=k equation. This, in turn, would result in a totally incorrect price calculation, causing potential financial losses for users or pool owners.",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 33
+        }
+      ],
+      "text": "Virtual reserves sai có thể phá vỡ quan hệ định giá xy=k, làm giá tính toán không chính xác và gây tổn thất tiềm năng cho người dùng hoặc chủ pool."
+    },
+    {
+      "category": "detection_signals",
+      "citations": [
+        {
+          "end_line": 26,
+          "link_id": "lnk_e24d882f337f0b5a6007b1f9a6ae0d7c2a24e84d1cd82c3a4284673f1d88b65a",
+          "quote": "        virtualBaseTokenReserves += uint128(netInputAmount - feeAmount - protocolFeeAmount); ",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 26
+        },
+        {
+          "end_line": 9,
+          "link_id": null,
+          "quote": "The ``[buy()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L211) and ``[sell()](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L301) functions update the `virtualBaseTokenReserves` and `virtualNftReserves` variables during each trade. However, these two variables are of type `uint128`, while the values that update them are of type `uint256`. This means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 9
+        }
+      ],
+      "text": "Dấu hiệu cần review là phép ép uint128(...) trong cập nhật virtual reserves, kết hợp thiếu kiểm tra miền giá trị trước phép ép. Sự xuất hiện của cast đơn thuần chưa đủ kết luận có lỗi."
+    },
+    {
+      "category": "remediation",
+      "citations": [
+        {
+          "end_line": 93,
+          "link_id": null,
+          "quote": "Add checks that the casting value is not greater than the `uint128` type max value:",
+          "schema_version": "1.0",
+          "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+          "start_line": 93
+        }
+      ],
+      "text": "Theo đề xuất trong báo cáo, kiểm tra giá trị không vượt type(uint128).max và revert trước khi ép kiểu; áp dụng cho cả đường buy và sell."
+    }
+  ],
+  "expected_revision_id": "krv_9da3e09fbf40cf2ca95d51610641e75346673ea4c340f88e774086f1606d71ac",
+  "missing_information": [
+    "missing_category:limitations",
+    "PoC chưa được chạy lại trong phase 7.",
+    "Cần reviewer xác minh điều kiện khai thác và giới hạn áp dụng từ repo đầy đủ."
+  ],
+  "title": "[H-03] Risk of silent overflow in reserves update"
+}

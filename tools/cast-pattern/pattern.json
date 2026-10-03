@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "pattern_id": "SOL-UINT128-NARROWING-001",
+  "version": 1,
+  "title": "Unchecked uint256 to uint128 narrowing in exact-value accounting",
+  "review_status": "needs_review",
+  "rule_ids": [],
+  "scope": "Unsigned uint256 converted to uint128 where successful processing must preserve the complete input value. Not all narrowing casts are vulnerabilities.",
+  "historical_knowledge": {
+    "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+    "draft_manifest": "data/processed/phase7-overflow-draft.json",
+    "source_url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/167",
+    "scope": "Historical report motivating this pattern; synthetic cases do not reproduce the original protocol."
+  },
+  "sources": {
+    "language_spec": "https://docs.soliditylang.org/en/v0.8.24/types.html#explicit-conversions",
+    "arithmetic_spec": "https://docs.soliditylang.org/en/v0.8.24/control-structures.html#checked-or-unchecked-arithmetic",
+    "historical_report": "data/processed/phase7-overflow-draft.json",
+    "unsafe": "tests/fixtures/patterns/uint128-narrowing/UnsafeReserve.sol",
+    "guarded": "tests/fixtures/patterns/uint128-narrowing/GuardedReserve.sol",
+    "fragment": "tests/fixtures/patterns/uint128-narrowing/UnknownFragment.sol",
+    "executions": "data/processed/uint128-pattern-validation.json"
+  },
+  "knowledge": {
+    "root_cause": [
+      {"text": "Explicit narrowing discards bits above bit 127. A successful cast therefore need not preserve its uint256 input; ordinary checked arithmetic does not supply a range check for this conversion.", "basis": ["language_spec", "arithmetic_spec", "unsafe", "executions"]}
+    ],
+    "preconditions": [
+      {"text": "The conversion target is uint128, the original value is uint256, and the affected operation requires exact value preservation rather than intentional modulo arithmetic.", "basis": ["unsafe", "guarded"]},
+      {"text": "There is a reachable path on which the actual expression being cast can exceed 2^128-1. A large declared input type alone does not prove this path exists.", "basis": ["unsafe", "fragment", "executions"]}
+    ],
+    "exploit_conditions": [
+      {"text": "In the unsafe synthetic case, anyone can call record(2^128); the transaction succeeds and stores zero, violating the exact-recording requirement. No financial exploit is claimed by this fixture.", "basis": ["unsafe", "executions"]}
+    ],
+    "observed_behavior": [
+      {"text": "For the tested unsafe contracts, the stored result is amount modulo 2^128. Boundary 2^128-1 is preserved; 2^128 becomes zero and 2^128+1 becomes one.", "basis": ["unsafe", "language_spec", "executions"]}
+    ],
+    "impact": [
+      {"text": "The fixture demonstrates corrupted accounting values. The historical Caviar finding describes possible reserve/pricing invariant disruption; economic loss and severity require analysis of the target protocol's downstream use and reachable state.", "basis": ["unsafe", "executions", "historical_report"]}
+    ],
+    "detection_signals": [
+      {"text": "A uint128(...) cast into accounting state is a candidate signal. Confirm it only after tracing the cast expression, incoming paths, range restrictions and downstream exactness requirement.", "basis": ["unsafe", "guarded", "fragment"]}
+    ],
+    "remediation": [
+      {"text": "Check the original wide expression against type(uint128).max before narrowing on every reachable path, then reject out-of-range inputs or use a reviewed checked conversion. A check applied to an already truncated value is insufficient.", "basis": ["guarded", "language_spec", "historical_report", "executions"]}
+    ],
+    "limitations": [
+      {"text": "A dominating bound or a proven caller/type invariant can make the cast safe for this pattern. The supplied guarded contract has one entry path and checks the same unchanged amount immediately before conversion.", "basis": ["guarded", "executions"]},
+      {"text": "An internal fragment without its callers and state declaration is insufficient for either confirmation or rejection: the same fragment behaves differently with guarded and unguarded callers.", "basis": ["fragment", "executions"]},
+      {"text": "Intentional modulo behavior is outside this pattern's exact-value requirement. Intent must be supported by design and downstream invariants, not inferred from an unchecked block or a code comment alone.", "basis": ["language_spec", "unsafe"]},
+      {"text": "This card covers unsigned uint256-to-uint128 conversion only. The tests do not establish whole-contract security, financial severity, or the original Caviar PoC. Finite tests are supplemented by the guard's local range argument.", "basis": ["unsafe", "guarded", "executions", "historical_report"]}
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "unsafe",
+      "expected_verdict": "confirmed",
+      "contract": "UnsafeReserve",
+      "requirement": "A successful record(amount) must store the complete amount.",
+      "reason": "External unbounded input reaches narrowing without a guard; an input of 2^128 succeeds but is stored as zero.",
+      "missing_context": []
+    },
+    {
+      "case_id": "guarded",
+      "expected_verdict": "false_positive_for_this_pattern",
+      "contract": "GuardedReserve",
+      "requirement": "Store the complete accepted amount; revert for amounts outside uint128.",
+      "reason": "The only path checks the original amount before casting. Accepted values are in range; rejected transactions leave reserve unchanged.",
+      "missing_context": []
+    },
+    {
+      "case_id": "fragment",
+      "expected_verdict": "insufficient_context",
+      "contract": null,
+      "requirement": "Cannot determine reachability or exact-value requirements from the fragment alone.",
+      "reason": "Both guarded and unguarded full programs are compatible with this exact fragment; do not assign a positive or negative verdict from syntax alone.",
+      "missing_context": ["all callers/entry paths", "constraints on amount", "state declarations", "downstream invariant and intended use"]
+    }
+  ],
+  "scope_exclusions": ["embedding", "retrieval", "rule generation", "LLM verifier integration", "automatic approval"]
+}

@@ -1,5 +1,15 @@
 # BigQuery Schema
 
+## Knowledge extension v1 (opt-in)
+
+Phase 1 adds a separate [data contract](knowledge-data-contract-v1.md) and
+[additive migration](../sql/migrations/001_knowledge_contract_v1.sql) for six new
+tables. The migration does not change the three legacy tables below and is not
+executed by existing crawler commands. See the contract for logical keys,
+relationships, JSON serialization, validation and rollout requirements.
+
+## Existing crawler tables
+
 The crawler writes Solodit findings and sync state into three BigQuery tables:
 
 - `findings_staging`: batch load target for one crawler run.

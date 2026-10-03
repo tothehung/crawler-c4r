@@ -1,0 +1,40 @@
+[
+  {
+    "source": "solodit",
+    "file": "raw/solodit-local.jsonl",
+    "sha256": "f5d1057b50f255f9d41435b764d71e50e19e02d7635e8493b81247db94631c19",
+    "origin": "data/findings.jsonl",
+    "payload_kind": "legacy_normalized_json",
+    "note": "Frozen local crawl output; original API response bytes unavailable."
+  },
+  {
+    "source": "code4rena",
+    "file": "raw/2023-04-caviar.html",
+    "sha256": "35e741a887a79942e0a7c9ea4762951748794584bc1017f26a5faeaf745441d4",
+    "url": "https://code4rena.com/reports/2023-04-caviar",
+    "final_url": "https://code4rena.com/reports/2023-04-caviar",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:32:54.978631+00:00",
+    "note": "Saved decoded HTML as UTF-8, not original wire bytes."
+  },
+  {
+    "source": "code4rena",
+    "file": "raw/2023-05-juicebox.html",
+    "sha256": "31402d69ec20ed1456682e2d5de78177c1d4268acba011509361051d92568178",
+    "url": "https://code4rena.com/reports/2023-05-juicebox",
+    "final_url": "https://code4rena.com/reports/2023-05-juicebox",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:32:56.805728+00:00",
+    "note": "Saved decoded HTML as UTF-8, not original wire bytes."
+  },
+  {
+    "source": "code4rena",
+    "file": "raw/2023-01-astaria.html",
+    "sha256": "820d06e54dcfff3d5604d766fbbfb2bc6b1c3b060f8b1baab0847f0b56c1a0d9",
+    "url": "https://code4rena.com/reports/2023-01-astaria",
+    "final_url": "https://code4rena.com/reports/2023-01-astaria",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:32:59.709472+00:00",
+    "note": "Saved decoded HTML as UTF-8, not original wire bytes."
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "extractor_version": "evidence-resolver-v1",
+  "normalization_version": "identity-v1",
+  "transport_mode": "recorded",
+  "context_lines": 10,
+  "max_candidates": 200,
+  "max_requests": 100,
+  "max_response_bytes": 2000000,
+  "max_evidence_per_candidate": 100
+}

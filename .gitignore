@@ -11,5 +11,12 @@ __pycache__/
 
 data/*.jsonl
 data/checkpoints/*.json
+data/checkpoints/*.sqlite3*
+/data/checkpoints/phase6-runs/
+/data/bin/
+/tools/cast-pattern/node_modules/
+/config/context-repositories.local.json
 logs/*
 !logs/.gitkeep
+
+/docs/

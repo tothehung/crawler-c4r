@@ -1,0 +1,264 @@
+{
+  "$defs": {
+    "GroundedCitation": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "start_line": {
+          "minimum": 1,
+          "title": "Start Line",
+          "type": "integer"
+        },
+        "end_line": {
+          "minimum": 1,
+          "title": "End Line",
+          "type": "integer"
+        },
+        "quote": {
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        },
+        "link_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Link Id"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "start_line",
+        "end_line",
+        "quote"
+      ],
+      "title": "GroundedCitation",
+      "type": "object"
+    },
+    "GroundedClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "claim_id": {
+          "minLength": 1,
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "root_cause",
+            "preconditions",
+            "exploit_conditions",
+            "observed_behavior",
+            "impact",
+            "detection_signals",
+            "remediation",
+            "limitations"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/GroundedCitation"
+          },
+          "minItems": 1,
+          "title": "Citations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim_id",
+        "category",
+        "text",
+        "citations"
+      ],
+      "title": "GroundedClaim",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "revision_id": {
+      "minLength": 1,
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "knowledge_id": {
+      "minLength": 1,
+      "title": "Knowledge Id",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "processing_key": {
+      "minLength": 1,
+      "title": "Processing Key",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/GroundedClaim"
+      },
+      "title": "Claims",
+      "type": "array"
+    },
+    "evidence_link_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Link Ids",
+      "type": "array"
+    },
+    "evidence_bindings": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Evidence Bindings",
+      "type": "object"
+    },
+    "missing_information": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Information",
+      "type": "array"
+    },
+    "extraction_version": {
+      "minLength": 1,
+      "title": "Extraction Version",
+      "type": "string"
+    },
+    "input_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Input Fingerprint",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "review_status": {
+      "default": "needs_review",
+      "enum": [
+        "needs_review",
+        "approved",
+        "rejected"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "review_sequence": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Review Sequence",
+      "type": "integer"
+    },
+    "reviewed_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewed By"
+    },
+    "review_note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Review Note"
+    },
+    "reviewed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewed At"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "revision_id",
+    "knowledge_id",
+    "version",
+    "snapshot_id",
+    "processing_key",
+    "title",
+    "claims",
+    "evidence_link_ids",
+    "evidence_bindings",
+    "missing_information",
+    "extraction_version",
+    "input_fingerprint",
+    "content_hash",
+    "created_at"
+  ],
+  "title": "KnowledgeRevision",
+  "type": "object"
+}

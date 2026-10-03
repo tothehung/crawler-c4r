@@ -1,0 +1,248 @@
+{
+  "$defs": {
+    "Citation": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "link_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Link Id"
+        },
+        "report_locator": {
+          "minLength": 1,
+          "title": "Report Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "report_locator"
+      ],
+      "title": "Citation",
+      "type": "object"
+    },
+    "KnowledgeClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/Citation"
+          },
+          "minItems": 1,
+          "title": "Citations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text",
+        "citations"
+      ],
+      "title": "KnowledgeClaim",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "knowledge_id": {
+      "minLength": 1,
+      "title": "Knowledge Id",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "root_cause": {
+      "$ref": "#/$defs/KnowledgeClaim"
+    },
+    "preconditions": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClaim"
+      },
+      "title": "Preconditions",
+      "type": "array"
+    },
+    "exploit_conditions": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClaim"
+      },
+      "title": "Exploit Conditions",
+      "type": "array"
+    },
+    "impact": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClaim"
+      },
+      "title": "Impact",
+      "type": "array"
+    },
+    "detection_signals": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClaim"
+      },
+      "title": "Detection Signals",
+      "type": "array"
+    },
+    "remediation": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClaim"
+      },
+      "title": "Remediation",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClaim"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "missing_information": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Information",
+      "type": "array"
+    },
+    "taxonomy_tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Taxonomy Tags",
+      "type": "array"
+    },
+    "rule_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rule Ids",
+      "type": "array"
+    },
+    "engine_support": {
+      "default": "unknown",
+      "enum": [
+        "unknown",
+        "supported",
+        "partial",
+        "unsupported"
+      ],
+      "title": "Engine Support",
+      "type": "string"
+    },
+    "review_status": {
+      "default": "draft",
+      "enum": [
+        "draft",
+        "needs_review",
+        "approved",
+        "rejected"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "reviewed_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewed By"
+    },
+    "reviewed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewed At"
+    },
+    "review_note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Review Note"
+    },
+    "extraction_version": {
+      "minLength": 1,
+      "title": "Extraction Version",
+      "type": "string"
+    },
+    "extraction_config_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Extraction Config Hash",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "knowledge_id",
+    "version",
+    "title",
+    "root_cause",
+    "extraction_version",
+    "extraction_config_hash",
+    "created_at"
+  ],
+  "title": "KnowledgeCandidate",
+  "type": "object"
+}

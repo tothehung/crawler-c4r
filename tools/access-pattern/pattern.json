@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "pattern_id": "SOL-MISSING-ACCESS-CONTROL-001",
+  "version": 1,
+  "title": "Unauthorized updates to privileged configuration after deployment",
+  "review_status": "needs_review",
+  "rule_ids": [],
+  "scope": "Synthetic feeRecipient setter: only the deployer is authorized to modify configuration after deployment. Proxy initialization, ownership transfer, meta-transactions and financial impact are outside the pilot.",
+  "historical_reference": {
+    "manifest": "tests/fixtures/patterns/missing-access-control/source/manifest.json",
+    "manifest_sha256": "c4c6a6426699428a00989e93dac4834160129b3edf8e46ced4632edca1946540",
+    "source_url": "https://github.com/sherlock-audit/2023-09-Gitcoin-judging/issues/458",
+    "relation": "Analogous missing authorization on a privileged state setter; historical code changes pool activation, not feeRecipient.",
+    "database_binding": null,
+    "storage_status": "supplementary_source_only",
+    "citations": [
+      {"source": "historical_report", "start_line": 11, "end_line": 11},
+      {"source": "historical_report", "start_line": 55, "end_line": 55},
+      {"source": "historical_code", "start_line": 216, "end_line": 222}
+    ]
+  },
+  "sources": {
+    "language_spec": "https://docs.soliditylang.org/en/v0.8.24/common-patterns.html#restricting-access",
+    "historical_report": "tests/fixtures/patterns/missing-access-control/source/report.md",
+    "historical_code": "tests/fixtures/patterns/missing-access-control/source/RFPSimpleStrategy.sol",
+    "unsafe": "tests/fixtures/patterns/missing-access-control/UnsafeFeeConfig.sol",
+    "guarded": "tests/fixtures/patterns/missing-access-control/GuardedFeeConfig.sol",
+    "fragment": "tests/fixtures/patterns/missing-access-control/UnknownFragment.sol",
+    "executions": "data/processed/access-pattern-validation.json"
+  },
+  "knowledge": {
+    "root_cause": [
+      {"text": "A reachable external setter changes privileged configuration without validating the caller's authority. Input validity checks such as a nonzero recipient do not establish authorization.", "basis": ["unsafe", "guarded", "executions"]},
+      {"text": "The historical Sherlock report describes missing pool-manager authorization on setPoolActive; this motivates the general mechanism, not a fee-recipient finding in that protocol.", "basis": ["historical_report", "historical_code"]}
+    ],
+    "preconditions": [
+      {"text": "A specification requires restricted writes; an unprivileged actor can reach the write after deployment. Being public/external or lacking a named onlyOwner modifier is insufficient evidence by itself.", "basis": ["unsafe", "guarded", "language_spec"]}
+    ],
+    "exploit_conditions": [
+      {"text": "In the unsafe fixture a non-owner supplies a valid nonzero recipient, calls setFeeRecipient directly and changes state. No stolen key or owner cooperation is needed in this fixture.", "basis": ["unsafe", "executions"]}
+    ],
+    "observed_behavior": [
+      {"text": "Two distinct outsiders successfully change feeRecipient on the unsafe paths. Guarded paths reject outsider transactions for unauthorized access and preserve state; owner updates succeed.", "basis": ["unsafe", "guarded", "executions"]}
+    ],
+    "impact": [
+      {"text": "Tests establish unauthorized configuration changes only. They contain no payout function and do not demonstrate diverted fees, financial loss or a severity level. Downstream consumers must be examined separately.", "basis": ["unsafe", "executions"]}
+    ],
+    "detection_signals": [
+      {"text": "Trace public/external entry points to writes of protected state, including internal functions and inherited code. Identify the intended principal and inspect effective checks on every relevant path, rather than matching modifier names.", "basis": ["unsafe", "guarded", "fragment", "language_spec"]}
+    ],
+    "remediation": [
+      {"text": "Enforce the intended owner or role before the write on every reachable path. The fixture uses an immutable deployer owner and msg.sender equality; test authorized calls as well as rejected outsiders so the repair does not disable the feature.", "basis": ["guarded", "language_spec", "executions"]}
+    ],
+    "limitations": [
+      {"text": "Caller checks, inherited modifiers, role checks or a genuinely permissionless specification can exclude this pattern. Public visibility or a missing modifier name alone does not confirm a bug.", "basis": ["guarded", "fragment", "language_spec"]},
+      {"text": "The isolated internal fragment does not establish all callers, storage declarations or the authorization policy. Two hypothetical completions demonstrate opposite outcomes; neither is asserted to be its real original context.", "basis": ["fragment", "executions"]},
+      {"text": "Fixture results do not reproduce the historical protocol attack or establish whole-contract security. Deployment, proxy initialization, delegated execution, role lifecycle and meta-transaction sender handling need separate analysis.", "basis": ["unsafe", "guarded", "executions"]},
+      {"text": "The historical source is stored as a separate captured reference. It is not inserted into the 34-finding corpus or existing SourceFindingSnapshot tables; their source enum currently supports Solodit and Code4rena only.", "basis": ["historical_report"]}
+    ]
+  },
+  "cases": [
+    {"case_id": "unsafe", "contract": "UnsafeFeeConfig", "expected_verdict": "confirmed", "reason": "An outsider changes configuration contrary to the deployer-only policy.", "missing_context": []},
+    {"case_id": "guarded", "contract": "GuardedFeeConfig", "expected_verdict": "false_positive_for_this_pattern", "reason": "The only setter checks the immutable owner; owner calls succeed and outsider calls revert without state change.", "missing_context": []},
+    {"case_id": "fragment", "contract": null, "expected_verdict": "insufficient_context", "reason": "Authorization may be enforced by callers; the isolated internal write cannot decide this.", "missing_context": ["all callers and entry points", "authorization policy", "state declarations", "role initialization and lifecycle"]}
+  ],
+  "scope_exclusions": ["embedding", "rule generation", "LLM integration", "automatic approval", "original protocol PoC reproduction"]
+}

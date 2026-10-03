@@ -1,0 +1,33 @@
+{
+  "all_citations_checked": true,
+  "approved": 0,
+  "build_actions": {
+    "skipped": 34
+  },
+  "claim_count": 360,
+  "claims_by_category": {
+    "detection_signals": 1,
+    "exploit_conditions": 1,
+    "impact": 23,
+    "observed_behavior": 257,
+    "preconditions": 1,
+    "remediation": 76,
+    "root_cause": 1
+  },
+  "example_revision_id": "krv_9da3e09fbf40cf2ca95d51610641e75346673ea4c340f88e774086f1606d71ac",
+  "latest_knowledge": 34,
+  "limitations": [
+    "Exact quote/line validation proves provenance, not semantic correctness.",
+    "Extractive drafts classify paragraphs by report headings; missing fields remain explicit.",
+    "Authored example is a draft and does not approve the finding or reproduce its PoC."
+  ],
+  "rerun_actions": {
+    "skipped": 34
+  },
+  "review_status": {
+    "needs_review": 34
+  },
+  "scope": "structured knowledge for finding/evidence only; no embedding/retrieval",
+  "source_and_evidence_unchanged": true,
+  "with_evidence": 26
+}

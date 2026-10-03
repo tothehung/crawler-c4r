@@ -1,0 +1,8 @@
+# Recorded bodies are hashed byte-for-byte; do not rewrite line endings on checkout.
+/tests/fixtures/evidence_benchmark_v1/raw/* -text
+/tests/fixtures/evidence_benchmark_v1/http/*.txt -text
+/tests/fixtures/patterns/uint128-narrowing/*.sol -text
+/tests/fixtures/patterns/missing-access-control/*.sol -text
+/tests/fixtures/patterns/missing-access-control/source/* -text
+/tools/access-pattern/verify.cjs -text
+/tools/cast-pattern/pnpm-lock.yaml -text

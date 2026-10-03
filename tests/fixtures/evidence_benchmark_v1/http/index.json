@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://api.github.com/repos/code-423n4/2023-04-caviar/commits/main",
+    "final_url": "https://api.github.com/repos/code-423n4/2023-04-caviar/commits/main",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:38:46.122284+00:00",
+    "body_file": "7f1ce69aa0af62bcc026197a0fcb526fb4644d755b29bda6c7fd7c5ebdf2f415.txt",
+    "sha256": "f9a047f0772dd611ed8b0f4aabb6ae607ece0901622acf45663f07aa743f2236",
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "etag": "W/\"a632a07252a46e861a486355cf19454aa4589a05803df19d9ec80281a25ed4e5\""
+    },
+    "fixture_kind": "recorded_http"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/code-423n4/2023-04-caviar/5c87f7d69c6fac29eb253b5c7b2fb4a9f23f8750/src/PrivatePool.sol",
+    "final_url": "https://raw.githubusercontent.com/code-423n4/2023-04-caviar/5c87f7d69c6fac29eb253b5c7b2fb4a9f23f8750/src/PrivatePool.sol",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:38:47.185424+00:00",
+    "body_file": "70e9f8da73d0c9d17b2ec8546ab2f39638eada9241c7ed8278de95f5c359c29f.txt",
+    "sha256": "2a05311f15fb92b646e976de7884fc3750063947ab37ff0bc9d197a3bf347caa",
+    "headers": {
+      "content-type": "text/plain; charset=utf-8",
+      "etag": "W/\"7d4cb04000d5a5d68081baed8e9490712bd232890876ea771418d3cee7b2d88d\""
+    },
+    "fixture_kind": "recorded_http"
+  },
+  {
+    "url": "https://api.github.com/repos/code-423n4/2023-01-astaria/commits/1bfc58b42109b839528ab1c21dc9803d663df898",
+    "final_url": "https://api.github.com/repos/code-423n4/2023-01-astaria/commits/1bfc58b42109b839528ab1c21dc9803d663df898",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:38:47.866110+00:00",
+    "body_file": "7251e7d057999164fd97875c1b481f12839ae09b5aa6cd50b1c4929f7ae33081.txt",
+    "sha256": "4b3fcf915f48a232e5aec50636e85f5ebf36726f1a90ebdc2979c3cad49642e3",
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "etag": "W/\"9f0896993f37b276963553cabd36398cce861409cc77de7d6c24fcfdeb2d2107\""
+    },
+    "fixture_kind": "recorded_http"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/code-423n4/2023-01-astaria/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+    "final_url": "https://raw.githubusercontent.com/code-423n4/2023-01-astaria/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:38:48.583648+00:00",
+    "body_file": "3d38ee6e5d70e0417b59edb385bc5f5233c38a7b467d8f6c4bf06e035559a46e.txt",
+    "sha256": "6c21c0ba4364423d24596133241bd62cb464a24babdca9b9c2cf5469c23add69",
+    "headers": {
+      "content-type": "text/plain; charset=utf-8",
+      "etag": "W/\"46c86bc49ff66076b9cb28a467fad13153fe8044c072b2dd55da864a36e6edba\""
+    },
+    "fixture_kind": "recorded_http"
+  },
+  {
+    "url": "https://api.github.com/gists/06238839330315780b90d9202042ea0f",
+    "final_url": "https://api.github.com/gists/06238839330315780b90d9202042ea0f",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:38:50.273715+00:00",
+    "body_file": "b61ddf08ec93d87634d63620488655588bcf75916157697feb2c672814d86328.txt",
+    "sha256": "5f288009b5d86223355f0249329e259de8dddc3de866dcd8a80e68a2369642d5",
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "etag": "W/\"53288d58d23b23d4f6c808de4a6d815b2092328e7af7dd6969652593e17c7c95\""
+    },
+    "fixture_kind": "recorded_http"
+  },
+  {
+    "url": "https://github.com/outdoteth/caviar-private-pools/pull/6.diff",
+    "final_url": "https://patch-diff.githubusercontent.com/raw/outdoteth/caviar-private-pools/pull/6.diff",
+    "status_code": 200,
+    "captured_at": "2026-09-29T01:38:53.056416+00:00",
+    "body_file": "eff7c1fd5b37dab813e513c873c40cf0facf1ca4c8551987176e42a1e66d45bd.txt",
+    "sha256": "0c56b65c368ab952f31bdffe343b5fedd8b8c724f63bbe97f6a2e812f366a3f5",
+    "headers": {
+      "content-type": "text/plain; charset=utf-8",
+      "etag": "W/\"0c56b65c368ab952f31bdffe343b5fed\""
+    },
+    "fixture_kind": "recorded_http"
+  },
+  {
+    "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865.diff",
+    "final_url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865.diff",
+    "status_code": 404,
+    "captured_at": "2026-09-29T01:38:53.650877+00:00",
+    "body_file": "221052b8bd76f5563408fa40c19ac5457f7e3b604dfbc4cf4cd8deeeb96a2640.txt",
+    "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
+    "headers": {
+      "content-type": "text/plain; charset=utf-8"
+    },
+    "fixture_kind": "recorded_http"
+  }
+]

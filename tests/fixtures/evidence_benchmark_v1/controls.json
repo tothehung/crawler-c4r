@@ -1,0 +1,17 @@
+{
+  "fixture_kind": "synthetic",
+  "note": "Controls exercise absent corpus cases; never count as real findings or measured source availability.",
+  "findings": [
+    {"case_id": "control-no-code", "finding": {"id": "control-no-code", "slug": "control-no-code", "title": "Synthetic prose-only finding", "content": "The documented operating procedure lacks a review step."}, "expected_candidate_count": 0},
+    {"case_id": "control-private-with-inline", "finding": {"id": "control-private-with-inline", "slug": "control-private-with-inline", "title": "Synthetic inaccessible source with inline fallback", "content": "https://github.com/example/private/blob/main/src/Vault.sol#L1-L3\n\n```solidity\nfunction withdraw() external { send(); }\n```"}, "expected_candidate_count": 2, "expected_behavior": "Preserve inline evidence when remote retrieval fails; 404 alone does not prove private/deleted."}
+  ],
+  "http_scenarios": [
+    {"name": "not-found", "status_code": 404, "expected": "unavailable", "retryable": false, "body": "Not Found"},
+    {"name": "rate-limited", "status_code": 429, "expected": "retryable_error", "retryable": true, "headers": {"Retry-After": "60"}, "body": "rate limited"},
+    {"name": "upstream-failure", "status_code": 503, "expected": "retryable_error", "retryable": true, "body": "unavailable"},
+    {"name": "timeout", "exception": "ReadTimeout", "expected": "retryable_error", "retryable": true}
+  ],
+  "duplicate_groups": [
+    {"group_id": "synthetic-cross-source", "members": [{"source": "solodit", "source_id": "demo-duplicate-a"}, {"source": "code4rena", "source_id": "demo-duplicate-b"}], "report_url": "https://example.invalid/audit#finding-1", "expected": "One canonical finding; preserve two source identities and both provenance links."}
+  ]
+}

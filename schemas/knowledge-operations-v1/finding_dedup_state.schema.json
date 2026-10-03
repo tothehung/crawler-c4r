@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "dedup_key": {
+      "minLength": 1,
+      "title": "Dedup Key",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "dedup_version": {
+      "minLength": 1,
+      "title": "Dedup Version",
+      "type": "string"
+    },
+    "membership_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Membership Ids",
+      "type": "array"
+    },
+    "completed_at": {
+      "format": "date-time",
+      "title": "Completed At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "dedup_key",
+    "snapshot_id",
+    "dedup_version",
+    "membership_ids",
+    "completed_at"
+  ],
+  "title": "FindingDedupState",
+  "type": "object"
+}

@@ -7,3 +7,4 @@ rich
 pytest
 ruff
 black
+markdown-it-py==4.2.0

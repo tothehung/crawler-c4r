@@ -1,0 +1,33 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "build_id": {
+      "minLength": 1,
+      "title": "Build Id",
+      "type": "string"
+    },
+    "revision_id": {
+      "minLength": 1,
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "input_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Input Fingerprint",
+      "type": "string"
+    }
+  },
+  "required": [
+    "build_id",
+    "revision_id",
+    "input_fingerprint"
+  ],
+  "title": "KnowledgeBuild",
+  "type": "object"
+}

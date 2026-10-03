@@ -1,0 +1,33 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "knowledge_id": {
+      "minLength": 1,
+      "title": "Knowledge Id",
+      "type": "string"
+    },
+    "latest_revision_id": {
+      "minLength": 1,
+      "title": "Latest Revision Id",
+      "type": "string"
+    },
+    "latest_version": {
+      "minimum": 1,
+      "title": "Latest Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "knowledge_id",
+    "latest_revision_id",
+    "latest_version"
+  ],
+  "title": "KnowledgeHead",
+  "type": "object"
+}

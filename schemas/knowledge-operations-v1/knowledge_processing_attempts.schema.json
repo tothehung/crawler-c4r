@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "attempt_id": {
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "processing_key": {
+      "minLength": 1,
+      "title": "Processing Key",
+      "type": "string"
+    },
+    "attempt": {
+      "minimum": 1,
+      "title": "Attempt",
+      "type": "integer"
+    },
+    "outcome": {
+      "enum": [
+        "succeeded",
+        "partial",
+        "failed"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "resolver_seconds": {
+      "minimum": 0,
+      "title": "Resolver Seconds",
+      "type": "number"
+    },
+    "completed_at": {
+      "format": "date-time",
+      "title": "Completed At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "attempt_id",
+    "processing_key",
+    "attempt",
+    "outcome",
+    "resolver_seconds",
+    "completed_at"
+  ],
+  "title": "ProcessingAttempt",
+  "type": "object"
+}

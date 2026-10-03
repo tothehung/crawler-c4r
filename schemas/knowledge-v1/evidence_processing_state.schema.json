@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "ProcessingStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "succeeded",
+        "partial",
+        "failed"
+      ],
+      "title": "ProcessingStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "processing_key": {
+      "minLength": 1,
+      "title": "Processing Key",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "minLength": 1,
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "pipeline_version": {
+      "minLength": 1,
+      "title": "Pipeline Version",
+      "type": "string"
+    },
+    "config_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Config Hash",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ProcessingStatus",
+      "default": "pending"
+    },
+    "attempts": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "max_attempts": {
+      "default": 3,
+      "minimum": 1,
+      "title": "Max Attempts",
+      "type": "integer"
+    },
+    "candidate_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Candidate Count",
+      "type": "integer"
+    },
+    "resolved_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Resolved Count",
+      "type": "integer"
+    },
+    "unresolved_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Unresolved Count",
+      "type": "integer"
+    },
+    "retryable": {
+      "default": false,
+      "title": "Retryable",
+      "type": "boolean"
+    },
+    "next_retry_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Next Retry At"
+    },
+    "lease_owner": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lease Owner"
+    },
+    "lease_expires_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lease Expires At"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Code"
+    },
+    "error_message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Message"
+    },
+    "completion_reason": {
+      "anyOf": [
+        {
+          "enum": [
+            "all_resolved",
+            "no_candidates"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Completion Reason"
+    },
+    "outputs_persisted_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Outputs Persisted At"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "processing_key",
+    "snapshot_id",
+    "pipeline_version",
+    "config_hash",
+    "updated_at"
+  ],
+  "title": "ProcessingState",
+  "type": "object"
+}

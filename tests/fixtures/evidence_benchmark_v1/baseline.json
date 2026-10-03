@@ -1,0 +1,1608 @@
+{
+  "benchmark_version": "1.0",
+  "mode": "offline",
+  "annotation_status": "assistant-report-reviewed; auditor review pending",
+  "real_case_count": 35,
+  "source_counts": {
+    "solodit": 20,
+    "code4rena": 15
+  },
+  "quarantined": [
+    "solodit-66925"
+  ],
+  "input_hashes": {
+    "cases.json": "de393f975c78bd466aeeb9e187c6b4933393211cc0cc88fc49d10c877695d2fb",
+    "annotations.json": "44de5668c7a80452b44d27cd7f521a0162f32207cc5e17e65ce9e36213969b82",
+    "review_plan.json": "3bd5a1f195c0d8429bf94834a097772d27192dcda0facbb90b46b12fd1661ce6",
+    "controls.json": "e19e0fa4a89fd0b349a25c0eaa6fea63d9ce8523c59479cc8721ef892b41cd2a",
+    "http/index.json": "5782267c71afa01507256be8ee35ccca738145b01374cb7a4421e8b91d31ec1e"
+  },
+  "implementation_hashes": {
+    "src/models/finding.py": "a7431424ca08ec8257d74d770de6cbe8a08d65f63928138172b1073f11a7b90a",
+    "src/models/evidence.py": "92df5766c037cc9abc36363eadb2a678b846178cf6bcdbf9618aaec833f23428",
+    "src/services/evidence/__init__.py": "5341e097e7f2db6e4158838cf693d86799d87ac89a25f21d7e04223f45ce5043",
+    "src/services/evidence/dedup.py": "a729daf1ac43823d00053d8d2c4ec5ecc62b4e118dd98aee3377ca1ebc897541",
+    "src/services/evidence/github_fetcher.py": "3757dd76805df4c5dfab62740495b4a4821ac3e8ab6d662feb453600857bb869",
+    "src/services/evidence/pipeline.py": "50af5fefdc0023eb1db0453631133866d8ba3c82b22ed4265edab0ad9d3225e2",
+    "src/services/evidence/scan_body.py": "3f616f28cdbc0eb8a509709d85f2bf8f85e8a16bc712ce288d5451bb30539bb8",
+    "src/services/evidence/snippet_cleaner.py": "7510de4b50c896ca3fb7c9a7878b17fb0a24b8c380a2b278de42879f9851c1b4",
+    "src/services/evidence/validator.py": "feda5790da10738c2322a0d174aa35a2b392938bf980fc04789f9f6917556fe0"
+  },
+  "candidate_metrics": {
+    "metric": "selected_target_recall",
+    "targets": 105,
+    "matched": 93,
+    "recall": 0.8857142857142857,
+    "forbidden_matches": 20,
+    "forbidden_targets": 36,
+    "by_kind": {
+      "github_file": {
+        "targets": 20,
+        "matched": 19
+      },
+      "inline_snippet": {
+        "targets": 57,
+        "matched": 55
+      },
+      "github_diff": {
+        "targets": 19,
+        "matched": 19
+      },
+      "inline_diff": {
+        "targets": 7,
+        "matched": 0
+      },
+      "gist": {
+        "targets": 2,
+        "matched": 0
+      }
+    },
+    "by_source": {
+      "solodit": {
+        "targets": 36,
+        "matched": 35
+      },
+      "code4rena": {
+        "targets": 69,
+        "matched": 58
+      }
+    },
+    "cases": [
+      {
+        "case_id": "solodit-66924",
+        "target_count": 4,
+        "matched_count": 4,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 5
+      },
+      {
+        "case_id": "solodit-66923",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66922",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66921",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66920",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66900",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66899",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66898",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66897",
+        "target_count": 4,
+        "matched_count": 3,
+        "missing_target_indexes": [
+          3
+        ],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 4
+      },
+      {
+        "case_id": "solodit-66896",
+        "target_count": 4,
+        "matched_count": 4,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 5
+      },
+      {
+        "case_id": "solodit-66895",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66894",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66893",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 3
+      },
+      {
+        "case_id": "solodit-66892",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66891",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66890",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66889",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66888",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "solodit-66887",
+        "target_count": 1,
+        "matched_count": 1,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 2
+      },
+      {
+        "case_id": "c4-2023-04-caviar-h-01-royalty-receiver-can-drain-a-private-pool",
+        "target_count": 5,
+        "matched_count": 5,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 19
+      },
+      {
+        "case_id": "c4-2023-04-caviar-h-02-privatepool-owner-can-steal-all-erc20-and-nft-from-user-via-arbitrary-execution",
+        "target_count": 6,
+        "matched_count": 6,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [
+          0
+        ],
+        "observed_count": 8
+      },
+      {
+        "case_id": "c4-2023-04-caviar-h-03-risk-of-silent-overflow-in-reserves-update",
+        "target_count": 6,
+        "matched_count": 6,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 9
+      },
+      {
+        "case_id": "c4-2023-04-caviar-m-01-the-buy-functions-mechanism-enables-users-to-acquire-flash-loans-at-a-cheaper-fee-rate",
+        "target_count": 2,
+        "matched_count": 2,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 3
+      },
+      {
+        "case_id": "c4-2023-04-caviar-m-02-ethrouter-cant-perform-multiple-changes",
+        "target_count": 4,
+        "matched_count": 2,
+        "missing_target_indexes": [
+          1,
+          2
+        ],
+        "forbidden_match_indexes": [],
+        "observed_count": 2
+      },
+      {
+        "case_id": "c4-2023-04-caviar-m-03-flash-loan-fee-is-incorrect-in-private-pool-contract",
+        "target_count": 6,
+        "matched_count": 5,
+        "missing_target_indexes": [
+          2
+        ],
+        "forbidden_match_indexes": [],
+        "observed_count": 5
+      },
+      {
+        "case_id": "c4-2023-04-caviar-m-04-changefeequote-will-fail-for-low-decimal-erc20-tokens",
+        "target_count": 5,
+        "matched_count": 4,
+        "missing_target_indexes": [
+          1
+        ],
+        "forbidden_match_indexes": [],
+        "observed_count": 5
+      },
+      {
+        "case_id": "c4-2023-05-juicebox-m-01-delegate-architecture-forces-users-to-set-zero-slippage",
+        "target_count": 4,
+        "matched_count": 4,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 6
+      },
+      {
+        "case_id": "c4-2023-05-juicebox-m-02-low-liquidity-in-uniswap-v3-pool-can-lead-to-eth-lockup-in-jbxbuybackdelegate-contract",
+        "target_count": 4,
+        "matched_count": 3,
+        "missing_target_indexes": [
+          0
+        ],
+        "forbidden_match_indexes": [],
+        "observed_count": 4
+      },
+      {
+        "case_id": "c4-2023-05-juicebox-m-03-funding-cycles-that-use-jbxbuybackdelegate-as-a-redeem-data-source-or-any-derived-class-will-slash-all-redeemable-tokens",
+        "target_count": 4,
+        "matched_count": 4,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 4
+      },
+      {
+        "case_id": "c4-2023-01-astaria-h-01-lientoken-lender-and-liquidator-can-collude-to-block-auction-and-seize-collateral",
+        "target_count": 5,
+        "matched_count": 5,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 8
+      },
+      {
+        "case_id": "c4-2023-01-astaria-h-02-erc4626cloned-deposit-and-mint-logic-differ-on-first-deposit",
+        "target_count": 4,
+        "matched_count": 4,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 5
+      },
+      {
+        "case_id": "c4-2023-01-astaria-h-03-improper-validations-in-clearinghouse-possible-to-lock-collateral-nft-in-contract",
+        "target_count": 6,
+        "matched_count": 1,
+        "missing_target_indexes": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "forbidden_match_indexes": [],
+        "observed_count": 10
+      },
+      {
+        "case_id": "c4-2023-01-astaria-h-04-strategist-can-fail-to-withdraw-asset-token-from-a-private-vault",
+        "target_count": 5,
+        "matched_count": 5,
+        "missing_target_indexes": [],
+        "forbidden_match_indexes": [],
+        "observed_count": 7
+      },
+      {
+        "case_id": "c4-2023-01-astaria-h-05-vault-may-be-drained-after-a-liquidated-nft-was-claimed-by-the-liquidator",
+        "target_count": 3,
+        "matched_count": 2,
+        "missing_target_indexes": [
+          2
+        ],
+        "forbidden_match_indexes": [],
+        "observed_count": 8
+      }
+    ],
+    "not_scored": [
+      "global precision",
+      "remote-resolution success rate",
+      "role accuracy",
+      "Solidity parse accuracy",
+      "cross-source dedup accuracy"
+    ]
+  },
+  "http_transport_probe": [
+    {
+      "repo": "code-423n4/2023-04-caviar",
+      "ref": "main",
+      "status": "error",
+      "error_type": "TypeError",
+      "message": "GitHubFetcher._headers() takes 1 positional argument but 2 were given"
+    },
+    {
+      "repo": "code-423n4/2023-01-astaria",
+      "ref": "1bfc58b42109b839528ab1c21dc9803d663df898",
+      "status": "error",
+      "error_type": "TypeError",
+      "message": "GitHubFetcher._headers() takes 1 positional argument but 2 were given"
+    }
+  ],
+  "observations": {
+    "solodit-66924": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol",
+        "start_line": 924,
+        "end_line": 952,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "f8f71ce45d6488c107e3160bbd5665c1319ed9eb775e5e58e17ccbc630ab6e42"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "32483b12102029d266b93f42b257fd8e48e4229cac81d469a238969e2a19fd53"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "8c8003e6359d5000b10b5d4f110ebc3d2704c5eeae714126770320658fc54389"
+      }
+    ],
+    "solodit-66923": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol",
+        "start_line": 340,
+        "end_line": 352,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "01972991c1c13801d50c1c221ec6715cb9e324604eb9e8611ff6e3c3c0988dad"
+      }
+    ],
+    "solodit-66922": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol",
+        "start_line": 722,
+        "end_line": 725,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "934fcb06870115db4fa3a9773ed0ccc25f1a0f339cbc57955289da74ec1ad6e0"
+      }
+    ],
+    "solodit-66921": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol",
+        "start_line": 224,
+        "end_line": 229,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "e8ed37ef34fe6e9b67fb3aa249e6bb90934baf373be04701122cd82901e90400"
+      }
+    ],
+    "solodit-66920": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol",
+        "start_line": 338,
+        "end_line": 343,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "0da1420ca9cf7b69b1034b907e29b6c8543afb00fe953e86868b4ba1b271582a"
+      }
+    ],
+    "solodit-66900": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "9e090dcfa6f4c2ab5fb46d1737652485542f0abdf80ba70f6753d05d01747b74"
+      }
+    ],
+    "solodit-66899": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "6a9b7b38299a689e5f6fb164f3c16152904b0c018ec9ad0b1d8f803816daee12"
+      }
+    ],
+    "solodit-66898": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "7819b0f406c0875248c7f64846ff47db97a51f68c4bc6bf08078f331a16bab58"
+      }
+    ],
+    "solodit-66897": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/c54cb88b1c6fb3c757eea876a74534d4725903b7",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "9e829b943a5c224b0353231fff955fe10c593a74f8c3d39c61812f7e5952b574"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "a6c0dcab3bf7498ccbbe30781b08592ed023344c4a2691d7bca875b34aae4b25"
+      }
+    ],
+    "solodit-66896": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/0f7abda88e294c13dd1e30d1a57d9b219b4846a6",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "aae694d7fc01bf3a978b5f33b9385a8a4babbad95d886ef60375654b3018dff4"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "bfb741c6944b0eb7db64cb83b1b589feb469debffc3216648cc88390aa7a3844"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "0d10e35cc527b91d1f69f07effe42e516146d0965b8ba29e9ffcc5793ec87521"
+      }
+    ],
+    "solodit-66895": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66894": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66893": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "c2eb1fa03fcce3d4fa7e7bc71df7acd841b27ae9cea4759a05242356ba430284"
+      }
+    ],
+    "solodit-66892": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66891": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66890": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66889": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66888": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "solodit-66887": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      }
+    ],
+    "c4-2023-04-caviar-h-01-royalty-receiver-can-drain-a-private-pool": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 237,
+        "end_line": 252,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 267,
+        "end_line": 268,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 274,
+        "end_line": 274,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 271,
+        "end_line": 285,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 328,
+        "end_line": 352,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 251,
+        "end_line": 252,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 354,
+        "end_line": 355,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 242,
+        "end_line": 248,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 273,
+        "end_line": 274,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/common/ERC2981.sol",
+        "start_line": 94,
+        "end_line": 99,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/michaelliao/1024pixels/blob/master/contracts/1024pixels.sol",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/12",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "e4c0dac28e1ca4c07ca495b2ff41d94f4bc4c684987a54355141ab8a78620a46"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "1d84912c598f64d39718ae19190e7261feb90ab01df1f292dd7aa41663b92392"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "f5238f101f3b02546989718295f334c08268acb7cd5af46539fb8b9bfe6f7a1e"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "1c043f1be8636b9caa964d45ec54b43f8a7be1c1817157dbf0e081aa9f57c6a5"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "2a81b3f0b6960627b689f901b962cb337deadc5f68e4ec9e430ef5258d368d3f"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "2021b7d28a3e688ddba9a9978128f8080b64d28626342b52325243a6977121a3"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "c4a9cf9f5cda229d6dcfa18c55cbb0e7b3bf62dc26ad6116391eb026e9bf2822"
+      }
+    ],
+    "c4-2023-04-caviar-h-02-privatepool-owner-can-steal-all-erc20-and-nft-from-user-via-arbitrary-execution": [
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/2",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/cd8a92667bcb6657f70657183769c244d04c015c/src/PrivatePool.sol",
+        "start_line": 648,
+        "end_line": 649,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "97e2992814554e9b2dbe165ce37f326fc68b16512040165d5815da9ee4ce3d22"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "0f75ba34144e95e80d401c40211611bc5d4160fc89070d3501a05551e3bd85e5"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "e453325feb0451584001d69fb9456f1197532d3a66f0c86e8c1893304aedf00b"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "7facf352313e981a04db2a864e6e170f85eb3456f0051b43ef9f62ce29a3c389"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "62f2743ce3df6299d901fd3b072cabaf979c89fe7e88d61c1953efe4ac1e3eff"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "68a9bc926bdb64ccbded3dee150b84d678c6d79d49b21b77b065ab4fd37f94f9"
+      }
+    ],
+    "c4-2023-04-caviar-h-03-risk-of-silent-overflow-in-reserves-update": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 230,
+        "end_line": 231,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 323,
+        "end_line": 324,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 211,
+        "end_line": 211,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 301,
+        "end_line": 301,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/10",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "6cd772f66bc73f6396480f03039dcae095b581802a5965f915d9b78a536d00f8"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "2bab0d4a61a33984be576ae3270aa87c90a66d4e519c56a5e4004d46f776cdc5"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "87826f11d4089a58b7441b6387258fab49597c2368f7c824993645c905335be1"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "af6485fc362a5cd5d3cd2dba84072a1d1995298e8c15b1b4bbf123195953e739"
+      }
+    ],
+    "c4-2023-04-caviar-m-01-the-buy-functions-mechanism-enables-users-to-acquire-flash-loans-at-a-cheaper-fee-rate": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 211,
+        "end_line": 289,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 240,
+        "end_line": 240,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "300b5636777dd51409124b66edf658c5b236075076de7aa9afd707390d1c0ae5"
+      }
+    ],
+    "c4-2023-04-caviar-m-02-ethrouter-cant-perform-multiple-changes": [
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/5",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "5066a0a4e92cc40c3e677ac67a32f74666013e2a81fdf503394877cd2a96dc82"
+      }
+    ],
+    "c4-2023-04-caviar-m-03-flash-loan-fee-is-incorrect-in-private-pool-contract": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 750,
+        "end_line": 752,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "github_diff",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/6",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "f627ae6c8b49253087518ce22e5117a9ccf47a046c9cbb439d2f1a782b5ca29a"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "a8cb391489affb2a580b8f5ddcd46f5057a60c0fe726181bd8260bd566e222e1"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "671aafc71b46ed01249f812e57b5bac83aa5467228ce4eece9cee29188afa0d8"
+      }
+    ],
+    "c4-2023-04-caviar-m-04-changefeequote-will-fail-for-low-decimal-erc20-tokens": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 87,
+        "end_line": 88,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol",
+        "start_line": 731,
+        "end_line": 738,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "668b5432b4e7cc2584c8a7f091a4c03e27fbcdce6e10bd8df17b747c1b6e7c76"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "d471084560cf390b8568eadcc9b0521ccf476cc3344cdd4e12327242c7994077"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "82986b404e36704a31b13c962aafbdf794a4758f7efddf83ca0101793f00bbfb"
+      }
+    ],
+    "c4-2023-05-juicebox-m-01-delegate-architecture-forces-users-to-set-zero-slippage": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol",
+        "start_line": 144,
+        "end_line": 171,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/JBSingleTokenPaymentTerminalStore3_1.sol",
+        "start_line": 427,
+        "end_line": 427,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/abstract/JBPayoutRedemptionPaymentTerminal3_1.sol",
+        "start_line": 1470,
+        "end_line": 1493,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "1d4345190d881e8ef4d2753f181e3f4bea7740d3065ed86b99e1cd75d8af1f48"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "60a2b83df4a3874a9635c396e0ab57802d4d2ad55484cc57529ac50972d70c51"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "9e7e7222bd90575fbd50a8a6055edfc03df8275a1c3da2bf1baa5c6353063e56"
+      }
+    ],
+    "c4-2023-05-juicebox-m-02-low-liquidity-in-uniswap-v3-pool-can-lead-to-eth-lockup-in-jbxbuybackdelegate-contract": [
+      {
+        "kind": "located_by_symbol",
+        "url": "https://github.com/Uniswap/v3-core/blob/main/contracts/UniswapV3Pool.sol",
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "0ae53144c7a04d2bbb33f02f5aeaf7343b949804a44c81535f8f7dd309990a99"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "751896fec0295938f4c19816df310ccc5990a29c449b430303da46ddee2338d7"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "9e754a39cf1b0b01481e31ecbb77da00d2b9bcee0c89446f63ef45dd16f12574"
+      }
+    ],
+    "c4-2023-05-juicebox-m-03-funding-cycles-that-use-jbxbuybackdelegate-as-a-redeem-data-source-or-any-derived-class-will-slash-all-redeemable-tokens": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol",
+        "start_line": 235,
+        "end_line": 239,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "ee33351ee9feb703e1655c92b84e2e019594ef6cd42a17b02c55d93e03580e93"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "c4edaef9c0e2b18d2983b6b9940b947af7ed2159fddcf9b4bba256f528c789c3"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "489a467d05f3fc6048ff9afc329692c8808829b588eb413d225317c6771c3a17"
+      }
+    ],
+    "c4-2023-01-astaria-h-01-lientoken-lender-and-liquidator-can-collude-to-block-auction-and-seize-collateral": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+        "start_line": 849,
+        "end_line": 849,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+        "start_line": 642,
+        "end_line": 643,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+        "start_line": 900,
+        "end_line": 909,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol",
+        "start_line": 220,
+        "end_line": 231,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "92f0ab0e54f46e02e7ed231f72eabaf7a1654b23c7986a5d42aca81f5bacf365"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "aa56082140b8f744091695303214f144b6620573f06486eacf0b3bf8c492ec78"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "bfadc273ff0ecb2cf9e3b107686462164c62acae07048b83fcbc7763c51bff00"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "632c40e4648b99fc23ff0d1f83c529bb49d64cfdf5110f8ab09ef89706f79fb0"
+      }
+    ],
+    "c4-2023-01-astaria-h-02-erc4626cloned-deposit-and-mint-logic-differ-on-first-deposit": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol",
+        "start_line": 123,
+        "end_line": 127,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol",
+        "start_line": 129,
+        "end_line": 133,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "65191f1930ca50b8d084770655b492a246a52d67a63e1a8f5f7f5174c41fda17"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "14a449aed7da072df1257a943c12760dddad1addfbb7a38eb1501bd882a31d01"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "a6433e63965e6eab0af5776e3d8370d57d3f353e54b4e666aedc722bf26405db"
+      }
+    ],
+    "c4-2023-01-astaria-h-03-improper-validations-in-clearinghouse-possible-to-lock-collateral-nft-in-contract": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol",
+        "start_line": 169,
+        "end_line": 178,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 425,
+        "end_line": 425,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 456,
+        "end_line": 456,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol",
+        "start_line": 123,
+        "end_line": 123,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+        "start_line": 497,
+        "end_line": 510,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol",
+        "start_line": 509,
+        "end_line": 509,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 538,
+        "end_line": 538,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 537,
+        "end_line": 537,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 544,
+        "end_line": 544,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/test/AstariaTest.t.sol",
+        "start_line": 1037,
+        "end_line": 1037,
+        "snippet_sha256": null
+      }
+    ],
+    "c4-2023-01-astaria-h-04-strategist-can-fail-to-withdraw-asset-token-from-a-private-vault": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/AstariaXYZ/astaria-gpl/blob/main/src/ERC4626RouterBase.sol",
+        "start_line": 41,
+        "end_line": 52,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/main/src/Vault.sol",
+        "start_line": 70,
+        "end_line": 73,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/main/src/Vault.sol",
+        "start_line": 72,
+        "end_line": 72,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "87f08f3159696d1dcf8e79c8a6e1777b2c36a64adb958be3b2e048c3d42ba142"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "fbffaef4ae337b1e4911557c23132234e81bb23f37c719ac6e9cc989ba6de9e4"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "04a8925e70e1ad72f3ca9509188a1dc350a9f552613784715606f24d5d97d775"
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "0c1aa2a1b0e125d5de8af3fe473cf2b538143af0e84c291edc6b7226fdb2a99e"
+      }
+    ],
+    "c4-2023-01-astaria-h-05-vault-may-be-drained-after-a-liquidated-nft-was-claimed-by-the-liquidator": [
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol",
+        "start_line": 220,
+        "end_line": 231,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 109,
+        "end_line": 109,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol",
+        "start_line": 220,
+        "end_line": 220,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 352,
+        "end_line": 352,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 538,
+        "end_line": 538,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 537,
+        "end_line": 537,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "url_with_line",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/CollateralToken.sol",
+        "start_line": 544,
+        "end_line": 544,
+        "snippet_sha256": null
+      },
+      {
+        "kind": "inline_snippet",
+        "url": null,
+        "start_line": null,
+        "end_line": null,
+        "snippet_sha256": "0594f0077f5198af2245185b4a911cee8e879d0e0b79e60d2d4ab5a69bea4ea0"
+      }
+    ]
+  },
+  "synthetic_candidate_controls": [
+    {
+      "case_id": "control-no-code",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "case_id": "control-private-with-inline",
+      "expected": 2,
+      "observed": 2
+    }
+  ]
+}

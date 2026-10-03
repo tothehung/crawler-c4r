@@ -1,0 +1,7 @@
+{
+  "name": "kb-cast-pattern-verification",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {"verify": "node verify.cjs"},
+  "dependencies": {"solc": "0.8.24", "ganache": "7.9.2", "ethers": "6.13.5"}
+}

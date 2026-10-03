@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0",
+  "pattern_id": "SOL-MISSING-ACCESS-CONTROL-001",
+  "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "runtime": "ganache@7.9.2",
+  "settings": {
+    "optimizer": {
+      "enabled": false
+    },
+    "evmVersion": "shanghai",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode.object"
+        ]
+      }
+    }
+  },
+  "synthetic": true,
+  "public_network_used": false,
+  "accounts": {
+    "owner": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+    "outsiderA": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+    "outsiderB": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D"
+  },
+  "fixture_hashes": {
+    "UnsafeFeeConfig.sol": "ce008c3d8a7979093394d5dbc68d7e733e9d49a23f483a4dce202b30aa3ade89",
+    "GuardedFeeConfig.sol": "fdfd6c6c88b63bee35ddb326c0fc077bafda3ecf63c0f2ba0b574ddbef812d64",
+    "UnknownFragment.sol": "5713a6b92c1e760880864ae08fcb8406279e6ab5e66d0e9ab1465a5b70bb140f"
+  },
+  "runner_sha256": "c95b9bfa47c9a7440ea9f2084c78acd3c0eefa553aba0879b7e926dfaed5c064",
+  "dependency_lock_sha256": "9821d753629bd5b39912e966d82c1b3b258ac3203ea140b3b2af6d9f598ea880",
+  "generated_context_harness": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.24;\ncontract GuardedCaller {\n      address public immutable owner;\n      address public feeRecipient;\n      constructor() { owner = msg.sender; feeRecipient = msg.sender; }\n      function setFeeRecipient(address recipient) external {\n        require(msg.sender == owner, \"unauthorized\");\n        _setFeeRecipient(recipient);\n      }\n      function _setFeeRecipient(address recipient) internal {\n    require(recipient != address(0), \"zero recipient\");\n    feeRecipient = recipient;\n}\n\n    }\ncontract UnguardedCaller {\n      address public immutable owner;\n      address public feeRecipient;\n      constructor() { owner = msg.sender; feeRecipient = msg.sender; }\n      function setFeeRecipient(address recipient) external {\n        \n        _setFeeRecipient(recipient);\n      }\n      function _setFeeRecipient(address recipient) internal {\n    require(recipient != address(0), \"zero recipient\");\n    feeRecipient = recipient;\n}\n\n    }",
+  "executions": [
+    {
+      "contract": "UnsafeFeeConfig",
+      "bytecode_sha256": "cfc2ac00a20d9ff72a423fe407859ff770b13627764d074e3505a1ee246e6202",
+      "observations": [
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": true
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderB",
+          "caller": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": true
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "before": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": true
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        }
+      ]
+    },
+    {
+      "contract": "GuardedFeeConfig",
+      "bytecode_sha256": "eab8308838a7ee4abd9d28a29d3d19b5ed19205e7436836aad9a752ea33c26ac",
+      "observations": [
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": true,
+          "transaction_status": 0,
+          "revert_reason": "unauthorized",
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderB",
+          "caller": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": true,
+          "transaction_status": 0,
+          "revert_reason": "unauthorized",
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": true,
+          "transaction_status": 0,
+          "revert_reason": "unauthorized",
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        }
+      ]
+    },
+    {
+      "contract": "GuardedCaller",
+      "bytecode_sha256": "17d99eca4df5b8e3652074985f169e8121dde4ef88ff051d4f09897d506c6ddd",
+      "observations": [
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": true,
+          "transaction_status": 0,
+          "revert_reason": "unauthorized",
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderB",
+          "caller": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": true,
+          "transaction_status": 0,
+          "revert_reason": "unauthorized",
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": true,
+          "transaction_status": 0,
+          "revert_reason": "unauthorized",
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        }
+      ]
+    },
+    {
+      "contract": "UnguardedCaller",
+      "bytecode_sha256": "811b2649d4d81358de4aca23421d404813d5515f811de3c7d4b874404aa36305",
+      "observations": [
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": true
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderB",
+          "caller": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": true
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "before": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "after": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        },
+        {
+          "caller_role": "outsiderA",
+          "caller": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "recipient": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "before": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "after": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": true
+        },
+        {
+          "caller_role": "owner",
+          "caller": "0x52014e4c8Ebb027530726E573C95A4EaBaA91fe6",
+          "recipient": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "before": "0xfE2d9e435A5DfC3993e6FE1B45dAc8EE3004100D",
+          "after": "0xCF4F6891A4a23D60FCa7d28448443C8b631184D5",
+          "reverted": false,
+          "transaction_status": 1,
+          "revert_reason": null,
+          "unauthorized_change": false
+        }
+      ]
+    }
+  ],
+  "checks": 24,
+  "expected_labels": {
+    "unsafe": "confirmed",
+    "guarded": "false_positive_for_this_pattern",
+    "fragment": "insufficient_context"
+  },
+  "limitations": [
+    "Synthetic feeRecipient example, not a reproduction of the Sherlock pool-activation finding.",
+    "Confirms unauthorized configuration writes only; no fee transfer, monetary loss or severity tested.",
+    "Guarded verdict covers this pattern and entry path only; wrappers are hypothetical callers."
+  ]
+}

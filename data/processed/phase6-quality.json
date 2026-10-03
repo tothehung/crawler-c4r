@@ -1,0 +1,151 @@
+{
+  "by_source": {
+    "code4rena": {
+      "findings_with_evidence": {
+        "denominator": 15,
+        "numerator": 15,
+        "rate": 1.0
+      },
+      "link_errors": {
+        "fixture_missing": 34
+      },
+      "parse_coverage": {
+        "denominator": 82,
+        "numerator": 82,
+        "rate": 1.0
+      },
+      "parse_success_checked": {
+        "denominator": 82,
+        "numerator": 5,
+        "rate": 0.06097560975609756
+      },
+      "resolution": {
+        "resolved": 83,
+        "retryable_error": 34
+      },
+      "resolve_success": {
+        "denominator": 117,
+        "numerator": 83,
+        "rate": 0.7094017094017094
+      },
+      "role_coverage": {
+        "denominator": 83,
+        "numerator": 29,
+        "rate": 0.3493975903614458
+      },
+      "roles": {
+        "fix": 12,
+        "poc": 17,
+        "unknown": 54
+      },
+      "snapshots": 15,
+      "source_findings": 15,
+      "states": {
+        "partial": 13,
+        "succeeded": 2
+      },
+      "syntax_status": {
+        "insufficient_context": 76,
+        "invalid": 1,
+        "parsed": 5
+      }
+    },
+    "solodit": {
+      "findings_with_evidence": {
+        "denominator": 19,
+        "numerator": 11,
+        "rate": 0.5789473684210527
+      },
+      "link_errors": {
+        "fixture_missing": 19
+      },
+      "parse_coverage": {
+        "denominator": 18,
+        "numerator": 18,
+        "rate": 1.0
+      },
+      "parse_success_checked": {
+        "denominator": 18,
+        "numerator": 7,
+        "rate": 0.3888888888888889
+      },
+      "resolution": {
+        "resolved": 18,
+        "retryable_error": 19
+      },
+      "resolve_success": {
+        "denominator": 37,
+        "numerator": 18,
+        "rate": 0.4864864864864865
+      },
+      "role_coverage": {
+        "denominator": 18,
+        "numerator": 1,
+        "rate": 0.05555555555555555
+      },
+      "roles": {
+        "fix": 1,
+        "unknown": 17
+      },
+      "snapshots": 19,
+      "source_findings": 19,
+      "states": {
+        "partial": 19
+      },
+      "syntax_status": {
+        "insufficient_context": 11,
+        "parsed": 7
+      }
+    }
+  },
+  "config_hash": "ec9a52ef31aa3d048544c86f4a57f1f6dd335de01b97f3baf677f529966d3005",
+  "dedup_version": "finding-dedup-v1",
+  "finding_dedup": {
+    "confirmed_components": [],
+    "confirmed_groups": [],
+    "cross_source_groups": 0,
+    "index_coverage": {
+      "denominator": 34,
+      "numerator": 34,
+      "rate": 1.0
+    },
+    "review_candidates": [],
+    "source_findings_linked": 0
+  },
+  "limitations": [
+    "Scoped to one pipeline/config; snapshot revisions are counted separately from native source findings.",
+    "Parse/role coverage is not vulnerability or role accuracy; parser annotations are the latest stored values.",
+    "Resolver time excludes storage; old/interrupted attempts without a committed metric remain untimed.",
+    "Read while workers are paused for a consistent report; multi-page reports are not database snapshots.",
+    "Exact normalized content/title creates review candidates only; no embedding/fuzzy semantic matcher."
+  ],
+  "operations": {
+    "attempts": 34,
+    "attempts_exhausted": 0,
+    "resolver_seconds_max": null,
+    "resolver_seconds_mean": null,
+    "resolver_seconds_total": 0,
+    "retry_attempts": 0,
+    "retry_due": 32,
+    "retry_waiting": 0,
+    "state_errors": {},
+    "timed_attempts": 0,
+    "untimed_attempts": 34
+  },
+  "pipeline_version": "evidence-resolver-v1",
+  "schema_version": "1.0",
+  "totals": {
+    "evidence_links": 101,
+    "evidence_shared_between_findings": 1,
+    "links": 154,
+    "processing_states": 34,
+    "reused_evidence_links": 1,
+    "snapshots": 34,
+    "source_findings": 34,
+    "states": {
+      "partial": 32,
+      "succeeded": 2
+    },
+    "unique_evidence": 100
+  }
+}

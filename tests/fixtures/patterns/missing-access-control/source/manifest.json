@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "source": "sherlock",
+  "source_id": "2023-09-Gitcoin-458",
+  "source_url": "https://github.com/sherlock-audit/2023-09-Gitcoin-judging/issues/458",
+  "api_url": "https://api.github.com/repos/sherlock-audit/2023-09-Gitcoin-judging/issues/458",
+  "title": "lemonmon - Missing access modifier for `RFPSimpleStrategy.setPoolActive()` may lead to multiple issues",
+  "captured_at": "2026-09-30T06:52:20.879686+00:00",
+  "issue_updated_at": "2023-11-02T16:39:37Z",
+  "source_labels": [
+    "High",
+    "Has Duplicates",
+    "Sponsor Confirmed",
+    "Will Fix",
+    "Escalation Resolved",
+    "Reward"
+  ],
+  "repo": "sherlock-audit/2023-09-Gitcoin",
+  "commit_sha": "6430c8004017e96ae2f5aac365bdefd0b6eeea72",
+  "code_path": "allo-v2/contracts/strategies/rfp-simple/RFPSimpleStrategy.sol",
+  "raw_url": "https://raw.githubusercontent.com/sherlock-audit/2023-09-Gitcoin/6430c8004017e96ae2f5aac365bdefd0b6eeea72/allo-v2/contracts/strategies/rfp-simple/RFPSimpleStrategy.sol",
+  "code_url": "https://github.com/sherlock-audit/2023-09-Gitcoin/blob/6430c8004017e96ae2f5aac365bdefd0b6eeea72/allo-v2/contracts/strategies/rfp-simple/RFPSimpleStrategy.sol",
+  "hashes": {
+    "issue.json": "42ddc0c7d1077e09e944db510b838e023f7d2024575c81284db50dd607c2a33c",
+    "report.md": "c8f8ecf8fb7d5ca662d5fdd6c8581c33c2ffb9173dd1b334d18839ff0bf9b683",
+    "commit.json": "c0b41a4c319a9976d731eed7c1ce1ac6c6bb46aa227fd7eea0e5d5539535b8d5",
+    "RFPSimpleStrategy.sol": "5f644f4b69d19c3843bbde4cf4c566f4f0a733737030a9d63789ba652a0f7e7e"
+  },
+  "source_snapshot_id": "external_sha256:42ddc0c7d1077e09e944db510b838e023f7d2024575c81284db50dd607c2a33c",
+  "storage": "supplementary_pattern_source_not_main_database",
+  "limitations": [
+    "Captured main was resolved to a commit; not asserted to be the original audit commit.",
+    "Historical issue concerns pool activation, not feeRecipient; the authorization mechanism is analogous.",
+    "Source labels are not local approval. Original protocol PoC not reproduced."
+  ]
+}

