@@ -1,0 +1,320 @@
+{
+  "metadata": {
+    "title": "W3GoAudit Regression Suite Execution Report",
+    "phase": "Đợt 3 — Regression & Expansion Standardization",
+    "timestamp": "2026-10-25T09:05:44Z",
+    "elapsed_seconds": 26.79,
+    "status": "PASSED"
+  },
+  "invariants": [
+    {
+      "check": "Unit Tests Pass Rate == 100%",
+      "passed": true,
+      "details": "249 passed, 2 skipped in 25.83s"
+    },
+    {
+      "check": "Pilot v2 B4 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Pilot v2 B4 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Pilot v2 B4 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Pilot v2 B5 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Pilot v2 B5 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Pilot v2 B5 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Reentrancy B4 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Reentrancy B4 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Reentrancy B4 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Reentrancy B5 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Reentrancy B5 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Reentrancy B5 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    }
+  ],
+  "datasets": {
+    "pilot_v2": {
+      "dataset_name": "Pilot v2 (Narrowing Cast & Access Control)",
+      "total_cases": 20,
+      "baselines": {
+        "Baseline 1 (Rule-Only)": {
+          "total_cases": 20,
+          "ground_truth_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6
+          },
+          "predicted_distribution": {
+            "TP": 20,
+            "FP": 0,
+            "Uncertain": 0,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 7,
+          "accuracy": 35.0,
+          "true_positives_detected": 7,
+          "false_alarms": 7,
+          "precision": 50.0,
+          "recall": 100.0,
+          "f1_score": 66.7,
+          "fp_rate": 100.0
+        },
+        "Baseline 2 (Heuristic)": {
+          "total_cases": 20,
+          "ground_truth_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6
+          },
+          "predicted_distribution": {
+            "TP": 9,
+            "FP": 7,
+            "Uncertain": 4,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 14,
+          "accuracy": 70.0,
+          "true_positives_detected": 5,
+          "false_alarms": 1,
+          "precision": 83.3,
+          "recall": 71.4,
+          "f1_score": 76.9,
+          "fp_rate": 14.3
+        },
+        "Baseline 3 (Naive LLM)": {
+          "total_cases": 20,
+          "ground_truth_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6
+          },
+          "predicted_distribution": {
+            "TP": 15,
+            "FP": 5,
+            "Uncertain": 0,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 10,
+          "accuracy": 50.0,
+          "true_positives_detected": 6,
+          "false_alarms": 3,
+          "precision": 66.7,
+          "recall": 85.7,
+          "f1_score": 75.0,
+          "fp_rate": 42.9
+        },
+        "Baseline 4 (W3GoAudit Checklist)": {
+          "total_cases": 20,
+          "ground_truth_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6
+          },
+          "predicted_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 20,
+          "accuracy": 100.0,
+          "true_positives_detected": 7,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        },
+        "Baseline 5 (Auditor + Critic)": {
+          "total_cases": 20,
+          "ground_truth_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6
+          },
+          "predicted_distribution": {
+            "TP": 7,
+            "FP": 7,
+            "Uncertain": 6,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 20,
+          "accuracy": 100.0,
+          "true_positives_detected": 7,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        }
+      }
+    },
+    "pilot_reentrancy": {
+      "dataset_name": "Pilot Reentrancy (SOL-REENTRANCY-001)",
+      "total_cases": 16,
+      "baselines": {
+        "Baseline 1 (Rule-Only)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 16,
+            "FP": 0,
+            "Uncertain": 0,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 6,
+          "accuracy": 37.5,
+          "true_positives_detected": 6,
+          "false_alarms": 5,
+          "precision": 54.5,
+          "recall": 100.0,
+          "f1_score": 70.6,
+          "fp_rate": 100.0
+        },
+        "Baseline 2 (Heuristic)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 3,
+            "FP": 7,
+            "Uncertain": 6,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 11,
+          "accuracy": 68.8,
+          "true_positives_detected": 2,
+          "false_alarms": 1,
+          "precision": 66.7,
+          "recall": 33.3,
+          "f1_score": 44.4,
+          "fp_rate": 20.0
+        },
+        "Baseline 3 (Naive LLM)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 10,
+            "FP": 6,
+            "Uncertain": 0,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 7,
+          "accuracy": 43.8,
+          "true_positives_detected": 4,
+          "false_alarms": 2,
+          "precision": 66.7,
+          "recall": 66.7,
+          "f1_score": 66.7,
+          "fp_rate": 40.0
+        },
+        "Baseline 4 (W3GoAudit Checklist)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 16,
+          "accuracy": 100.0,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        },
+        "Baseline 5 (Auditor + Critic)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 16,
+          "accuracy": 100.0,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho pattern Reentrancy (SOL-REENTRANCY-001) — Đợt 3 Expansion. 12 dev cases phủ đủ 3 nhãn: TP (lỗi thật), FP (đã có guard hoặc CEI đúng), Uncertain (không đủ ngữ cảnh). 4 hard test cases để phân biệt B3 vs B4/B5.",
+    "pattern": "SOL-REENTRANCY-001",
+    "labels": {
+      "TP": "True Positive — reentrancy khai thác được, ngoại gọi trước khi cập nhật state",
+      "FP": "False Positive — đã có nonReentrant, CEI đúng thứ tự, hoặc không có ngoại gọi",
+      "Uncertain": "Không đủ ngữ cảnh để xác định thứ tự state update và external call"
+    },
+    "split": {
+      "dev": "reentrancy-tp-001 đến reentrancy-uncertain-004 (12 cases — dùng để tune checklist/prompt)",
+      "test": "reentrancy-hard-* (4 hard cases — KHÔNG dùng để tune)"
+    },
+    "created_at": "2026-10-25T00:00:00Z",
+    "phase": "Đợt 3 — Mở rộng pattern"
+  },
+  "dev_cases": [
+    {
+      "case_id": "reentrancy-tp-001",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Điển hình của lỗi reentrancy: state update (balance = 0) xảy ra SAU external call (msg.sender.call). Kẻ tấn công có thể re-enter withdraw() trong receive() để rút nhiều lần trước khi balance bị reset về 0.",
+      "finding_title": "Classic Reentrancy: balance updated after external call in withdraw()",
+      "finding_content": "The `withdraw` function calls `msg.sender.call{value: amount}` before updating `balances[msg.sender] = 0`. This allows a malicious contract to re-enter `withdraw()` in its receive() function before the balance is zeroed.",
+      "code_snippet": "mapping(address => uint256) public balances;\n\nfunction withdraw(uint256 amount) external {\n    require(balances[msg.sender] >= amount, \"insufficient\");\n    // VULNERABILITY: external call before state update\n    (bool ok,) = msg.sender.call{value: amount}(\"\")\n    require(ok, \"transfer failed\");\n    balances[msg.sender] -= amount; // state update AFTER call — reentrancy!!\n}",
+      "context_notes": "No nonReentrant modifier. No CEI pattern. External call before state update. Classic reentrancy."
+    },
+    {
+      "case_id": "reentrancy-fp-001",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm tuân theo pattern CEI (Checks-Effects-Interactions) đúng thứ tự: kiểm tra (require), cập nhật state (balances[msg.sender] = 0), rồi mới gọi ngoại. Không thể khai thác reentrancy vì state đã được ghi trước khi gọi ngoại.",
+      "finding_title": "Withdrawal with correct CEI pattern — static rule false alarm",
+      "finding_content": "Static analysis flags external call in withdraw function. However, state update precedes the external call.",
+      "code_snippet": "mapping(address => uint256) public balances;\n\nfunction withdraw(uint256 amount) external {\n    require(balances[msg.sender] >= amount, \"insufficient\");\n    // CEI: Effects before Interaction\n    balances[msg.sender] -= amount; // state update FIRST\n    (bool ok,) = msg.sender.call{value: amount}(\"\"); // external call AFTER\n    require(ok, \"transfer failed\");\n}",
+      "context_notes": "CEI pattern followed correctly. State updated before external call. Re-entry would see balance=0 and revert."
+    },
+    {
+      "case_id": "reentrancy-fp-002",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm có modifier nonReentrant từ OpenZeppelin ReentrancyGuard. Modifier này dùng lock state (status) để ngăn chặn mọi re-entry call vào hàm này hoặc bất kỳ hàm nào cùng guard. Rule tĩnh nhìn thấy external call nhưng không nhận ra nonReentrant.",
+      "finding_title": "External call guarded by nonReentrant modifier — false alarm",
+      "finding_content": "Function performs external ETH transfer. Static scanner flags potential reentrancy.",
+      "code_snippet": "import {ReentrancyGuard} from \"@openzeppelin/contracts/security/ReentrancyGuard.sol\";\n\ncontract Vault is ReentrancyGuard {\n    mapping(address => uint256) public balances;\n\n    function withdraw(uint256 amount) external nonReentrant {\n        require(balances[msg.sender] >= amount, \"insufficient\");\n        balances[msg.sender] -= amount;\n        (bool ok,) = msg.sender.call{value: amount}(\"\");\n        require(ok);\n    }\n}",
+      "context_notes": "nonReentrant modifier from OpenZeppelin ReentrancyGuard. Prevents any re-entry. CEI also followed."
+    },
+    {
+      "case_id": "reentrancy-uncertain-001",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm có external call nhưng chỉ thấy một phần contract. Không rõ có nonReentrant modifier được định nghĩa ở base contract hay không. Cần xem toàn bộ inheritance chain và modifier definition.",
+      "finding_title": "External call with unknown modifier — needs full contract context",
+      "finding_content": "Function makes external call. A custom modifier `guarded` is applied but its implementation is not visible in the snippet.",
+      "code_snippet": "function claimReward(address user) external guarded {\n    uint256 reward = pendingReward[user];\n    require(reward > 0, \"no reward\");\n    pendingReward[user] = 0;\n    (bool ok,) = user.call{value: reward}(\"\");\n    require(ok);\n}",
+      "context_notes": "Custom modifier `guarded` applied. Implementation not visible — could be nonReentrant equivalent or unrelated access control. Need to see modifier definition."
+    },
+    {
+      "case_id": "reentrancy-tp-002",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "real",
+      "source_ref": "c4-2022-sushiswap-miso-reentrancy",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Điểm yếu reentrancy trong giao thức MISO (SushiSwap) — external call trong commitETH() xảy ra trước khi cập nhật accounting. Lỗi này đã dẫn đến mất 3M USD trong thực tế (2021).",
+      "finding_title": "MISO-style: Reentrancy in commitETH via external call before accounting update",
+      "finding_content": "The `commitETH` function transfers ETH to the auction contract before updating the commitment tracking. A malicious contract can re-enter during the ETH receive hook.",
+      "code_snippet": "mapping(address => uint256) public commitments;\nuint256 public totalCommitments;\n\nfunction commitETH(address payable beneficiary) public payable {\n    require(msg.value > 0, \"no ETH\");\n    // External call to beneficiary BEFORE updating state\n    beneficiary.transfer(msg.value); // WARNING: re-entry point\n    // State updated AFTER transfer — reentrancy exploitable!\n    commitments[beneficiary] += msg.value;\n    totalCommitments += msg.value;\n}",
+      "context_notes": "Real-world pattern: External call before accounting update. No reentrancy guard. No CEI pattern."
+    },
+    {
+      "case_id": "reentrancy-fp-003",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm gọi IERC20.transfer() — đây là external call nhưng không phải external call nguy hiểm vì IERC20.transfer không nhận ETH và không có receive() hook. Token ERC20 không thể re-enter hàm gọi qua transfer(). Chỉ có ETH transfer (call/transfer/send) hoặc ERC777 mới có khả năng re-entry.",
+      "finding_title": "ERC20 transfer flagged as reentrancy — safe by design",
+      "finding_content": "The function calls IERC20.transfer to send tokens. Scanner flags as potential external call vulnerability.",
+      "code_snippet": "IERC20 public token;\nmapping(address => uint256) public balances;\n\nfunction claimTokens(uint256 amount) external {\n    require(balances[msg.sender] >= amount);\n    balances[msg.sender] -= amount; // state update first\n    token.transfer(msg.sender, amount); // ERC20 transfer — no receive hook\n}",
+      "context_notes": "ERC20 transfer does not trigger receive/fallback hooks. No reentrancy possible via standard ERC20. State update also precedes call."
+    },
+    {
+      "case_id": "reentrancy-uncertain-002",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Contract gọi token.transfer() nhưng chú thích cho thấy token có thể là ERC777 (có `tokensReceived` hook). Nếu token là ERC777, thì có thể bị re-entry. Không đủ thông tin về kiểu token để quyết định.",
+      "finding_title": "Token transfer where token type is unknown — could be ERC777",
+      "finding_content": "Function transfers tokens. If the token implements ERC777 hooks, reentrancy may be possible.",
+      "code_snippet": "// Note: token could be ERC20 or ERC777 depending on deployment\nIERC20 public token; // interface only — actual token unknown\n\nfunction distribute(address recipient, uint256 amount) external onlyOwner {\n    balances[recipient] -= amount;\n    token.transfer(recipient, amount); // safe for ERC20, risky for ERC777\n}",
+      "context_notes": "State updated before transfer (good). But if token is ERC777, tokensReceived hook can re-enter. Need to know token contract to determine risk."
+    },
+    {
+      "case_id": "reentrancy-tp-003",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Read-only reentrancy: hàm không thay đổi state nhưng đọc state trong khi một lệnh gọi ngoại từ hàm khác đang ở giữa quá trình (in-flight). Attacker có thể trigger hàm này từ một hook để đọc state đang ở trạng thái giữa chừng (inconsistent), tạo ra oracle manipulation.",
+      "finding_title": "Read-only reentrancy via cross-function state read during external call",
+      "finding_content": "A view function reads price/reserve state that can be observed in an inconsistent state during cross-function reentrancy.",
+      "code_snippet": "uint256 public reserve0;\nuint256 public reserve1;\n\n// Called by another function that does external ETH call\nfunction getPrice() public view returns (uint256) {\n    return reserve1 / reserve0; // reads state that may be mid-update\n}\n\nfunction addLiquidity(uint256 amount) external {\n    // external call happens before reserve update\n    (bool ok,) = msg.sender.call{value: amount}(\"\");\n    reserve0 += amount; // state updated AFTER call — inconsistent during call\n}",
+      "context_notes": "Read-only reentrancy pattern. getPrice() can be called during the window between external call and state update in addLiquidity. No guard prevents cross-function reentry to view."
+    },
+    {
+      "case_id": "reentrancy-fp-004",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm dùng `address.transfer()` thay vì `call{value}`. Solidity `transfer()` chỉ chuyển 2300 gas, không đủ để thực hiện state write hoặc gọi thêm function, nên không thể re-entry. Đây là biện pháp phòng thủ cũ trước EIP-1884 nhưng vẫn hiệu quả cho trường hợp này.",
+      "finding_title": "ETH transfer via .transfer() — 2300 gas limit prevents reentrancy",
+      "finding_content": "Function sends ETH using transfer() which has a 2300 gas stipend. Scanner flags ETH transfer as potential reentrancy.",
+      "code_snippet": "mapping(address => uint256) public balances;\n\nfunction withdraw() external {\n    uint256 amount = balances[msg.sender];\n    require(amount > 0);\n    balances[msg.sender] = 0; // CEI: state cleared first\n    payable(msg.sender).transfer(amount); // 2300 gas — cannot reenter\n}",
+      "context_notes": "Uses .transfer() not .call(). 2300 gas stipend insufficient for state-writing re-entry. CEI pattern also followed."
+    },
+    {
+      "case_id": "reentrancy-tp-004",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Cross-contract reentrancy: hàm A gọi contract B, contract B re-enters hàm C (cùng project) thay vì hàm A. nonReentrant trên hàm A không bảo vệ hàm C. Cần nonReentrant trên cả hàm C hoặc dùng global lock.",
+      "finding_title": "Cross-function reentrancy: nonReentrant on A does not protect C",
+      "finding_content": "Function A has nonReentrant, but calls external contract which re-enters function C. C does not have nonReentrant.",
+      "code_snippet": "contract Vault {\n    mapping(address => uint256) public balances;\n    bool private locked;\n\n    // nonReentrant only on withdraw, NOT on claimReward\n    function withdraw(uint256 amount) external nonReentrant {\n        balances[msg.sender] -= amount;\n        (bool ok,) = msg.sender.call{value: amount}(\"\"); // attacker re-enters claimReward\n        require(ok);\n    }\n\n    // NO nonReentrant here — cross-function reentrancy target\n    function claimReward() external {\n        uint256 reward = pendingReward[msg.sender];\n        pendingReward[msg.sender] = 0;\n        (bool ok,) = msg.sender.call{value: reward}(\"\"); // second external call\n        require(ok);\n    }\n}",
+      "context_notes": "Cross-function reentrancy. nonReentrant on withdraw does not prevent reentry into claimReward. Attacker can drain claimReward during withdraw's external call."
+    },
+    {
+      "case_id": "reentrancy-uncertain-003",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm có external call và update state, nhưng không rõ liệu token có phải ERC777 hay không, và không rõ có nonReentrant ở base contract hay không. Cần xem deployment script và inheritance chain.",
+      "finding_title": "Flash loan callback with unclear token type and missing base contract context",
+      "finding_content": "The onFlashLoan callback performs state updates and makes token transfers. Reentrancy risk depends on token type and base contract guards.",
+      "code_snippet": "function onFlashLoan(\n    address initiator,\n    address token,\n    uint256 amount,\n    uint256 fee,\n    bytes calldata data\n) external returns (bytes32) {\n    // process arbitrage logic\n    uint256 profit = executeStrategy(data);\n    profits[initiator] += profit;\n    // repay flash loan\n    IERC20(token).transfer(msg.sender, amount + fee);\n    return keccak256(\"ERC3156FlashBorrower.onFlashLoan\");\n}",
+      "context_notes": "Flash loan callback. Token type unknown. Base contract not shown. executeStrategy() implementation unknown — could have external calls. Context insufficient."
+    },
+    {
+      "case_id": "reentrancy-uncertain-004",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Contract kế thừa từ abstract base nhưng không thể thấy modifier định nghĩa. Từ khoá `safeTransfer` có thể là CEI-wrapped hoặc có thể là alias cho call. Cần xem library definition.",
+      "finding_title": "safeTransfer pattern — implementation not visible",
+      "finding_content": "Function uses safeTransfer which may or may not include reentrancy protection depending on implementation.",
+      "code_snippet": "abstract contract BaseVault {\n    // safeTransfer implementation not shown\n    function safeTransfer(address to, uint256 amount) internal virtual;\n}\n\ncontract Vault is BaseVault {\n    mapping(address => uint256) public balances;\n\n    function withdraw(uint256 amount) external {\n        require(balances[msg.sender] >= amount);\n        balances[msg.sender] -= amount;\n        safeTransfer(msg.sender, amount); // implementation in base not visible\n    }\n}",
+      "context_notes": "safeTransfer defined in abstract base. State updated before call (good). But actual implementation of safeTransfer unknown — could re-enter or not depending on base."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "reentrancy-hard-tp-cross-contract",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Naive LLM thấy state update trước external call (tưởng CEI đúng). Nhưng external call gọi sang CONTRACT KHÁC trong cùng hệ thống, contract kia lại gọi ngược lại hàm thứ hai chưa có guard. Cross-contract reentrancy — không phải single-function reentrancy.",
+      "finding_title": "Cross-contract reentrancy via intermediary — Naive LLM misses it",
+      "finding_content": "State update appears before external call to router. However, router calls back into a different unguarded function in this contract.",
+      "code_snippet": "contract Pool {\n    mapping(address => uint256) shares;\n    IRouter public router;\n\n    function redeem(uint256 shareAmount) external {\n        // CEI looks correct at first glance...\n        shares[msg.sender] -= shareAmount; // state update first\n        uint256 ethAmount = shareAmount * pricePerShare;\n        router.execute{value: ethAmount}(msg.sender); // router callbacks Pool.deposit!\n    }\n\n    // NOT guarded — attacker exploits via router callback\n    function deposit() external payable {\n        shares[msg.sender] += msg.value / pricePerShare; // stale pricePerShare\n    }\n}",
+      "context_notes": "Cross-contract reentrancy. redeem() updates shares then calls router. Router's execute() calls back Pool.deposit() before redeem() fully completes. pricePerShare may be stale. No global lock."
+    },
+    {
+      "case_id": "reentrancy-hard-fp-checks-first",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Naive LLM thấy external call TRƯỚC state zero-out trong function, nhưng thực tế state KHÔNG thể bị khai thác vì: (1) balance đã bị set = 0 ngay từ đầu trước external call, (2) recheck guard ngay sau call. Naive LLM nhầm tưởng external call ở giữa là unsafe khi thực ra state đã cleared.",
+      "finding_title": "Pre-cleared balance before external call — safe despite unusual code order",
+      "finding_content": "Balance cleared at start before external call. Code structure unusual but secure — Naive LLM may flag as TP.",
+      "code_snippet": "mapping(address => uint256) public balances;\n\nfunction claimAll() external {\n    uint256 amount = balances[msg.sender];\n    require(amount > 0, \"nothing to claim\");\n    balances[msg.sender] = 0; // CLEARED immediately — re-entry sees 0\n    // external call: if attacker re-enters claimAll, require(amount > 0) will revert\n    (bool ok, ) = msg.sender.call{value: amount}(\"\");\n    require(ok, \"transfer failed\");\n    // redundant check — balance already 0 above\n    assert(balances[msg.sender] == 0);\n}",
+      "context_notes": "balance[msg.sender]=0 before external call. Re-entrant call would see 0 and fail require(amount>0). Pattern is safe. Naive LLM may focus on the external call location and miss the pre-clear."
+    },
+    {
+      "case_id": "reentrancy-hard-uncertain-conditional-guard",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm chỉ có guard nếu `isEmergency == false`. Khi emergency mode được bật, guard bị bỏ qua và hàm có thể bị re-entry. Naive LLM thấy modifier và gán FP. W3GoAudit nên phát hiện guard có điều kiện và gán Uncertain vì không rõ trạng thái `isEmergency` tại runtime.",
+      "finding_title": "Conditional reentrancy guard — safe only when isEmergency is false",
+      "finding_content": "The reentrancy guard is conditionally applied. In emergency mode, the guard is bypassed.",
+      "code_snippet": "bool public isEmergency;\nbool private locked;\n\nmodifier conditionalGuard() {\n    // Guard only applies in normal mode!\n    if (!isEmergency) {\n        require(!locked, \"reentrant\");\n        locked = true;\n        _;\n        locked = false;\n    } else {\n        _; // emergency: no guard!\n    }\n}\n\nfunction emergencyWithdraw(uint256 amount) external conditionalGuard {\n    balances[msg.sender] -= amount;\n    (bool ok,) = msg.sender.call{value: amount}(\"\");\n    require(ok);\n}",
+      "context_notes": "Guard is conditional — bypassed in emergency mode. If attacker can trigger isEmergency=true, they can exploit reentrancy. Current value of isEmergency unknown."
+    },
+    {
+      "case_id": "reentrancy-hard-tp-price-manipulation",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Read-only reentrancy dùng để manipulate price oracle. Hàm read-only getSpotPrice() được gọi bởi lending protocol trong khi pool đang ở trạng thái giữa chừng (external call chưa hoàn thành). Naive LLM thấy không có state write trong getSpotPrice() nên gán FP. W3GoAudit: Q1 xác nhận external call, Q3 xác nhận state read trong inconsistent window -> TP.",
+      "finding_title": "Read-only reentrancy for price oracle manipulation — Naive LLM assigns FP",
+      "finding_content": "A price view function can be called during an ongoing external call, reading inconsistent state. Used to manipulate lending protocol valuations.",
+      "code_snippet": "contract AMM {\n    uint256 public reserve0; // ETH\n    uint256 public reserve1; // Token\n\n    // Called by lending protocol to get collateral price\n    function getSpotPrice() external view returns (uint256) {\n        return (reserve1 * 1e18) / reserve0; // reads reserves\n    }\n\n    function swap(uint256 ethIn) external payable {\n        // External callback BEFORE reserve update\n        ICallback(msg.sender).onSwapReceive{value: ethIn}();\n        // attacker calls getSpotPrice() from onSwapReceive — sees stale reserves!\n        reserve0 += ethIn; // state updated AFTER callback\n        reserve1 -= ethIn * reserve1 / reserve0;\n    }\n}",
+      "context_notes": "Read-only reentrancy via getSpotPrice(). swap() makes external call before updating reserves. During callback window, getSpotPrice() returns stale/manipulated price. Lending protocols that use getSpotPrice() as oracle are vulnerable."
+    }
+  ]
+}

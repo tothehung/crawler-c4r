@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho W3GoAudit — 2 pattern thí điểm với nhãn ground truth do con người xác nhận.",
+    "patterns": [
+      "SOL-UINT128-NARROWING-001",
+      "SOL-ACCESS-CONTROL-001"
+    ],
+    "labels": {
+      "TP": "True Positive — lỗi thật, xác nhận bởi audit report hoặc EVM test",
+      "FP": "False Positive — cảnh báo sai, đã có guard hoặc không thỏa sufficient condition",
+      "Uncertain": "Không đủ context để quyết định (thiếu caller/modifier/state)"
+    },
+    "created_at": "2026-10-11T00:00:00Z",
+    "note": "Synthetic cases được đánh dấu fixture_kind='synthetic'. Real cases lấy từ evidence_benchmark_v1."
+  },
+  "cases": [
+    {
+      "case_id": "pilot-uint128-tp-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm record() cast uint256 → uint128 trực tiếp không có guard. Khi amount = 2^128 sẽ bị truncate thành 0, vi phạm invariant 'reserve phải bằng giá trị đầu vào'.",
+      "finding_title": "UnsafeReserve: Silent overflow when casting large reserve amount",
+      "finding_content": "The `record(uint256 amount)` function stores user-provided `amount` directly into `reserve` which is of type `uint128`. When `amount` exceeds `2^128 - 1`, the cast silently truncates the high bits, causing `reserve` to store an incorrect value. There is no check before the cast.",
+      "code_snippet": "uint128 public reserve;\n\nfunction record(uint256 amount) external {\n    reserve = uint128(amount); // unsafe cast, no guard\n}",
+      "context_notes": "No modifiers. No callers visible in snippet. Function is public."
+    },
+    {
+      "case_id": "pilot-uint128-fp-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Có guard `require(amount <= type(uint128).max)` trước cast. Mọi giá trị vượt ngưỡng sẽ revert, không xảy ra silent overflow.",
+      "finding_title": "GuardedReserve: Casting with explicit bound check (flagged by rule, actually safe)",
+      "finding_content": "The `record(uint256 amount)` function casts uint256 to uint128. Static rule flags this as potential narrowing overflow.",
+      "code_snippet": "uint128 public reserve;\n\nfunction record(uint256 amount) external {\n    require(amount <= type(uint128).max, \"overflow\");\n    reserve = uint128(amount); // safe: guarded above\n}",
+      "context_notes": "Guard exists immediately before cast. Function reverts on out-of-range. Rule fires but safe."
+    },
+    {
+      "case_id": "pilot-uint128-uncertain-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Fragment nội bộ không thấy caller. Có thể caller đã guard trước khi gọi hàm này, hoặc không. Không đủ context để kết luận.",
+      "finding_title": "UnknownFragment: Internal function with uint128 cast, no caller visible",
+      "finding_content": "An internal function casts uint256 to uint128. Cannot determine if the caller validates the input range before invoking this function.",
+      "code_snippet": "uint128 private _cached;\n\nfunction _updateCache(uint256 val) internal {\n    _cached = uint128(val); // cast without local guard\n}",
+      "context_notes": "Internal function. No callers shown in snippet. Need to inspect all call sites to determine safety."
+    },
+    {
+      "case_id": "pilot-uint128-tp-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "real",
+      "source_ref": "c4-2023-04-caviar-h-03",
+      "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Finding được xác nhận bởi Code4rena audit report. virtualBaseTokenReserves và virtualNftReserves là uint128, update bằng uint256 value mà không check overflow.",
+      "finding_title": "[H-03] Risk of silent overflow in reserves update — Caviar",
+      "finding_content": "However, these two variables are of type `uint128`, while the values that update them are of type `uint256`. This means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.",
+      "code_snippet": "uint128 public virtualBaseTokenReserves;\nuint128 public virtualNftReserves;\n\nfunction buy(...) {\n    virtualBaseTokenReserves = uint128(netInputAmount - feeAmount - protocolFeeAmount);\n    virtualNftReserves = uint128(weightSum);\n}",
+      "context_notes": "Real finding from Code4rena. No guard before cast. Confirmed High severity."
+    },
+    {
+      "case_id": "pilot-uint128-fp-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Contract sử dụng SafeCast library từ OpenZeppelin, hàm toUint128() sẽ revert nếu overflow. Rule phát hiện cast nhưng không nhận ra SafeCast wrapper.",
+      "finding_title": "SafeCast usage flagged as narrowing — false alarm",
+      "finding_content": "The contract converts uint256 to uint128 in the reserve update function.",
+      "code_snippet": "using SafeCast for uint256;\nuint128 public reserve;\n\nfunction setReserve(uint256 amount) external onlyOwner {\n    reserve = amount.toUint128(); // SafeCast: reverts on overflow\n}",
+      "context_notes": "SafeCast.toUint128() reverts if value > type(uint128).max. Rule sees cast, not the library safety."
+    },
+    {
+      "case_id": "pilot-uint128-uncertain-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Cần xem protocol invariant: giá trị có thể bao giờ vượt 2^128 không? Nếu token là stablecoin với 6 decimals, max supply << 2^128 thì thực ra safe. Cần thêm thông tin về protocol design.",
+      "finding_title": "Reserve update with narrowing cast — safety depends on token economics",
+      "finding_content": "The pool stores reserves as uint128. The update function accepts uint256 input.",
+      "code_snippet": "uint128 public reserveA;\n\nfunction sync(uint256 newReserveA) external {\n    reserveA = uint128(newReserveA);\n}",
+      "context_notes": "Safety depends on maximum possible token supply. If token has 6 decimals and max supply 10B, max value is 10^16 << 2^128. Need protocol docs to confirm."
+    },
+    {
+      "case_id": "pilot-access-tp-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm setFeeRecipient() không có bất kỳ modifier kiểm tra quyền nào. Bất kỳ ai cũng có thể gọi và thay đổi fee recipient.",
+      "finding_title": "Missing access control on setFeeRecipient — anyone can call",
+      "finding_content": "The `setFeeRecipient` function lacks any access control modifier. Any external address can call it to redirect protocol fees to an arbitrary address.",
+      "code_snippet": "address public feeRecipient;\n\nfunction setFeeRecipient(address newRecipient) external {\n    // no onlyOwner, no require(msg.sender == ...)\n    feeRecipient = newRecipient;\n}",
+      "context_notes": "No modifier. No require statement. External visibility. Anyone can call."
+    },
+    {
+      "case_id": "pilot-access-fp-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm có modifier onlyOwner kế thừa từ Ownable. Rule không parse được inheritance chain, báo nhầm missing access control.",
+      "finding_title": "onlyOwner through inheritance — flagged but protected",
+      "finding_content": "The `setFeeRecipient` function appears to have no access control modifier in the function definition.",
+      "code_snippet": "contract FeeManager is Ownable {\n    address public feeRecipient;\n    \n    function setFeeRecipient(address newRecipient) external onlyOwner {\n        feeRecipient = newRecipient;\n    }\n}",
+      "context_notes": "onlyOwner modifier clearly present. Rule might misparse or context might be partial snippet."
+    },
+    {
+      "case_id": "pilot-access-uncertain-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm không có modifier tường minh nhưng contract có custom access control có thể check ở constructor hoặc storage mapping. Cần xem toàn bộ contract.",
+      "finding_title": "Setter with no visible modifier — custom access pattern possible",
+      "finding_content": "The `updateConfig` function has no access control modifier in its definition.",
+      "code_snippet": "mapping(address => bool) public admins;\n\nfunction updateConfig(uint256 newValue) external {\n    // custom check using storage mapping\n    require(admins[msg.sender], \"not admin\");\n    configValue = newValue;\n}",
+      "context_notes": "Custom require-based check instead of modifier. Rule expects modifier pattern, misses require-based auth."
+    },
+    {
+      "case_id": "pilot-access-tp-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "real",
+      "source_ref": "c4-2023-access-control-example",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Protocol fee setter có thể gọi bởi bất kỳ ai. Attacker có thể redirect fee đến địa chỉ của mình.",
+      "finding_title": "Protocol fee recipient can be set by any caller",
+      "finding_content": "The `setProtocolFeeRecipient` function is missing access control, allowing any user to redirect protocol fee revenue to an arbitrary address.",
+      "code_snippet": "function setProtocolFeeRecipient(address _recipient) external {\n    protocolFeeRecipient = _recipient;\n    emit ProtocolFeeRecipientUpdated(_recipient);\n}",
+      "context_notes": "No modifier. Emits event. Called externally. Confirmed access control issue."
+    },
+    {
+      "case_id": "pilot-access-fp-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm intentionally public vì đây là permissionless protocol — bất kỳ ai cũng được phép update theo design. Đây là feature không phải bug.",
+      "finding_title": "Permissionless update — by design, not a vulnerability",
+      "finding_content": "The `syncPrice` function can be called by anyone to update the price oracle.",
+      "code_snippet": "// Permissionless oracle sync — anyone can call to keep price fresh\nfunction syncPrice() external {\n    _updatePrice();\n}",
+      "context_notes": "Protocol design: permissionless sync is intentional for liveness. Not a vulnerability."
+    },
+    {
+      "case_id": "pilot-access-uncertain-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm có timelock nhưng không rõ timelock delay là bao nhiêu. Nếu delay < 24h thì vẫn có rủi ro. Cần xem cấu hình timelock.",
+      "finding_title": "Admin function behind timelock — safety depends on delay configuration",
+      "finding_content": "The function is gated behind a timelock contract. The security depends on the timelock delay value.",
+      "code_snippet": "function emergencyWithdraw(address token) external onlyTimelock {\n    IERC20(token).transfer(treasury, IERC20(token).balanceOf(address(this)));\n}",
+      "context_notes": "onlyTimelock modifier exists. Need to check if timelock delay is adequate (typically >= 24h for security)."
+    }
+  ]
+}

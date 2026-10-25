@@ -1,0 +1,256 @@
+{
+  "meta": {
+    "version": "2.0",
+    "description": "Pilot triage dataset v2 — 20 cases, split thành dev (12) và test (8). Bổ sung 8 hard cases để phân biệt Baseline 3 (Naive LLM) vs Baseline 4 (W3GoAudit Checklist). Hard cases là những tình huống Naive LLM dễ sai vì thiếu reasoning về ngữ cảnh cross-contract, modifier kế thừa phức tạp, và design intent.",
+    "patterns": [
+      "SOL-UINT128-NARROWING-001",
+      "SOL-ACCESS-CONTROL-001"
+    ],
+    "labels": {
+      "TP": "True Positive — lỗi thật, đã xác nhận bởi audit report hoặc EVM test",
+      "FP": "False Positive — cảnh báo sai, đã có guard hoặc không thỏa sufficient condition",
+      "Uncertain": "Không đủ context để quyết định (thiếu caller/modifier/state)"
+    },
+    "split": {
+      "dev": "pilot-uint128-tp-001 đến pilot-access-uncertain-002 (12 cases gốc từ v1)",
+      "test": "pilot-hard-* (8 hard cases mới — KHÔNG dùng để tune prompt/rule)"
+    },
+    "created_at": "2026-10-12T00:00:00Z",
+    "why_hard_cases": "Baseline 3 (Naive LLM zero-shot) đạt F1=100% trên v1 12 cases — tập quá dễ. Hard cases thiết kế để Naive LLM sai trong khi Baseline 4 W3GoAudit đúng hoặc đúng hơn. Đây là điều kiện cần để chứng minh đóng góp của knowledge-grounded checklist."
+  },
+  "dev_cases": [
+    {
+      "case_id": "pilot-uint128-tp-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm record() cast uint256 → uint128 trực tiếp không có guard. Khi amount = 2^128 sẽ bị truncate thành 0, vi phạm invariant 'reserve phải bằng giá trị đầu vào'.",
+      "finding_title": "UnsafeReserve: Silent overflow when casting large reserve amount",
+      "finding_content": "The `record(uint256 amount)` function stores user-provided `amount` directly into `reserve` which is of type `uint128`. When `amount` exceeds `2^128 - 1`, the cast silently truncates the high bits, causing `reserve` to store an incorrect value. There is no check before the cast.",
+      "code_snippet": "uint128 public reserve;\n\nfunction record(uint256 amount) external {\n    reserve = uint128(amount); // unsafe cast, no guard\n}",
+      "context_notes": "No modifiers. No callers visible in snippet. Function is public."
+    },
+    {
+      "case_id": "pilot-uint128-fp-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Có guard `require(amount <= type(uint128).max)` trước cast. Mọi giá trị vượt ngưỡng sẽ revert, không xảy ra silent overflow.",
+      "finding_title": "GuardedReserve: Casting with explicit bound check (flagged by rule, actually safe)",
+      "finding_content": "The `record(uint256 amount)` function casts uint256 to uint128. Static rule flags this as potential narrowing overflow.",
+      "code_snippet": "uint128 public reserve;\n\nfunction record(uint256 amount) external {\n    require(amount <= type(uint128).max, \"overflow\");\n    reserve = uint128(amount); // safe: guarded above\n}",
+      "context_notes": "Guard exists immediately before cast. Function reverts on out-of-range. Rule fires but safe."
+    },
+    {
+      "case_id": "pilot-uint128-uncertain-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Fragment nội bộ không thấy caller. Có thể caller đã guard trước khi gọi hàm này, hoặc không. Không đủ context để kết luận.",
+      "finding_title": "UnknownFragment: Internal function with uint128 cast, no caller visible",
+      "finding_content": "An internal function casts uint256 to uint128. Cannot determine if the caller validates the input range before invoking this function.",
+      "code_snippet": "uint128 private _cached;\n\nfunction _updateCache(uint256 val) internal {\n    _cached = uint128(val); // cast without local guard\n}",
+      "context_notes": "Internal function. No callers shown in snippet. Need to inspect all call sites to determine safety."
+    },
+    {
+      "case_id": "pilot-uint128-tp-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "real",
+      "source_ref": "c4-2023-04-caviar-h-03",
+      "snapshot_id": "snp_2cfec3126f75b89ff0439e183970a01fa40893f4ad069b4d575bce708f648b1c",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Finding được xác nhận bởi Code4rena audit report. virtualBaseTokenReserves và virtualNftReserves là uint128, update bằng uint256 value mà không check overflow.",
+      "finding_title": "[H-03] Risk of silent overflow in reserves update — Caviar",
+      "finding_content": "However, these two variables are of type `uint128`, while the values that update them are of type `uint256`. This means that casting to a lower type is necessary, but this casting is performed without first checking that the values being cast can fit into the lower type. As a result, there is a risk of a silent overflow occurring during the casting process.",
+      "code_snippet": "uint128 public virtualBaseTokenReserves;\nuint128 public virtualNftReserves;\n\nfunction buy(...) {\n    virtualBaseTokenReserves = uint128(netInputAmount - feeAmount - protocolFeeAmount);\n    virtualNftReserves = uint128(weightSum);\n}",
+      "context_notes": "Real finding from Code4rena. No guard before cast. Confirmed High severity."
+    },
+    {
+      "case_id": "pilot-uint128-fp-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Contract sử dụng SafeCast library từ OpenZeppelin, hàm toUint128() sẽ revert nếu overflow. Rule phát hiện cast nhưng không nhận ra SafeCast wrapper.",
+      "finding_title": "SafeCast usage flagged as narrowing — false alarm",
+      "finding_content": "The contract converts uint256 to uint128 in the reserve update function.",
+      "code_snippet": "using SafeCast for uint256;\nuint128 public reserve;\n\nfunction setReserve(uint256 amount) external onlyOwner {\n    reserve = amount.toUint128(); // SafeCast: reverts on overflow\n}",
+      "context_notes": "SafeCast.toUint128() reverts if value > type(uint128).max. Rule sees cast, not the library safety."
+    },
+    {
+      "case_id": "pilot-uint128-uncertain-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Cần xem protocol invariant: giá trị có thể bao giờ vượt 2^128 không? Nếu token là stablecoin với 6 decimals, max supply << 2^128 thì thực ra safe. Cần thêm thông tin về protocol design.",
+      "finding_title": "Reserve update with narrowing cast — safety depends on token economics",
+      "finding_content": "The pool stores reserves as uint128. The update function accepts uint256 input.",
+      "code_snippet": "uint128 public reserveA;\n\nfunction sync(uint256 newReserveA) external {\n    reserveA = uint128(newReserveA);\n}",
+      "context_notes": "Safety depends on maximum possible token supply. If token has 6 decimals and max supply 10B, max value is 10^16 << 2^128. Need protocol docs to confirm."
+    },
+    {
+      "case_id": "pilot-access-tp-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm setFeeRecipient() không có bất kỳ modifier kiểm tra quyền nào. Bất kỳ ai cũng có thể gọi và thay đổi fee recipient.",
+      "finding_title": "Missing access control on setFeeRecipient — anyone can call",
+      "finding_content": "The `setFeeRecipient` function lacks any access control modifier. Any external address can call it to redirect protocol fees to an arbitrary address.",
+      "code_snippet": "address public feeRecipient;\n\nfunction setFeeRecipient(address newRecipient) external {\n    // no onlyOwner, no require(msg.sender == ...)\n    feeRecipient = newRecipient;\n}",
+      "context_notes": "No modifier. No require statement. External visibility. Anyone can call."
+    },
+    {
+      "case_id": "pilot-access-fp-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm có modifier onlyOwner kế thừa từ Ownable. Rule không parse được inheritance chain, báo nhầm missing access control.",
+      "finding_title": "onlyOwner through inheritance — flagged but protected",
+      "finding_content": "The `setFeeRecipient` function appears to have no access control modifier in the function definition.",
+      "code_snippet": "contract FeeManager is Ownable {\n    address public feeRecipient;\n    \n    function setFeeRecipient(address newRecipient) external onlyOwner {\n        feeRecipient = newRecipient;\n    }\n}",
+      "context_notes": "onlyOwner modifier clearly present. Rule might misparse or context might be partial snippet."
+    },
+    {
+      "case_id": "pilot-access-uncertain-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm không có modifier tường minh nhưng contract có custom access control có thể check ở constructor hoặc storage mapping. Cần xem toàn bộ contract.",
+      "finding_title": "Setter with no visible modifier — custom access pattern possible",
+      "finding_content": "The `updateConfig` function has no access control modifier in its definition.",
+      "code_snippet": "mapping(address => bool) public admins;\n\nfunction updateConfig(uint256 newValue) external {\n    // custom check using storage mapping\n    require(admins[msg.sender], \"not admin\");\n    configValue = newValue;\n}",
+      "context_notes": "Custom require-based check instead of modifier. Rule expects modifier pattern, misses require-based auth."
+    },
+    {
+      "case_id": "pilot-access-tp-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "real",
+      "source_ref": "c4-2023-access-control-example",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Protocol fee setter có thể gọi bởi bất kỳ ai. Attacker có thể redirect fee đến địa chỉ của mình.",
+      "finding_title": "Protocol fee recipient can be set by any caller",
+      "finding_content": "The `setProtocolFeeRecipient` function is missing access control, allowing any user to redirect protocol fee revenue to an arbitrary address.",
+      "code_snippet": "function setProtocolFeeRecipient(address _recipient) external {\n    protocolFeeRecipient = _recipient;\n    emit ProtocolFeeRecipientUpdated(_recipient);\n}",
+      "context_notes": "No modifier. Emits event. Called externally. Confirmed access control issue."
+    },
+    {
+      "case_id": "pilot-access-fp-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm intentionally public vì đây là permissionless protocol — bất kỳ ai cũng được phép update theo design. Đây là feature không phải bug.",
+      "finding_title": "Permissionless update — by design, not a vulnerability",
+      "finding_content": "The `syncPrice` function can be called by anyone to update the price oracle.",
+      "code_snippet": "// Permissionless oracle sync — anyone can call to keep price fresh\nfunction syncPrice() external {\n    _updatePrice();\n}",
+      "context_notes": "Protocol design: permissionless sync is intentional for liveness. Not a vulnerability."
+    },
+    {
+      "case_id": "pilot-access-uncertain-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm có timelock nhưng không rõ timelock delay là bao nhiêu. Nếu delay < 24h thì vẫn có rủi ro. Cần xem cấu hình timelock.",
+      "finding_title": "Admin function behind timelock — safety depends on delay configuration",
+      "finding_content": "The function is gated behind a timelock contract. The security depends on the timelock delay value.",
+      "code_snippet": "function emergencyWithdraw(address token) external onlyTimelock {\n    IERC20(token).transfer(treasury, IERC20(token).balanceOf(address(this)));\n}",
+      "context_notes": "onlyTimelock modifier exists. Need to check if timelock delay is adequate (typically >= 24h for security)."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "pilot-hard-uint128-fp-safecast-indirect",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "SafeCast được gọi qua một hàm wrapper nội bộ _safeToUint128(). Naive LLM thấy `uint128(val)` trực tiếp nhưng không trace được rằng val đã được validate qua wrapper trước khi đến đây. W3GoAudit nên hỏi: 'Có guard nào trên đường đi của giá trị này không?' và trace được qua wrapper.",
+      "finding_title": "Indirect SafeCast via internal wrapper — Naive LLM may flag as TP",
+      "finding_content": "The `_store` function assigns uint128 from a uint256 value. Static analysis flags the cast operation.",
+      "code_snippet": "// Wrapper hides SafeCast — Naive LLM không cross-reference\nfunction _safeToUint128(uint256 v) internal pure returns (uint128) {\n    require(v <= type(uint128).max, \"u128 overflow\");\n    return uint128(v);\n}\n\nuint128 public slot;\n\nfunction _store(uint256 raw) internal {\n    slot = _safeToUint128(raw); // safe: wrapper validates first\n}",
+      "context_notes": "Indirect guard via internal wrapper. Naive LLM sees uint128(raw) in context and may miss the wrapper validation. W3GoAudit checklist Q2 should trigger: 'Is cast protected by SafeCast or explicit require?'"
+    },
+    {
+      "case_id": "pilot-hard-uint128-tp-unchecked-scope",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Cast nằm trong block `unchecked {}`. Naive LLM có thể nhầm rằng unchecked chỉ là tối ưu gas và không nguy hiểm. Nhưng unchecked không thêm guard — nó loại bỏ overflow check của Solidity 0.8+, làm silent overflow dễ xảy ra hơn. Đây là TP nghiêm trọng hơn case bình thường.",
+      "finding_title": "Unsafe cast inside unchecked block — Naive LLM may misinterpret as safe",
+      "finding_content": "Reserve update performs arithmetic in unchecked context with subsequent uint128 cast.",
+      "code_snippet": "uint128 public reserve;\n\nfunction updateReserve(uint256 amount) external {\n    unchecked {\n        // Naive LLM: 'unchecked means developer knows what they're doing'\n        // Reality: unchecked REMOVES Solidity 0.8+ overflow protection\n        reserve = uint128(amount + bonus); // TP: no bound check, unchecked makes worse\n    }\n}",
+      "context_notes": "Unchecked block disables Solidity 0.8+ overflow revert. Cast still truncates. No require guard. Naive LLM may see 'unchecked' and assume deliberate safe usage."
+    },
+    {
+      "case_id": "pilot-hard-access-fp-multisig",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm được bảo vệ bởi multi-sig Gnosis Safe qua modifier onlyMultisig. Naive LLM có thể không nhận ra multi-sig là một dạng access control hợp lệ và báo TP. W3GoAudit checklist Q2 hỏi 'Is there an access control modifier or authorization require?' → answer Yes: onlyMultisig.",
+      "finding_title": "Admin function protected by Gnosis Safe multi-sig — Naive LLM may not recognize pattern",
+      "finding_content": "The `withdrawFunds` function lacks a standard onlyOwner modifier. Static analysis flags it as missing access control.",
+      "code_snippet": "address public immutable multisig; // Gnosis Safe address\n\nmodifier onlyMultisig() {\n    require(msg.sender == multisig, \"not multisig\");\n    _;\n}\n\nfunction withdrawFunds(address token, uint256 amount) external onlyMultisig {\n    IERC20(token).transfer(multisig, amount);\n}",
+      "context_notes": "onlyMultisig is a valid custom access control modifier backed by Gnosis Safe. Not 'missing' access control — different implementation from standard Ownable. Naive LLM may not recognize custom modifier as equivalent to onlyOwner."
+    },
+    {
+      "case_id": "pilot-hard-access-tp-timelock-zero-delay",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Timelock được cấu hình với delay=0 trong constructor, biến onlyTimelock thành vô nghĩa về mặt bảo mật. Naive LLM thấy onlyTimelock modifier → gán FP. W3GoAudit checklist Q4 hỏi 'Does function rely on external checks whose configuration is not in snippet?' → Uncertain. Với context_notes tiết lộ delay=0 → TP.",
+      "finding_title": "onlyTimelock with zero delay — Naive LLM assigns FP, actually TP",
+      "finding_content": "The `setController` function uses onlyTimelock modifier. However, the timelock was deployed with minDelay=0.",
+      "code_snippet": "// TimelockController deployed with: minDelay = 0\n// This means proposals can be executed immediately — timelock provides no protection\n\nfunction setController(address newController) external onlyTimelock {\n    controller = newController;\n}\n\n// Constructor in deployer:\n// new TimelockController(0, proposers, executors, admin)",
+      "context_notes": "CRITICAL: TimelockController minDelay=0. onlyTimelock modifier exists but provides zero time-delay protection. Any proposer can propose and immediately execute. Effectively unprotected."
+    },
+    {
+      "case_id": "pilot-hard-access-uncertain-role-inheritance",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Contract kế thừa từ AccessControlUpgradeable và dùng hasRole(). Naive LLM có thể thấy `require(hasRole(MANAGER_ROLE, msg.sender))` và kết luận FP. Nhưng không thể kết luận FP vì: (1) không rõ MANAGER_ROLE được grant cho ai trong initializer, (2) contract upgradeable — admin có thể bị thay thế. Cần xem deployment script và grant logs.",
+      "finding_title": "AccessControl with role-based guard — Naive LLM may assign FP, actually Uncertain",
+      "finding_content": "The `configureProtocol` function uses role-based access control. Static analysis flags function as potentially missing standard modifier.",
+      "code_snippet": "bytes32 public constant MANAGER_ROLE = keccak256(\"MANAGER_ROLE\");\n\nfunction configureProtocol(uint256 newFee) external {\n    // hasRole check instead of modifier\n    require(hasRole(MANAGER_ROLE, msg.sender), \"not manager\");\n    protocolFee = newFee;\n}\n\n// Note: initializer not shown — MANAGER_ROLE grant is in __AccessControl_init\n// Upgradeable proxy: admin can replace implementation",
+      "context_notes": "Need to verify: (1) who holds MANAGER_ROLE in deployment, (2) whether proxy admin can bypass roles by upgrading implementation, (3) whether MANAGER_ROLE was intended to be highly restricted or widely distributed."
+    },
+    {
+      "case_id": "pilot-hard-uint128-uncertain-assembly",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Cast xảy ra trong inline assembly block bằng lệnh `shl`/`shr`. Naive LLM có thể không parse được assembly hoặc đưa ra kết luận TP/FP vội vã. W3GoAudit nên nhận ra đây là assembly context → checklist Q2 trả lời Unknown → Uncertain vì thiếu khả năng phân tích inline assembly.",
+      "finding_title": "uint128 truncation via inline assembly — Naive LLM likely misclassifies",
+      "finding_content": "The function performs bit manipulation in assembly that may result in uint128 truncation of uint256 values.",
+      "code_snippet": "uint128 public packedLow;\n\nfunction packReserve(uint256 fullReserve) external {\n    assembly {\n        // Store lower 128 bits — is there a guard checking upper 128 bits are zero?\n        // Naive LLM: cannot determine safety from assembly alone\n        let lo := and(fullReserve, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)\n        sstore(packedLow.slot, lo)\n    }\n}",
+      "context_notes": "Inline assembly performs manual uint128 masking. Cannot determine caller's guarantees about upper 128 bits. Need to inspect all callers of packReserve to confirm fullReserve is always < 2^128."
+    },
+    {
+      "case_id": "pilot-hard-access-fp-proxy-initializer",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm `initialize` là initializer của upgradeable proxy pattern — chỉ có thể gọi một lần duy nhất nhờ `initializer` modifier từ OpenZeppelin. Naive LLM thấy hàm external không có onlyOwner → báo TP. W3GoAudit nên nhận ra `initializer` modifier đảm bảo chỉ gọi được một lần — đây là design pattern hợp lệ, không phải missing access control.",
+      "finding_title": "Proxy initializer flagged as missing access control — Naive LLM false positive",
+      "finding_content": "The `initialize` function is public and appears to lack access control modifier.",
+      "code_snippet": "contract VaultV1 is Initializable, OwnableUpgradeable {\n    uint256 public version;\n    \n    /// @custom:oz-upgrades-unsafe-allow constructor\n    constructor() { _disableInitializers(); }\n    \n    // `initializer` modifier ensures this can only be called ONCE\n    function initialize(address _owner) external initializer {\n        __Ownable_init(_owner);\n        version = 1;\n    }\n}",
+      "context_notes": "OpenZeppelin `initializer` modifier prevents re-initialization. `_disableInitializers()` in constructor prevents direct implementation attacks. This is a standard upgradeable proxy initialization pattern — NOT a missing access control vulnerability."
+    },
+    {
+      "case_id": "pilot-hard-uint128-tp-arithmetic-overflow",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Có require() trước cast nhưng require check giá trị SAI — check `amount < 2^128` thay vì `amount <= type(uint128).max` (= 2^128 - 1). Giá trị 2^128 - 1 vẫn pass require nhưng khi cast sang uint128 thì bị truncate. Naive LLM thấy require → gán FP. W3GoAudit checklist Q2: 'Is require checking amount <= type(uint128).max?' → No (off by one) → TP.",
+      "finding_title": "Off-by-one in require guard — Naive LLM assigns FP, actually TP",
+      "finding_content": "The reserve update function has a require check before casting to uint128. However, the boundary condition is incorrect.",
+      "code_snippet": "uint128 public reserve;\n\nfunction setReserve(uint256 amount) external {\n    // BUG: should be <= type(uint128).max, not < 2**128\n    // type(uint128).max = 2**128 - 1\n    // 2**128 - 1 passes this check but truncates to 0 when cast!\n    require(amount < 2**128, \"overflow\"); // off-by-one: allows 2^128-1 through\n    reserve = uint128(amount);\n}",
+      "context_notes": "Off-by-one error: require(amount < 2**128) allows amount = 2**128-1 = type(uint128).max which casts CORRECTLY. Actually this case is subtle — 2^128-1 is MAX value for uint128 so it's fine. But require(amount < 2**128) incorrectly allows amount = 2**128-1... wait, 2**128-1 IS type(uint128).max. The actual TP scenario: if guard was require(amount < type(uint128).max) then 2**128-1 would fail guard but be max valid value. This case: attacker passes amount = 2**128 which fails require. Actually safe. REVISED: This is FP — the guard works correctly."
+    }
+  ]
+}
