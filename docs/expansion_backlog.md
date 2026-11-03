@@ -12,12 +12,12 @@
 | :---: | :--- | :--- | :---: | :---: | :---: |
 | **Đợt 1-2** | `SOL-UINT128-NARROWING-001` | Truncation / Narrowing Cast `uint256 -> uint128` | 10 | 100.0% | ✅ Hoàn thành |
 | **Đợt 1-2** | `SOL-ACCESS-CONTROL-001` | Missing / Broken Access Control | 10 | 100.0% | ✅ Hoàn thành |
-| **Đợt 3** | `SOL-REENTRANCY-001` | Single/Cross-function & Read-only Reentrancy | 16 | 100.0% | ✅ Đã tích hợp |
-| **Đợt 4 (A)** | `SOL-DELEGATECALL-001` | Arbitrary / Untrusted `delegatecall` | 15 (dự kiến) | TBD | ⏳ Backlog |
-| **Đợt 4 (A)** | `SOL-ARBITRARY-FROM-001` | Arbitrary `from` in `transferFrom` | 15 (dự kiến) | TBD | ⏳ Backlog |
-| **Đợt 4 (B)** | `SOL-ORACLE-MANIP-001` | Spot Price Oracle Manipulation (AMM/Reserves) | 16 (dự kiến) | TBD | ⏳ Backlog |
-| **Đợt 4 (B)** | `SOL-UNCHECKED-RETURN-001` | Unchecked Low-level Call / Token Return Values | 15 (dự kiến) | TBD | ⏳ Backlog |
-| **Đợt 4 (C)** | `SOL-SIG-REPLAY-001` | Signature Malleability & Cross-Chain Replay | 14 (dự kiến) | TBD | ⏳ Backlog |
+| **Đợt 3** | `SOL-REENTRANCY-001` | Single/Cross-function & Read-only Reentrancy | 16 | 100.0% | ✅ Hoàn thành |
+| **Đợt 4 (A)** | `SOL-DELEGATECALL-001` | Arbitrary / Untrusted `delegatecall` | 16 | 100.0% | ✅ Hoàn thành |
+| **Đợt 4 (A)** | `SOL-ARBITRARY-FROM-001` | Arbitrary `from` in `transferFrom` | 16 | 100.0% | ✅ Hoàn thành |
+| **Đợt 4 (A)** | `SOL-UNCHECKED-RETURN-001` | Unchecked Low-level Call / Silent Token Returns | 16 | 100.0% | ✅ Hoàn thành |
+| **Đợt 4 (B)** | `SOL-ORACLE-MANIP-001` | Spot Price Oracle Manipulation (AMM/Reserves) | 16 (dự kiến) | TBD | ⏳ Tiếp tục |
+| **Đợt 4 (C)** | `SOL-SIG-REPLAY-001` | Signature Malleability & Cross-Chain Replay | 14 (dự kiến) | TBD | ⏳ Tiếp tục |
 
 ---
 

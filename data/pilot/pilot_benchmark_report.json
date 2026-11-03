@@ -3,16 +3,16 @@
     "dataset_version": "1.0",
     "total_cases": 16,
     "dataset_split": "all",
-    "dataset_arg": "reentrancy",
+    "dataset_arg": "unchecked_return",
     "patterns": [
-      "SOL-REENTRANCY-001"
+      "SOL-UNCHECKED-RETURN-001"
     ],
     "evaluation_mode": "offline",
     "provider": "offline",
     "model": "deterministic-engine",
     "context_assembler_used": false,
     "baselines_run": "all",
-    "timestamp": "2026-10-25T08:56:26Z"
+    "timestamp": "2026-11-03T09:24:54Z"
   },
   "baselines": {
     "Baseline 1 (Rule-Only / Scanner)": {
@@ -42,116 +42,116 @@
       },
       "case_predictions": [
         {
-          "case_id": "reentrancy-tp-001",
+          "case_id": "unchecked-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-fp-001",
+          "case_id": "unchecked-tp-002",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+        },
+        {
+          "case_id": "unchecked-tp-003",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+        },
+        {
+          "case_id": "unchecked-fp-001",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-fp-002",
+          "case_id": "unchecked-fp-002",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-uncertain-001",
-          "ground_truth": "Uncertain",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
-        },
-        {
-          "case_id": "reentrancy-tp-002",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
-        },
-        {
-          "case_id": "reentrancy-fp-003",
+          "case_id": "unchecked-fp-003",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-uncertain-002",
-          "ground_truth": "Uncertain",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
-        },
-        {
-          "case_id": "reentrancy-tp-003",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
-        },
-        {
-          "case_id": "reentrancy-fp-004",
+          "case_id": "unchecked-fp-004",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-tp-004",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
-        },
-        {
-          "case_id": "reentrancy-uncertain-003",
+          "case_id": "unchecked-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-uncertain-004",
+          "case_id": "unchecked-uncertain-002",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-hard-tp-cross-contract",
+          "case_id": "unchecked-uncertain-003",
+          "ground_truth": "Uncertain",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+        },
+        {
+          "case_id": "unchecked-uncertain-004",
+          "ground_truth": "Uncertain",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+        },
+        {
+          "case_id": "unchecked-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-hard-fp-checks-first",
+          "case_id": "unchecked-hard-001",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+        },
+        {
+          "case_id": "unchecked-hard-002",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-hard-uncertain-conditional-guard",
+          "case_id": "unchecked-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "reentrancy-hard-tp-price-manipulation",
+          "case_id": "unchecked-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-REENTRANCY-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
         }
       ]
     },
@@ -164,134 +164,134 @@
           "Uncertain": 5
         },
         "predicted_distribution": {
-          "TP": 3,
-          "FP": 7,
-          "Uncertain": 6,
+          "TP": 4,
+          "FP": 8,
+          "Uncertain": 4,
           "ERROR": 0
         },
         "execution_errors": 0,
-        "correct_predictions": 11,
-        "accuracy": 68.8,
-        "true_positives_detected": 2,
-        "false_alarms": 1,
-        "precision": 66.7,
-        "recall": 33.3,
-        "f1_score": 44.4,
-        "fp_rate": 20.0,
-        "fp_reduction_rate": 80.0
+        "correct_predictions": 13,
+        "accuracy": 81.2,
+        "true_positives_detected": 4,
+        "false_alarms": 0,
+        "precision": 100.0,
+        "recall": 66.7,
+        "f1_score": 80.0,
+        "fp_rate": 0.0,
+        "fp_reduction_rate": 100.0
       },
       "case_predictions": [
         {
-          "case_id": "reentrancy-tp-001",
-          "ground_truth": "TP",
-          "predicted": "FP",
-          "correct": false,
-          "reason": "State update precedes external call (Checks-Effects-Interactions pattern)."
-        },
-        {
-          "case_id": "reentrancy-fp-001",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "State update precedes external call (Checks-Effects-Interactions pattern)."
-        },
-        {
-          "case_id": "reentrancy-fp-002",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "nonReentrant mutex modifier protects function against re-entrant calls."
-        },
-        {
-          "case_id": "reentrancy-uncertain-001",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Custom guard, abstract base implementation, or token hook behavior cannot be verified from snippet alone."
-        },
-        {
-          "case_id": "reentrancy-tp-002",
-          "ground_truth": "TP",
-          "predicted": "FP",
-          "correct": false,
-          "reason": "Standard ERC20 transfer or 2300 gas transfer stipend prevents re-entrancy hook."
-        },
-        {
-          "case_id": "reentrancy-fp-003",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "Standard ERC20 transfer or 2300 gas transfer stipend prevents re-entrancy hook."
-        },
-        {
-          "case_id": "reentrancy-uncertain-002",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Custom guard, abstract base implementation, or token hook behavior cannot be verified from snippet alone."
-        },
-        {
-          "case_id": "reentrancy-tp-003",
+          "case_id": "unchecked-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "External call occurs before state update or without re-entrancy protection."
+          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
         },
         {
-          "case_id": "reentrancy-fp-004",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "Standard ERC20 transfer or 2300 gas transfer stipend prevents re-entrancy hook."
-        },
-        {
-          "case_id": "reentrancy-tp-004",
+          "case_id": "unchecked-tp-002",
           "ground_truth": "TP",
           "predicted": "FP",
           "correct": false,
-          "reason": "nonReentrant mutex modifier protects function against re-entrant calls."
+          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
         },
         {
-          "case_id": "reentrancy-uncertain-003",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Custom guard, abstract base implementation, or token hook behavior cannot be verified from snippet alone."
-        },
-        {
-          "case_id": "reentrancy-uncertain-004",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Custom guard, abstract base implementation, or token hook behavior cannot be verified from snippet alone."
-        },
-        {
-          "case_id": "reentrancy-hard-tp-cross-contract",
+          "case_id": "unchecked-tp-003",
           "ground_truth": "TP",
-          "predicted": "Uncertain",
-          "correct": false,
-          "reason": "Custom guard, abstract base implementation, or token hook behavior cannot be verified from snippet alone."
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
         },
         {
-          "case_id": "reentrancy-hard-fp-checks-first",
+          "case_id": "unchecked-fp-001",
           "ground_truth": "FP",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "External call occurs before state update or without re-entrancy protection."
+          "predicted": "FP",
+          "correct": true,
+          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
         },
         {
-          "case_id": "reentrancy-hard-uncertain-conditional-guard",
+          "case_id": "unchecked-fp-002",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "Return value of low-level call is explicitly validated and reverts on failure."
+        },
+        {
+          "case_id": "unchecked-fp-003",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
+        },
+        {
+          "case_id": "unchecked-fp-004",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
+        },
+        {
+          "case_id": "unchecked-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "Custom guard, abstract base implementation, or token hook behavior cannot be verified from snippet alone."
+          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
         },
         {
-          "case_id": "reentrancy-hard-tp-price-manipulation",
+          "case_id": "unchecked-uncertain-002",
+          "ground_truth": "Uncertain",
+          "predicted": "FP",
+          "correct": false,
+          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
+        },
+        {
+          "case_id": "unchecked-uncertain-003",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
+        },
+        {
+          "case_id": "unchecked-uncertain-004",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
+        },
+        {
+          "case_id": "unchecked-tp-004",
+          "ground_truth": "TP",
+          "predicted": "FP",
+          "correct": false,
+          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
+        },
+        {
+          "case_id": "unchecked-hard-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "External call occurs before state update or without re-entrancy protection."
+          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
+        },
+        {
+          "case_id": "unchecked-hard-002",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "Return value of low-level call is explicitly validated and reverts on failure."
+        },
+        {
+          "case_id": "unchecked-hard-003",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
+        },
+        {
+          "case_id": "unchecked-hard-004",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
         }
       ]
     },
@@ -304,134 +304,134 @@
           "Uncertain": 5
         },
         "predicted_distribution": {
-          "TP": 10,
-          "FP": 6,
-          "Uncertain": 0,
+          "TP": 11,
+          "FP": 4,
+          "Uncertain": 1,
           "ERROR": 0
         },
         "execution_errors": 0,
-        "correct_predictions": 7,
-        "accuracy": 43.8,
-        "true_positives_detected": 4,
-        "false_alarms": 2,
-        "precision": 66.7,
-        "recall": 66.7,
-        "f1_score": 66.7,
-        "fp_rate": 40.0,
-        "fp_reduction_rate": 60.0
+        "correct_predictions": 11,
+        "accuracy": 68.8,
+        "true_positives_detected": 6,
+        "false_alarms": 1,
+        "precision": 85.7,
+        "recall": 100.0,
+        "f1_score": 92.3,
+        "fp_rate": 20.0,
+        "fp_reduction_rate": 80.0
       },
       "case_predictions": [
         {
-          "case_id": "reentrancy-tp-001",
+          "case_id": "unchecked-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-fp-001",
+          "case_id": "unchecked-tp-002",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[Naive LLM Simulation] Standard code analysis."
+        },
+        {
+          "case_id": "unchecked-tp-003",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[Naive LLM Simulation] Standard code analysis."
+        },
+        {
+          "case_id": "unchecked-fp-001",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-fp-002",
+          "case_id": "unchecked-fp-002",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
           "reason": "[Naive LLM Simulation] Downcasting to uint128 detected; flags risk without tracing external library."
         },
         {
-          "case_id": "reentrancy-uncertain-001",
-          "ground_truth": "Uncertain",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
-        },
-        {
-          "case_id": "reentrancy-tp-002",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[Naive LLM Simulation] Standard code analysis."
-        },
-        {
-          "case_id": "reentrancy-fp-003",
+          "case_id": "unchecked-fp-003",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-uncertain-002",
-          "ground_truth": "Uncertain",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
-        },
-        {
-          "case_id": "reentrancy-tp-003",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[Naive LLM Simulation] Standard code analysis."
-        },
-        {
-          "case_id": "reentrancy-fp-004",
+          "case_id": "unchecked-fp-004",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-tp-004",
+          "case_id": "unchecked-uncertain-001",
+          "ground_truth": "Uncertain",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
+        },
+        {
+          "case_id": "unchecked-uncertain-002",
+          "ground_truth": "Uncertain",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
+        },
+        {
+          "case_id": "unchecked-uncertain-003",
+          "ground_truth": "Uncertain",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
+        },
+        {
+          "case_id": "unchecked-uncertain-004",
+          "ground_truth": "Uncertain",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
+        },
+        {
+          "case_id": "unchecked-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-uncertain-003",
-          "ground_truth": "Uncertain",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
-        },
-        {
-          "case_id": "reentrancy-uncertain-004",
-          "ground_truth": "Uncertain",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
-        },
-        {
-          "case_id": "reentrancy-hard-tp-cross-contract",
+          "case_id": "unchecked-hard-001",
           "ground_truth": "TP",
-          "predicted": "FP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] Checks-Effects-Interactions appears satisfied locally; missed router callback into deposit()."
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-hard-fp-checks-first",
+          "case_id": "unchecked-hard-002",
           "ground_truth": "FP",
-          "predicted": "TP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] External call detected inside function; flagged as unsafe reentrancy risk."
+          "predicted": "FP",
+          "correct": true,
+          "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-hard-uncertain-conditional-guard",
+          "case_id": "unchecked-hard-003",
           "ground_truth": "Uncertain",
-          "predicted": "FP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] conditionalGuard modifier is present on emergencyWithdraw()."
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "reentrancy-hard-tp-price-manipulation",
+          "case_id": "unchecked-hard-004",
           "ground_truth": "TP",
-          "predicted": "FP",
-          "correct": false,
-          "reason": "[Naive LLM Simulation] getSpotPrice is a view function and does not modify contract state."
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[Naive LLM Simulation] Standard code analysis."
         }
       ]
     },
@@ -462,116 +462,116 @@
       },
       "case_predictions": [
         {
-          "case_id": "reentrancy-tp-001",
+          "case_id": "unchecked-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Điển hình của lỗi reentrancy: state update (balance = 0) xảy ra SAU external call (msg.sender.call). Kẻ tấn công có thể re-enter withdraw() trong receive() để rút nhiều lần trước khi balance bị reset về 0."
+          "reason": "[W3GoAudit Engine] Low-level call() return value bị bỏ qua hoàn toàn. Nếu recipient là một contract không nhận ETH hoặc revert, hàm vẫn tiếp tục và caller mất ETH mà không có thông báo lỗi."
         },
         {
-          "case_id": "reentrancy-fp-001",
+          "case_id": "unchecked-tp-002",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[W3GoAudit Engine] IERC20.transfer() trả về bool. Với non-standard tokens (USDT, BNB) không revert khi fail mà trả về false, logic tiếp tục như thể transfer thành công. Người dùng nhận lợi ích mà không mất token."
+        },
+        {
+          "case_id": "unchecked-tp-003",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[W3GoAudit Engine] approve() return value bị bỏ qua. Với non-standard ERC20 tokens, approve có thể return false mà không revert. Contract assumes approval succeeded và tiến hành transferFrom sẽ fail hoặc partial."
+        },
+        {
+          "case_id": "unchecked-fp-001",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm tuân theo pattern CEI (Checks-Effects-Interactions) đúng thứ tự: kiểm tra (require), cập nhật state (balances[msg.sender] = 0), rồi mới gọi ngoại. Không thể khai thác reentrancy vì state đã được ghi trước khi gọi ngoại."
+          "reason": "[W3GoAudit Engine] SafeERC20 library từ OpenZeppelin được dùng — safeTransfer() wrap transfer() với require check nội bộ. Nếu transfer fail (return false hoặc revert), safeTransfer() sẽ revert. Không có unchecked return."
         },
         {
-          "case_id": "reentrancy-fp-002",
+          "case_id": "unchecked-fp-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm có modifier nonReentrant từ OpenZeppelin ReentrancyGuard. Modifier này dùng lock state (status) để ngăn chặn mọi re-entry call vào hàm này hoặc bất kỳ hàm nào cùng guard. Rule tĩnh nhìn thấy external call nhưng không nhận ra nonReentrant."
+          "reason": "[W3GoAudit Engine] Return value được capture và check với require. Nếu call thất bại, require revert toàn bộ transaction. Không có silent failure."
         },
         {
-          "case_id": "reentrancy-uncertain-001",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm có external call nhưng chỉ thấy một phần contract. Không rõ có nonReentrant modifier được định nghĩa ở base contract hay không. Cần xem toàn bộ inheritance chain và modifier definition."
-        },
-        {
-          "case_id": "reentrancy-tp-002",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[W3GoAudit Engine] Điểm yếu reentrancy trong giao thức MISO (SushiSwap) — external call trong commitETH() xảy ra trước khi cập nhật accounting. Lỗi này đã dẫn đến mất 3M USD trong thực tế (2021)."
-        },
-        {
-          "case_id": "reentrancy-fp-003",
+          "case_id": "unchecked-fp-003",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm gọi IERC20.transfer() — đây là external call nhưng không phải external call nguy hiểm vì IERC20.transfer không nhận ETH và không có receive() hook. Token ERC20 không thể re-enter hàm gọi qua transfer(). Chỉ có ETH transfer (call/transfer/send) hoặc ERC777 mới có khả năng re-entry."
+          "reason": "[W3GoAudit Engine] token.transfer() được gọi nhưng token contract là ERC20 chuẩn tuân thủ OpenZeppelin (đã được verify trên chain). OZ ERC20 luôn revert khi fail, không trả về false. Unchecked return là safe với ERC20 token chuẩn."
         },
         {
-          "case_id": "reentrancy-uncertain-002",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "[W3GoAudit Engine] Contract gọi token.transfer() nhưng chú thích cho thấy token có thể là ERC777 (có `tokensReceived` hook). Nếu token là ERC777, thì có thể bị re-entry. Không đủ thông tin về kiểu token để quyết định."
-        },
-        {
-          "case_id": "reentrancy-tp-003",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[W3GoAudit Engine] Read-only reentrancy: hàm không thay đổi state nhưng đọc state trong khi một lệnh gọi ngoại từ hàm khác đang ở giữa quá trình (in-flight). Attacker có thể trigger hàm này từ một hook để đọc state đang ở trạng thái giữa chừng (inconsistent), tạo ra oracle manipulation."
-        },
-        {
-          "case_id": "reentrancy-fp-004",
+          "case_id": "unchecked-fp-004",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm dùng `address.transfer()` thay vì `call{value}`. Solidity `transfer()` chỉ chuyển 2300 gas, không đủ để thực hiện state write hoặc gọi thêm function, nên không thể re-entry. Đây là biện pháp phòng thủ cũ trước EIP-1884 nhưng vẫn hiệu quả cho trường hợp này."
+          "reason": "[W3GoAudit Engine] Solidity 0.8+ native ETH transfer dùng .transfer() (không phải low-level call). .transfer() luôn revert nếu fail, không có unchecked return issue. Pattern này khác với .call()."
         },
         {
-          "case_id": "reentrancy-tp-004",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[W3GoAudit Engine] Cross-contract reentrancy: hàm A gọi contract B, contract B re-enters hàm C (cùng project) thay vì hàm A. nonReentrant trên hàm A không bảo vệ hàm C. Cần nonReentrant trên cả hàm C hoặc dùng global lock."
-        },
-        {
-          "case_id": "reentrancy-uncertain-003",
+          "case_id": "unchecked-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm có external call và update state, nhưng không rõ liệu token có phải ERC777 hay không, và không rõ có nonReentrant ở base contract hay không. Cần xem deployment script và inheritance chain."
+          "reason": "[W3GoAudit Engine] call() return bị ignore nhưng pattern này là intentional fire-and-forget (ví dụ: sending optional notification). Không rõ đây là lỗi hay thiết kế cố ý. Cần review intent của developer."
         },
         {
-          "case_id": "reentrancy-uncertain-004",
+          "case_id": "unchecked-uncertain-002",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Contract kế thừa từ abstract base nhưng không thể thấy modifier định nghĩa. Từ khoá `safeTransfer` có thể là CEI-wrapped hoặc có thể là alias cho call. Cần xem library definition."
+          "reason": "[W3GoAudit Engine] transfer() trên token không rõ nguồn gốc — có thể là ERC20 chuẩn (an toàn) hoặc non-standard token không revert. Cần biết địa chỉ hoặc source code của token."
         },
         {
-          "case_id": "reentrancy-hard-tp-cross-contract",
+          "case_id": "unchecked-uncertain-003",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[W3GoAudit Engine] Wrapper function _safeCall() wrapping call(). Không thấy implementation của _safeCall — có thể đã check return value bên trong, hoặc không. Cần xem source của _safeCall."
+        },
+        {
+          "case_id": "unchecked-uncertain-004",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[W3GoAudit Engine] try/catch block được dùng với external call — return value không bị completely bỏ qua (catch xử lý failure). Nhưng catch body chỉ emit event không revert. Liệu silent swallow có chấp nhận được không phụ thuộc vào business logic."
+        },
+        {
+          "case_id": "unchecked-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Naive LLM thấy state update trước external call (tưởng CEI đúng). Nhưng external call gọi sang CONTRACT KHÁC trong cùng hệ thống, contract kia lại gọi ngược lại hàm thứ hai chưa có guard. Cross-contract reentrancy — không phải single-function reentrancy."
+          "reason": "[W3GoAudit Engine] Loop với nhiều ERC20 transfer() không check return. Nếu một transfer fail (non-reverting token), loop tiếp tục. State đã được cập nhật trước đó vẫn tính phần không được transfer — số dư không nhất quán."
         },
         {
-          "case_id": "reentrancy-hard-fp-checks-first",
+          "case_id": "unchecked-hard-001",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[W3GoAudit Engine] Mặc dù success được capture nhưng chỉ dùng để emit event, không revert. Logic tiếp tục sau failed call. Functional equivalent of unchecked return."
+        },
+        {
+          "case_id": "unchecked-hard-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Naive LLM thấy external call TRƯỚC state zero-out trong function, nhưng thực tế state KHÔNG thể bị khai thác vì: (1) balance đã bị set = 0 ngay từ đầu trước external call, (2) recheck guard ngay sau call. Naive LLM nhầm tưởng external call ở giữa là unsafe khi thực ra state đã cleared."
+          "reason": "[W3GoAudit Engine] Hàm dùng assembly để gọi external và check returndatasize() cùng với revert condition thủ công. Assembly-level check tương đương với require(success) nhưng ở mức thấp hơn."
         },
         {
-          "case_id": "reentrancy-hard-uncertain-conditional-guard",
+          "case_id": "unchecked-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm chỉ có guard nếu `isEmergency == false`. Khi emergency mode được bật, guard bị bỏ qua và hàm có thể bị re-entry. Naive LLM thấy modifier và gán FP. W3GoAudit nên phát hiện guard có điều kiện và gán Uncertain vì không rõ trạng thái `isEmergency` tại runtime."
+          "reason": "[W3GoAudit Engine] Hàm là internal và return value của call() được return lại cho caller. Không biết caller có check return value không. Cần xem caller để xác định."
         },
         {
-          "case_id": "reentrancy-hard-tp-price-manipulation",
+          "case_id": "unchecked-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Read-only reentrancy dùng để manipulate price oracle. Hàm read-only getSpotPrice() được gọi bởi lending protocol trong khi pool đang ở trạng thái giữa chừng (external call chưa hoàn thành). Naive LLM thấy không có state write trong getSpotPrice() nên gán FP. W3GoAudit: Q1 xác nhận external call, Q3 xác nhận state read trong inconsistent window -> TP."
+          "reason": "[W3GoAudit Engine] transferFrom() được dùng với USDT (Tether) — đây là non-standard ERC20 nổi tiếng không revert khi fail mà return false. Return value bị ignore → silent accounting corruption."
         }
       ]
     },
@@ -602,112 +602,112 @@
       },
       "case_predictions": [
         {
-          "case_id": "reentrancy-tp-001",
+          "case_id": "unchecked-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "reentrancy-fp-001",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-fp-002",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-uncertain-001",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-tp-002",
+          "case_id": "unchecked-tp-002",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "reentrancy-fp-003",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-uncertain-002",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-tp-003",
+          "case_id": "unchecked-tp-003",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "reentrancy-fp-004",
+          "case_id": "unchecked-fp-001",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "reentrancy-tp-004",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-uncertain-003",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-uncertain-004",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-hard-tp-cross-contract",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
-        },
-        {
-          "case_id": "reentrancy-hard-fp-checks-first",
+          "case_id": "unchecked-fp-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "reentrancy-hard-uncertain-conditional-guard",
+          "case_id": "unchecked-fp-003",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-fp-004",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "reentrancy-hard-tp-price-manipulation",
+          "case_id": "unchecked-uncertain-002",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-uncertain-003",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-uncertain-004",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-tp-004",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-hard-001",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-hard-002",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-hard-003",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
+        },
+        {
+          "case_id": "unchecked-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,

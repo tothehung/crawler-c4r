@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho pattern Delegatecall (SOL-DELEGATECALL-001) — Đợt 4A. 12 dev cases phủ đủ 3 nhãn: TP (delegatecall đến địa chỉ do người dùng kiểm soát / không được whitelist), FP (delegatecall đến implementation cố định hoặc qua timelock), Uncertain (không đủ ngữ cảnh để xác định nguồn gốc địa chỉ). 4 hard test cases.",
+    "pattern": "SOL-DELEGATECALL-001",
+    "cwe": "CWE-829",
+    "labels": {
+      "TP": "True Positive — delegatecall đến địa chỉ do attacker kiểm soát, có thể thay đổi storage hoặc logic",
+      "FP": "False Positive — delegatecall đến địa chỉ đã xác minh (immutable implementation, whitelist, timelock)",
+      "Uncertain": "Không đủ ngữ cảnh để xác định địa chỉ target là trusted hay untrusted"
+    },
+    "split": {
+      "dev": "delegatecall-tp-001 đến delegatecall-uncertain-004 (12 cases — dùng để tune checklist/prompt)",
+      "test": "delegatecall-hard-* (4 hard cases — KHÔNG dùng để tune)"
+    },
+    "created_at": "2026-11-03T00:00:00Z",
+    "phase": "Đợt 4A — Multi-group Expansion"
+  },
+  "dev_cases": [
+    {
+      "case_id": "delegatecall-tp-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "delegatecall được thực hiện trực tiếp đến địa chỉ do msg.sender cung cấp (_target là tham số hàm). Kẻ tấn công có thể truyền vào địa chỉ của một contract độc hại để ghi đè storage hoặc selfdestruct contract proxy.",
+      "finding_title": "Arbitrary delegatecall: target address is function parameter controlled by caller",
+      "finding_content": "The `execute` function calls `delegatecall` with a target address passed directly as a function parameter. Any caller can supply a malicious implementation contract to overwrite storage slots.",
+      "code_snippet": "function execute(address _target, bytes calldata _data) external onlyOwner returns (bool success) {\n    // VULNERABILITY: delegatecall to caller-controlled address\n    (success,) = _target.delegatecall(_data);\n    require(success, \"delegatecall failed\");\n}",
+      "context_notes": "onlyOwner modifier present but owner is compromised in the attack scenario. Target address is parameter — no whitelist check."
+    },
+    {
+      "case_id": "delegatecall-tp-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "delegatecall đến địa chỉ lưu trong storage variable `impl` có thể bị thay đổi qua hàm setImplementation() không có timelock hoặc multi-sig. Kẻ tấn công sau khi chiếm quyền owner có thể upgrade sang contract độc hại.",
+      "finding_title": "Delegatecall to mutable implementation slot without timelock",
+      "finding_content": "The fallback function delegates to `impl` storage variable. The `setImplementation` function allows the owner to change `impl` without delay or multisig protection.",
+      "code_snippet": "address public impl;\n\nfunction setImplementation(address _newImpl) external onlyOwner {\n    impl = _newImpl;  // No timelock, no delay\n}\n\nfallback() external payable {\n    address _impl = impl;\n    assembly {\n        let ptr := mload(0x40)\n        calldatacopy(ptr, 0, calldatasize())\n        let result := delegatecall(gas(), _impl, ptr, calldatasize(), 0, 0)\n        // ... return handling\n    }\n}",
+      "context_notes": "impl is mutable storage. setImplementation has no delay, no multisig, no timelock. Single owner control."
+    },
+    {
+      "case_id": "delegatecall-tp-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Library address lưu trong mapping có thể bị ghi đè bởi bất kỳ ai thông qua hàm registerLibrary() không có guard. Sau đó delegatecall sẽ thực thi code độc hại trong context của proxy.",
+      "finding_title": "Delegatecall to registry-registered library — registry writable by anyone",
+      "finding_content": "The contract fetches library address from a registry and delegates calls to it. The registry's `registerLibrary` is callable without access control.",
+      "code_snippet": "mapping(bytes32 => address) public libraries;\n\nfunction registerLibrary(bytes32 name, address lib) external {\n    // VULNERABILITY: No access control\n    libraries[name] = lib;\n}\n\nfunction callLibrary(bytes32 name, bytes calldata data) external {\n    address lib = libraries[name];\n    require(lib != address(0), \"library not found\");\n    (bool ok,) = lib.delegatecall(data);  // delegatecall to attacker-registered lib\n    require(ok);\n}",
+      "context_notes": "registerLibrary has no onlyOwner or onlyAdmin. Any attacker can register a malicious address."
+    },
+    {
+      "case_id": "delegatecall-fp-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "implementation address là immutable được set một lần trong constructor và không thể thay đổi. delegatecall đến địa chỉ cố định này không có risk upgrade backdoor.",
+      "finding_title": "Delegatecall to immutable implementation — address fixed at deploy time",
+      "finding_content": "Static analysis flags delegatecall in fallback. However, implementation is immutable, set only in constructor and cannot be changed.",
+      "code_snippet": "address public immutable implementation;\n\nconstructor(address _implementation) {\n    require(_implementation != address(0));\n    implementation = _implementation;\n}\n\nfallback() external payable {\n    address impl = implementation;  // immutable — cannot be changed\n    assembly {\n        calldatacopy(0, 0, calldatasize())\n        let result := delegatecall(gas(), impl, 0, calldatasize(), 0, 0)\n        returndatacopy(0, 0, returndatasize())\n        switch result case 0 { revert(0, returndatasize()) }\n        default { return(0, returndatasize()) }\n    }\n}",
+      "context_notes": "immutable keyword ensures address is set once at construction. No upgrade path exists in this contract."
+    },
+    {
+      "case_id": "delegatecall-fp-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "delegatecall target phải có trong whitelist `approvedImpls` trước khi có thể được dùng. Whitelist chỉ do owner quản lý thông qua timelock riêng. Không thể inject địa chỉ tùy ý.",
+      "finding_title": "Delegatecall with implementation whitelist + timelock governance",
+      "finding_content": "Delegatecall target must be in the approvedImpls whitelist managed by governance with timelock. Static rule flags delegatecall but misses the whitelist gate.",
+      "code_snippet": "mapping(address => bool) public approvedImpls;\naddress public pendingImpl;\nuint256 public upgradeTimestamp;\nuint256 public constant UPGRADE_DELAY = 48 hours;\n\nfunction proposeImpl(address _impl) external onlyGovernance {\n    pendingImpl = _impl;\n    upgradeTimestamp = block.timestamp + UPGRADE_DELAY;\n}\n\nfunction executeUpgrade() external onlyGovernance {\n    require(block.timestamp >= upgradeTimestamp, \"timelock active\");\n    approvedImpls[pendingImpl] = true;\n}\n\nfallback() external payable {\n    address impl = currentImpl;\n    require(approvedImpls[impl], \"impl not approved\");  // whitelist gate\n    assembly {\n        // delegatecall to whitelisted impl\n    }\n}",
+      "context_notes": "Whitelist enforced before delegatecall. Governance+timelock required to add new implementation."
+    },
+    {
+      "case_id": "delegatecall-fp-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Pattern này là EIP-2535 Diamond Proxy chuẩn. Facet addresses được quản lý qua DiamondCut với onlyOwner và diamondCut event audit trail. Không phải arbitrary delegatecall.",
+      "finding_title": "EIP-2535 Diamond Proxy fallback — standard governed facet routing",
+      "finding_content": "Delegatecall in fallback via Diamond storage facet lookup. This is the EIP-2535 Diamond proxy standard, with governed diamondCut for upgrades.",
+      "code_snippet": "// EIP-2535 Diamond proxy fallback\nfallback() external payable {\n    LibDiamond.DiamondStorage storage ds;\n    bytes32 position = LibDiamond.DIAMOND_STORAGE_POSITION;\n    assembly { ds.slot := position }\n    address facet = ds.selectorToFacetAndPosition[msg.sig].facetAddress;\n    require(facet != address(0), \"Diamond: Function does not exist\");\n    assembly {\n        calldatacopy(0, 0, calldatasize())\n        let result := delegatecall(gas(), facet, 0, calldatasize(), 0, 0)\n        returndatacopy(0, 0, returndatasize())\n        switch result case 0 { revert(0, returndatasize()) }\n        default { return(0, returndatasize()) }\n    }\n}",
+      "context_notes": "EIP-2535 standard Diamond proxy. Facets are managed by diamondCut() with onlyOwner. Standard auditable pattern."
+    },
+    {
+      "case_id": "delegatecall-fp-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "OpenZeppelin UUPSUpgradeable pattern: upgradeTo() có _authorizeUpgrade() override yêu cầu onlyOwner. Địa chỉ implementation được kiểm soát qua governance role không phải user input tự do.",
+      "finding_title": "UUPS Proxy upgradeTo with _authorizeUpgrade onlyOwner — OZ standard",
+      "finding_content": "Static analysis flags the ERC1967 delegatecall in UUPS proxy. However, implementation follows OpenZeppelin UUPSUpgradeable with proper authorization override.",
+      "code_snippet": "// OpenZeppelin UUPSUpgradeable pattern\ncontract MyContractV1 is Initializable, OwnableUpgradeable, UUPSUpgradeable {\n    function initialize(address owner_) external initializer {\n        __Ownable_init(owner_);\n        __UUPSUpgradeable_init();\n    }\n\n    // Required authorization check — only owner can upgrade\n    function _authorizeUpgrade(address newImplementation)\n        internal\n        override\n        onlyOwner\n    {\n        // Only owner can authorize upgrade\n    }\n}",
+      "context_notes": "OZ UUPS standard. _authorizeUpgrade is overridden with onlyOwner. Upgrade path is governance controlled."
+    },
+    {
+      "case_id": "delegatecall-uncertain-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "implementation address được lấy từ contract factory bên ngoài (IFactory(factory).getImplementation()). Không có đủ context về logic bên trong IFactory để xác định địa chỉ có thể bị thao túng hay không.",
+      "finding_title": "Delegatecall to factory-resolved implementation — factory logic unknown",
+      "finding_content": "Implementation address is resolved from an external factory contract. Without factory source code or audit, cannot determine if implementation is properly controlled.",
+      "code_snippet": "interface IFactory {\n    function getImplementation(bytes32 salt) external view returns (address);\n}\n\ncontract Proxy {\n    address public factory;\n\n    fallback() external payable {\n        // Implementation resolved from external factory — context unknown\n        address impl = IFactory(factory).getImplementation(keccak256(msg.data[:4]));\n        require(impl != address(0));\n        assembly {\n            calldatacopy(0, 0, calldatasize())\n            let result := delegatecall(gas(), impl, 0, calldatasize(), 0, 0)\n            // ...\n        }\n    }\n}",
+      "context_notes": "Factory contract source unknown. Cannot verify whether factory enforces any access control on getImplementation()."
+    },
+    {
+      "case_id": "delegatecall-uncertain-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm là abstract trong base contract. Implementation của _getTarget() phải được xem xét trong derived contract. Không có đủ thông tin để kết luận.",
+      "finding_title": "Abstract base with delegatecall to _getTarget() — derived implementation unknown",
+      "finding_content": "The base contract performs delegatecall to _getTarget() which is abstract. Without the derived contract, target resolution logic is unknown.",
+      "code_snippet": "abstract contract BaseProxy {\n    // Abstract — derived contract must override\n    function _getTarget() internal view virtual returns (address);\n\n    function _delegate(bytes calldata data) internal returns (bytes memory) {\n        address target = _getTarget();  // abstract — cannot analyze\n        (bool ok, bytes memory ret) = target.delegatecall(data);\n        require(ok, \"delegatecall failed\");\n        return ret;\n    }\n}",
+      "context_notes": "_getTarget() is abstract. Need derived contract to determine if target is fixed or attacker-controlled."
+    },
+    {
+      "case_id": "delegatecall-uncertain-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "BEACON_SLOT address được đọc từ ERC1967 beacon slot. Không có context về beacon contract — cần xem beacon có `_authorizeUpgrade` không và ai có quyền đổi implementation trong beacon.",
+      "finding_title": "ERC1967 beacon proxy — beacon upgrade authorization unknown from snippet",
+      "finding_content": "Proxy reads implementation from ERC1967 beacon slot. Delegatecall safety depends on beacon contract's upgrade controls which are not visible in this snippet.",
+      "code_snippet": "// ERC1967 Beacon Proxy pattern\nbytes32 internal constant BEACON_SLOT = bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1);\n\nfunction _implementation() internal view returns (address impl) {\n    address beacon = StorageSlot.getAddressSlot(BEACON_SLOT).value;\n    impl = IBeacon(beacon).implementation();  // beacon contract context needed\n}\n\nfallback() external payable {\n    _fallback();\n}\n\nfunction _fallback() internal {\n    _delegate(_implementation());\n}",
+      "context_notes": "Beacon contract not shown. Need beacon source to verify upgrade authorization. Cannot determine TP or FP."
+    },
+    {
+      "case_id": "delegatecall-uncertain-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "`modules[selector]` là mapping lưu địa chỉ module theo function selector. Không rõ ai có thể gọi registerModule() và có whitelist hay governance không.",
+      "finding_title": "Module registry delegatecall — registerModule access control unknown from snippet",
+      "finding_content": "Fallback delegates to module address from a registry mapping. The `registerModule` function body is not shown — unclear who controls module registration.",
+      "code_snippet": "mapping(bytes4 => address) public modules;\n\n// registerModule definition not shown in this finding\n\nfallback() external payable {\n    address module = modules[msg.sig];\n    require(module != address(0), \"module not found\");\n    assembly {\n        calldatacopy(0, 0, calldatasize())\n        let result := delegatecall(gas(), module, 0, calldatasize(), 0, 0)\n        returndatacopy(0, 0, returndatasize())\n        switch result case 0 { revert(0, returndatasize()) }\n        default { return(0, returndatasize()) }\n    }\n}",
+      "context_notes": "registerModule() source not available in this finding snippet. Cannot determine access control on module registration."
+    },
+    {
+      "case_id": "delegatecall-tp-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Multicall pattern cho phép bất kỳ calldata nào được delegatecall. Kẻ tấn công có thể kết hợp với approveMax để draining token — đây là lỗi multicall delegatecall đã được khai thác thực tế.",
+      "finding_title": "Multicall with delegatecall — arbitrary calldata allows self-call with msg.sender spoofing",
+      "finding_content": "The multicall implementation uses delegatecall for each call, allowing msg.sender preservation. Combined with approve() patterns, this enables attackers to drain tokens.",
+      "code_snippet": "function multicall(bytes[] calldata data) external payable returns (bytes[] memory results) {\n    results = new bytes[](data.length);\n    for (uint i = 0; i < data.length; i++) {\n        // VULNERABILITY: delegatecall with arbitrary calldata from msg.sender\n        (bool success, bytes memory result) = address(this).delegatecall(data[i]);\n        require(success, string(result));\n        results[i] = result;\n    }\n}",
+      "context_notes": "Multicall delegatecall with msg.value forwarding — ETH double-spending attack vector. Any calldata can be crafted by attacker."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "delegatecall-hard-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Safe-looking pattern: chỉ các địa chỉ trong `trustedModules` mới được delegatecall, nhưng addTrustedModule() chỉ cần onlyOwner — không có timelock. Nếu owner key bị compromise, attacker có thể thêm module độc hại ngay lập tức.",
+      "finding_title": "Trusted module registry with onlyOwner but no timelock — single point of failure",
+      "finding_content": "Only addresses in trustedModules can receive delegatecall. However, the module registry is controlled by a single EOA owner with no timelock delay, creating a SPOF.",
+      "code_snippet": "mapping(address => bool) public trustedModules;\n\nfunction addTrustedModule(address module) external onlyOwner {\n    trustedModules[module] = true;  // No timelock — owner compromise = immediate exploit\n}\n\nfunction executeModule(address module, bytes calldata data) external onlyOwner {\n    require(trustedModules[module], \"module not trusted\");\n    (bool ok,) = module.delegatecall(data);\n    require(ok);\n}",
+      "context_notes": "Whitelist exists but owner is a single EOA. Key compromise → immediate module injection → delegatecall exploit. No timelock delay."
+    },
+    {
+      "case_id": "delegatecall-hard-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Mặc dù implementation là mutable (upgradeToAndCall có thể thay đổi), nhưng có 3 layers bảo vệ: (1) onlyRole(UPGRADER_ROLE), (2) _authorizeUpgrade hook, (3) 72-giờ timelock via TimelockController. Risk đã được mitigate đầy đủ.",
+      "finding_title": "Mutable implementation with multi-layer protection: role + timelock + authorization hook",
+      "finding_content": "Implementation is upgradeable but protected by UPGRADER_ROLE, _authorizeUpgrade override, and 72-hour TimelockController. Three-layer defense makes unauthorized upgrade infeasible.",
+      "code_snippet": "contract SecureProxy is TransparentUpgradeableProxy {\n    bytes32 public constant UPGRADER_ROLE = keccak256(\"UPGRADER_ROLE\");\n\n    // TimelockController with 72-hour minimum delay\n    address public immutable timelockController;\n\n    function upgradeTo(address newImplementation) external override {\n        require(hasRole(UPGRADER_ROLE, msg.sender), \"missing upgrader role\");\n        // _authorizeUpgrade checks timelock proposal was made >= 72h ago\n        _authorizeUpgrade(newImplementation);\n        _upgradeTo(newImplementation);\n    }\n\n    function _authorizeUpgrade(address newImpl) internal override {\n        ITimelockController(timelockController).assertProposed(newImpl, 72 hours);\n    }\n}",
+      "context_notes": "Three-layer protection: UPGRADER_ROLE + _authorizeUpgrade + 72h timelock. This is a robust upgrade pattern."
+    },
+    {
+      "case_id": "delegatecall-hard-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Plugin address được giải quyết qua ENS. ENS resolution có thể bị front-run hoặc bị thay đổi nếu ENS record bị compromise. Cần xem xét thêm ENS TTL và cơ chế resolve.",
+      "finding_title": "Delegatecall to ENS-resolved plugin address — ENS manipulation risk unclear",
+      "finding_content": "Plugin implementation address is resolved via ENS lookup. ENS record could be manipulated if the ENS owner is compromised, but resolution security depends on ENS TTL and caching.",
+      "code_snippet": "interface IENS {\n    function resolver(bytes32 node) external view returns (address);\n}\n\ncontract ENSProxy {\n    IENS public immutable ens;\n    bytes32 public pluginNode;  // ENS node hash for plugin\n\n    function _getPlugin() internal view returns (address) {\n        address resolver = ens.resolver(pluginNode);\n        return IResolver(resolver).addr(pluginNode);  // ENS resolution\n    }\n\n    function executePlugin(bytes calldata data) external onlyOwner {\n        address plugin = _getPlugin();\n        (bool ok,) = plugin.delegatecall(data);  // delegatecall to ENS-resolved addr\n        require(ok);\n    }\n}",
+      "context_notes": "ENS-based resolution. If ENS record owner is compromised, plugin address changes. TTL and cache behavior not shown."
+    },
+    {
+      "case_id": "delegatecall-hard-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "CREATE2 được dùng để tính address deterministically nhưng implementation bytecode không được verify on-chain. Attacker có thể deploy contract với cùng salt và bytecode độc hại trước khi proxy chính thức upgrade.",
+      "finding_title": "Delegatecall to CREATE2-derived address without on-chain bytecode verification",
+      "finding_content": "Implementation address is computed via CREATE2 formula. Without on-chain bytecode hash verification, a different contract at the same address could be the delegatecall target.",
+      "code_snippet": "function _computeImplementation(bytes32 salt) internal view returns (address) {\n    return address(uint160(uint256(keccak256(abi.encodePacked(\n        bytes1(0xff),\n        factory,\n        salt,\n        keccak256(type(Implementation).creationCode)  // only checks type hash, not deployed code\n    )))));\n}\n\nfunction delegateToImplementation(bytes32 salt, bytes calldata data) external onlyOwner {\n    address impl = _computeImplementation(salt);\n    // VULNERABILITY: no check that impl is actually deployed or has correct bytecode\n    (bool ok,) = impl.delegatecall(data);\n    require(ok);\n}",
+      "context_notes": "CREATE2 address computation uses creationCode hash but does not verify deployed bytecode matches. Frontrun risk exists if salt is predictable."
+    }
+  ]
+}
+

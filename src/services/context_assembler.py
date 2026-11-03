@@ -50,6 +50,29 @@ class ContextBundle:
     is_view_or_pure: bool = False                   # view or pure function
     custom_guard_present: bool = False              # custom/conditional modifier present
 
+    # Delegatecall signals (Đợt 4A — SOL-DELEGATECALL-001)
+    has_delegatecall: bool = False                  # delegatecall present in code
+    delegatecall_target_fixed: Optional[bool] = None   # True=immutable/whitelist, False=param/mutable, None=unknown
+    has_implementation_whitelist: bool = False      # approvedImpls or similar mapping gate
+    has_upgrade_timelock: bool = False              # timelock before implementation change
+    is_diamond_proxy: bool = False                  # EIP-2535 Diamond pattern
+    is_uups_proxy: bool = False                     # UUPS / UUPSUpgradeable pattern
+    target_from_storage: Optional[bool] = None     # True=from state var, False=from param, None=unknown
+
+    # Arbitrary from signals (Đợt 4A — SOL-ARBITRARY-FROM-001)
+    has_transfer_from: bool = False                 # transferFrom call present
+    from_is_msg_sender: Optional[bool] = None       # True=from==msg.sender, False=param, None=unknown
+    has_signature_verify: bool = False              # EIP-712/ECDSA signature verification before call
+    has_permit_pattern: bool = False                # EIP-2612 permit() call present
+    from_has_require_check: Optional[bool] = None   # require(from==msg.sender) present
+
+    # Unchecked return signals (Đợt 4A — SOL-UNCHECKED-RETURN-001)
+    has_low_level_call: bool = False                # low-level .call() present
+    return_value_checked: Optional[bool] = None     # True=require/if-revert on result, False=ignored
+    uses_safe_erc20: bool = False                   # SafeERC20 / safeTransfer used
+    has_assembly_call: bool = False                 # delegatecall/call in assembly block
+    is_fire_and_forget: Optional[bool] = None       # intentional ignore (notification pattern)
+
     def to_dict(self) -> dict:
         return asdict(self)
 
@@ -105,6 +128,46 @@ class ContextBundle:
             lines.append(f"Function Type: View/Pure (Potential target for Read-Only Reentrancy)")
         if self.custom_guard_present:
             lines.append(f"⚠ Custom/Conditional Guard: Present but implementation details needed")
+
+        # Delegatecall signals
+        if self.has_delegatecall:
+            lines.append(f"Delegatecall: YES — code performs delegatecall")
+        if self.delegatecall_target_fixed is not None:
+            lines.append(f"Delegatecall Target: {'FIXED (immutable/whitelist)' if self.delegatecall_target_fixed else 'MUTABLE/PARAM — attacker may control target address'}")
+        if self.has_implementation_whitelist:
+            lines.append(f"Implementation Whitelist: YES (approvedImpls mapping or equivalent)")
+        if self.has_upgrade_timelock:
+            lines.append(f"Upgrade Timelock: YES — implementation changes require time delay")
+        if self.is_diamond_proxy:
+            lines.append(f"Pattern: EIP-2535 Diamond Proxy — facets governed via diamondCut()")
+        if self.is_uups_proxy:
+            lines.append(f"Pattern: UUPS Proxy — upgrades require _authorizeUpgrade override")
+        if self.target_from_storage is not None:
+            lines.append(f"Target Source: {'from state variable (check mutability)' if self.target_from_storage else 'from function parameter (HIGH RISK)'}")
+
+        # Arbitrary from signals
+        if self.has_transfer_from:
+            lines.append(f"transferFrom: YES — contract calls transferFrom on token")
+        if self.from_is_msg_sender is not None:
+            lines.append(f"from Address: {'SAFE — hardcoded to msg.sender' if self.from_is_msg_sender else 'PARAM/EXTERNAL — not necessarily msg.sender (RISK)'}")
+        if self.has_permit_pattern:
+            lines.append(f"EIP-2612 Permit: YES — ECDSA signed authorization before transferFrom")
+        if self.has_signature_verify:
+            lines.append(f"Signature Verification: YES — ECDSA/EIP-712 verification present")
+        if self.from_has_require_check is not None:
+            lines.append(f"from Require Guard: {'YES — require(from==msg.sender) enforced' if self.from_has_require_check else 'NO — from not validated against caller'}")
+
+        # Unchecked return signals
+        if self.has_low_level_call:
+            lines.append(f"Low-level .call(): YES — result must be checked")
+        if self.return_value_checked is not None:
+            lines.append(f"Return Value Check: {'YES — require/if-revert on success flag' if self.return_value_checked else 'NO — return value ignored (RISK)'}")
+        if self.uses_safe_erc20:
+            lines.append(f"SafeERC20: YES — OZ safeTransfer/safeTransferFrom wraps return check")
+        if self.has_assembly_call:
+            lines.append(f"Assembly Call: YES — check assembly for manual success validation")
+        if self.is_fire_and_forget is not None:
+            lines.append(f"Fire-and-Forget: {'YES — intentional ignore (verify design intent)' if self.is_fire_and_forget else 'NO — failure should be handled'}")
 
         missing_signals = self._missing_signals()
         if missing_signals:
@@ -307,6 +370,108 @@ def _extract_reentrancy_signals(code: str, ctx: ContextBundle) -> None:
         ctx.is_cei_compliant = (state_pos < call_pos)
 
 
+def _extract_delegatecall_signals(code: str, ctx: ContextBundle) -> None:
+    """Trích xuất signals cho SOL-DELEGATECALL-001 (Đợt 4A)."""
+    if "delegatecall" in code:
+        ctx.has_delegatecall = True
+
+    # Check for immutable target
+    if re.search(r'immutable\s+\w*impl', code, re.IGNORECASE) or "immutable implementation" in code:
+        ctx.delegatecall_target_fixed = True
+        ctx.target_from_storage = True
+
+    # Whitelist
+    if re.search(r'(approvedImpls|whitelist|trustedModules)\s*\[', code, re.IGNORECASE):
+        ctx.has_implementation_whitelist = True
+
+    # Timelock / delay
+    if re.search(r'(UPGRADE_DELAY|upgradeTimestamp|timelockController|assertProposed)', code, re.IGNORECASE):
+        ctx.has_upgrade_timelock = True
+
+    # Diamond proxy standard
+    if "Diamond" in code or "diamondCut" in code or "LibDiamond" in code:
+        ctx.is_diamond_proxy = True
+        ctx.delegatecall_target_fixed = True
+
+    # UUPS proxy
+    if "UUPS" in code or "_authorizeUpgrade" in code:
+        ctx.is_uups_proxy = True
+
+    # Check if target is parameter
+    if re.search(r'function\s+\w+\s*\([^)]*address\s+(_target|module|target|impl|newImpl)[^)]*\)', code):
+        if ctx.delegatecall_target_fixed is None:
+            ctx.delegatecall_target_fixed = False
+        ctx.target_from_storage = False
+
+    # Check if target is state variable
+    if re.search(r'address\s+(?:public|private|internal)\s+(impl|currentImpl|implementation)', code):
+        ctx.target_from_storage = True
+
+
+def _extract_arbitrary_from_signals(code: str, ctx: ContextBundle) -> None:
+    """Trích xuất signals cho SOL-ARBITRARY-FROM-001 (Đợt 4A)."""
+    if "transferFrom" in code:
+        ctx.has_transfer_from = True
+
+    # Check if from is msg.sender
+    if re.search(r'transferFrom\s*\(\s*msg\.sender\s*,', code):
+        ctx.from_is_msg_sender = True
+        ctx.from_has_require_check = True
+
+    # Check explicit require(from == msg.sender)
+    if re.search(r'require\s*\(\s*from\s*==\s*msg\.sender', code):
+        ctx.from_has_require_check = True
+        ctx.from_is_msg_sender = True
+
+    # Check EIP-2612 permit
+    if "permit(" in code:
+        ctx.has_permit_pattern = True
+
+    # Check signature verification
+    if "ECDSA" in code or "recover(" in code or "verify(" in code:
+        ctx.has_signature_verify = True
+
+    # Check if from is parameter without guard
+    if re.search(r'function\s+\w+\s*\([^)]*address\s+from[^)]*\)', code):
+        if ctx.from_is_msg_sender is None:
+            ctx.from_is_msg_sender = False
+
+
+def _extract_unchecked_return_signals(code: str, ctx: ContextBundle) -> None:
+    """Trích xuất signals cho SOL-UNCHECKED-RETURN-001 (Đợt 4A)."""
+    if ".call{" in code or ".call(" in code:
+        ctx.has_low_level_call = True
+
+    # Check SafeERC20
+    if "SafeERC20" in code or "safeTransfer" in code:
+        ctx.uses_safe_erc20 = True
+        ctx.return_value_checked = True
+
+    # Check return capture and check
+    if re.search(r'\(\s*bool\s+(?:success|ok)\b[^)]*\)\s*=\s*[^;]*\.call', code):
+        if re.search(r'require\s*\(\s*(?:success|ok)\b', code) or re.search(r'if\s*\(\s*!(?:success|ok)\b', code):
+            ctx.return_value_checked = True
+        elif "revert(" in code and ("iszero" in code or "success" in code):
+            ctx.return_value_checked = True
+        else:
+            # Captured but not checked to revert (e.g. only logged in event)
+            ctx.return_value_checked = False
+    elif ctx.has_low_level_call and not ctx.uses_safe_erc20:
+        # call called without capturing return
+        if re.search(r'\w+\.call\{[^}]*\}\s*\([^)]*\)\s*;', code) or re.search(r'\w+\.call\([^)]*\)\s*;', code):
+            ctx.return_value_checked = False
+
+    # Check assembly call
+    if "assembly" in code and "call(" in code:
+        ctx.has_assembly_call = True
+        if "iszero(success)" in code and "revert(" in code:
+            ctx.return_value_checked = True
+
+    # Check intentional fire-and-forget
+    if "fire-and-forget" in code.lower() or "deliberately not checking" in code.lower():
+        ctx.is_fire_and_forget = True
+
+
 # ============================================================================
 # Main Assembly Function
 # ============================================================================
@@ -370,6 +535,12 @@ def assemble_context_from_snippet(
         _extract_uint128_signals(source_to_analyze, ctx)
     if 'REENTRANCY' in pattern_id:
         _extract_reentrancy_signals(source_to_analyze, ctx)
+    if 'DELEGATECALL' in pattern_id:
+        _extract_delegatecall_signals(source_to_analyze, ctx)
+    if 'ARBITRARY-FROM' in pattern_id or 'ARBITRARY_FROM' in pattern_id:
+        _extract_arbitrary_from_signals(source_to_analyze, ctx)
+    if 'UNCHECKED-RETURN' in pattern_id or 'UNCHECKED_RETURN' in pattern_id:
+        _extract_unchecked_return_signals(source_to_analyze, ctx)
 
     # --- Completeness scoring ---
     signals_present = 0

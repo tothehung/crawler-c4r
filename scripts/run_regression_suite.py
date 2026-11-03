@@ -119,50 +119,50 @@ def main():
     reentrancy_path = ROOT / "data/pilot/pilot_dataset_reentrancy.json"
     eval_reentrancy = evaluate_dataset("Pilot Reentrancy (SOL-REENTRANCY-001)", reentrancy_path)
 
-    # Step 4: Quality Gate Invariant Verification
+    # Step 4: Benchmark Delegatecall (16 cases)
+    delegatecall_path = ROOT / "data/pilot/pilot_dataset_delegatecall.json"
+    eval_delegatecall = evaluate_dataset("Pilot Delegatecall (SOL-DELEGATECALL-001)", delegatecall_path)
+
+    # Step 5: Benchmark Arbitrary From (16 cases)
+    arbitrary_from_path = ROOT / "data/pilot/pilot_dataset_arbitrary_from.json"
+    eval_arbitrary_from = evaluate_dataset("Pilot Arbitrary From (SOL-ARBITRARY-FROM-001)", arbitrary_from_path)
+
+    # Step 6: Benchmark Unchecked Return (16 cases)
+    unchecked_return_path = ROOT / "data/pilot/pilot_dataset_unchecked_return.json"
+    eval_unchecked_return = evaluate_dataset("Pilot Unchecked Return (SOL-UNCHECKED-RETURN-001)", unchecked_return_path)
+
+    # Step 7: Quality Gate Invariant Verification
     logger.info("==================================================================")
-    logger.info("STEP 4: Kiểm tra Invariants Chất Lượng (Quality Gates)...")
+    logger.info("STEP 7: Kiểm tra Invariants Chất Lượng (Quality Gates — 5 Datasets)...")
     logger.info("==================================================================")
 
-    # Invariants for Pilot v2
-    b4_v2 = eval_v2["baselines"]["Baseline 4 (W3GoAudit Checklist)"]
-    b5_v2 = eval_v2["baselines"]["Baseline 5 (Auditor + Critic)"]
+    datasets_to_check = [
+        ("Pilot v2", eval_v2),
+        ("Reentrancy", eval_reentrancy),
+        ("Delegatecall", eval_delegatecall),
+        ("Arbitrary From", eval_arbitrary_from),
+        ("Unchecked Return", eval_unchecked_return),
+    ]
 
-    inv_v2_b4_prec = b4_v2["precision"] >= 95.0
-    inv_v2_b4_rec = b4_v2["recall"] >= 95.0
-    inv_v2_b4_fp = b4_v2["fp_rate"] <= 5.0
-    inv_v2_b5_prec = b5_v2["precision"] >= 95.0
-    inv_v2_b5_rec = b5_v2["recall"] >= 95.0
-    inv_v2_b5_fp = b5_v2["fp_rate"] <= 5.0
+    for name, eval_data in datasets_to_check:
+        b4 = eval_data["baselines"]["Baseline 4 (W3GoAudit Checklist)"]
+        b5 = eval_data["baselines"]["Baseline 5 (Auditor + Critic)"]
 
-    invariants_checked.extend([
-        {"check": "Pilot v2 B4 Precision >= 95%", "passed": inv_v2_b4_prec, "value": f"{b4_v2['precision']}%"},
-        {"check": "Pilot v2 B4 Recall >= 95%", "passed": inv_v2_b4_rec, "value": f"{b4_v2['recall']}%"},
-        {"check": "Pilot v2 B4 FP Rate <= 5%", "passed": inv_v2_b4_fp, "value": f"{b4_v2['fp_rate']}%"},
-        {"check": "Pilot v2 B5 Precision >= 95%", "passed": inv_v2_b5_prec, "value": f"{b5_v2['precision']}%"},
-        {"check": "Pilot v2 B5 Recall >= 95%", "passed": inv_v2_b5_rec, "value": f"{b5_v2['recall']}%"},
-        {"check": "Pilot v2 B5 FP Rate <= 5%", "passed": inv_v2_b5_fp, "value": f"{b5_v2['fp_rate']}%"},
-    ])
+        inv_b4_prec = b4["precision"] >= 95.0
+        inv_b4_rec = b4["recall"] >= 95.0
+        inv_b4_fp = b4["fp_rate"] <= 5.0
+        inv_b5_prec = b5["precision"] >= 95.0
+        inv_b5_rec = b5["recall"] >= 95.0
+        inv_b5_fp = b5["fp_rate"] <= 5.0
 
-    # Invariants for Reentrancy
-    b4_re = eval_reentrancy["baselines"]["Baseline 4 (W3GoAudit Checklist)"]
-    b5_re = eval_reentrancy["baselines"]["Baseline 5 (Auditor + Critic)"]
-
-    inv_re_b4_prec = b4_re["precision"] >= 95.0
-    inv_re_b4_rec = b4_re["recall"] >= 95.0
-    inv_re_b4_fp = b4_re["fp_rate"] <= 5.0
-    inv_re_b5_prec = b5_re["precision"] >= 95.0
-    inv_re_b5_rec = b5_re["recall"] >= 95.0
-    inv_re_b5_fp = b5_re["fp_rate"] <= 5.0
-
-    invariants_checked.extend([
-        {"check": "Reentrancy B4 Precision >= 95%", "passed": inv_re_b4_prec, "value": f"{b4_re['precision']}%"},
-        {"check": "Reentrancy B4 Recall >= 95%", "passed": inv_re_b4_rec, "value": f"{b4_re['recall']}%"},
-        {"check": "Reentrancy B4 FP Rate <= 5%", "passed": inv_re_b4_fp, "value": f"{b4_re['fp_rate']}%"},
-        {"check": "Reentrancy B5 Precision >= 95%", "passed": inv_re_b5_prec, "value": f"{b5_re['precision']}%"},
-        {"check": "Reentrancy B5 Recall >= 95%", "passed": inv_re_b5_rec, "value": f"{b5_re['recall']}%"},
-        {"check": "Reentrancy B5 FP Rate <= 5%", "passed": inv_re_b5_fp, "value": f"{b5_re['fp_rate']}%"},
-    ])
+        invariants_checked.extend([
+            {"check": f"{name} B4 Precision >= 95%", "passed": inv_b4_prec, "value": f"{b4['precision']}%"},
+            {"check": f"{name} B4 Recall >= 95%", "passed": inv_b4_rec, "value": f"{b4['recall']}%"},
+            {"check": f"{name} B4 FP Rate <= 5%", "passed": inv_b4_fp, "value": f"{b4['fp_rate']}%"},
+            {"check": f"{name} B5 Precision >= 95%", "passed": inv_b5_prec, "value": f"{b5['precision']}%"},
+            {"check": f"{name} B5 Recall >= 95%", "passed": inv_b5_rec, "value": f"{b5['recall']}%"},
+            {"check": f"{name} B5 FP Rate <= 5%", "passed": inv_b5_fp, "value": f"{b5['fp_rate']}%"},
+        ])
 
     for inv in invariants_checked:
         status = "✓ PASS" if inv["passed"] else "✗ FAIL"
@@ -176,15 +176,27 @@ def main():
     report = {
         "metadata": {
             "title": "W3GoAudit Regression Suite Execution Report",
-            "phase": "Đợt 3 — Regression & Expansion Standardization",
+            "phase": "Đợt 4A — Multi-group Expansion (5 Patterns, 84 cases)",
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "elapsed_seconds": round(elapsed, 2),
             "status": "PASSED" if all_passed else "FAILED",
+            "total_benchmark_cases": 84,
+            "patterns_covered": [
+                "SOL-UINT128-NARROWING-001",
+                "SOL-ACCESS-CONTROL-001",
+                "SOL-REENTRANCY-001",
+                "SOL-DELEGATECALL-001",
+                "SOL-ARBITRARY-FROM-001",
+                "SOL-UNCHECKED-RETURN-001",
+            ],
         },
         "invariants": invariants_checked,
         "datasets": {
             "pilot_v2": eval_v2,
             "pilot_reentrancy": eval_reentrancy,
+            "pilot_delegatecall": eval_delegatecall,
+            "pilot_arbitrary_from": eval_arbitrary_from,
+            "pilot_unchecked_return": eval_unchecked_return,
         },
     }
 

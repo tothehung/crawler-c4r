@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho pattern Unchecked Return Value (SOL-UNCHECKED-RETURN-001) — Đợt 4A. 12 dev cases phủ đủ 3 nhãn: TP (return value của low-level call / token transfer không được check, dẫn đến silent failure), FP (return value được check hoặc dùng safe wrapper), Uncertain (không đủ context để xác định liệu failure có được handle upstream không). 4 hard test cases.",
+    "pattern": "SOL-UNCHECKED-RETURN-001",
+    "cwe": "CWE-252",
+    "labels": {
+      "TP": "True Positive — return value bị bỏ qua hoàn toàn, logic tiếp tục như thể call thành công",
+      "FP": "False Positive — return value được check (require, if revert) hoặc dùng SafeERC20 / checked transfer",
+      "Uncertain": "Không đủ context: failure có thể được bubble up bởi wrapper, hoặc function cố tình ignore failure"
+    },
+    "split": {
+      "dev": "unchecked-tp-001 đến unchecked-uncertain-004 (12 cases — dùng để tune checklist/prompt)",
+      "test": "unchecked-hard-* (4 hard cases — KHÔNG dùng để tune)"
+    },
+    "created_at": "2026-11-03T00:00:00Z",
+    "phase": "Đợt 4A — Multi-group Expansion"
+  },
+  "dev_cases": [
+    {
+      "case_id": "unchecked-tp-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Low-level call() return value bị bỏ qua hoàn toàn. Nếu recipient là một contract không nhận ETH hoặc revert, hàm vẫn tiếp tục và caller mất ETH mà không có thông báo lỗi.",
+      "finding_title": "Unchecked return value of low-level .call() — ETH transfer failure silently ignored",
+      "finding_content": "The `sendFunds` function calls `addr.call{value: amount}(\"\")` but discards both the success flag and return data. ETH loss on failure is silent.",
+      "code_snippet": "function sendFunds(address payable addr, uint256 amount) external onlyOwner {\n    // VULNERABILITY: return value of call() completely ignored\n    addr.call{value: amount}(\"\");  // (bool success, bytes memory data) discarded\n    emit FundsSent(addr, amount);\n}",
+      "context_notes": "Return value of .call() is completely discarded. No require(success). No error handling. ETH stuck if recipient rejects."
+    },
+    {
+      "case_id": "unchecked-tp-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "IERC20.transfer() trả về bool. Với non-standard tokens (USDT, BNB) không revert khi fail mà trả về false, logic tiếp tục như thể transfer thành công. Người dùng nhận lợi ích mà không mất token.",
+      "finding_title": "Unchecked IERC20.transfer() return value — non-reverting token allows silent failure",
+      "finding_content": "Calls IERC20.transfer() without checking the bool return value. Non-standard tokens like USDT return false instead of reverting, causing accounting corruption.",
+      "code_snippet": "function withdrawRewards(address user) external {\n    uint256 reward = pendingRewards[user];\n    require(reward > 0, \"no rewards\");\n    pendingRewards[user] = 0;\n    // VULNERABILITY: transfer() return value ignored\n    rewardToken.transfer(user, reward);  // bool return discarded\n    emit RewardWithdrawn(user, reward);\n}",
+      "context_notes": "IERC20.transfer() called without require or if check on return bool. USDT/BNB/others don't revert — return false silently."
+    },
+    {
+      "case_id": "unchecked-tp-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "approve() return value bị bỏ qua. Với non-standard ERC20 tokens, approve có thể return false mà không revert. Contract assumes approval succeeded và tiến hành transferFrom sẽ fail hoặc partial.",
+      "finding_title": "Unchecked ERC20.approve() return value before transferFrom",
+      "finding_content": "approve() called without checking return bool before subsequent transferFrom. If approve fails silently (non-standard token), transferFrom will fail unexpectedly.",
+      "code_snippet": "function setupAndTransfer(address token, address spender, uint256 amount) external {\n    // VULNERABILITY: approve return value ignored\n    IERC20(token).approve(spender, amount);\n    // If approve failed silently, this transferFrom will fail with confusing error\n    IERC20(token).transferFrom(address(this), spender, amount);\n}",
+      "context_notes": "approve() result not checked. Standard ERC20 reverts on failure but non-standard tokens may return false."
+    },
+    {
+      "case_id": "unchecked-fp-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "SafeERC20 library từ OpenZeppelin được dùng — safeTransfer() wrap transfer() với require check nội bộ. Nếu transfer fail (return false hoặc revert), safeTransfer() sẽ revert. Không có unchecked return.",
+      "finding_title": "SafeERC20.safeTransfer() — return value checked internally by OZ wrapper",
+      "finding_content": "Uses OpenZeppelin SafeERC20 library. safeTransfer() internally checks the return value and reverts on failure.",
+      "code_snippet": "using SafeERC20 for IERC20;\n\nfunction distributeRewards(address user, uint256 amount) external onlyVault {\n    // SAFE: SafeERC20.safeTransfer checks return value internally\n    rewardToken.safeTransfer(user, amount);\n    emit RewardDistributed(user, amount);\n}",
+      "context_notes": "SafeERC20 from OpenZeppelin used. safeTransfer wraps ERC20.transfer with proper return value checking and reverts on failure."
+    },
+    {
+      "case_id": "unchecked-fp-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Return value được capture và check với require. Nếu call thất bại, require revert toàn bộ transaction. Không có silent failure.",
+      "finding_title": "Low-level call with explicit require(success) check",
+      "finding_content": "The success bool from low-level call() is captured and checked with require. Failure causes explicit revert.",
+      "code_snippet": "function sendFunds(address payable addr, uint256 amount) external onlyOwner {\n    (bool success, bytes memory data) = addr.call{value: amount}(\"\");\n    require(success, string(data));  // SAFE: explicit check\n    emit FundsSent(addr, amount);\n}",
+      "context_notes": "Return value captured as (bool success, bytes memory data). require(success) check present. Failure explicitly handled."
+    },
+    {
+      "case_id": "unchecked-fp-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "token.transfer() được gọi nhưng token contract là ERC20 chuẩn tuân thủ OpenZeppelin (đã được verify trên chain). OZ ERC20 luôn revert khi fail, không trả về false. Unchecked return là safe với ERC20 token chuẩn.",
+      "finding_title": "Unchecked ERC20.transfer() on verified OZ-compliant token — always reverts on failure",
+      "finding_content": "Token is a verified OpenZeppelin ERC20 that always reverts on failure. Unchecked return on this specific token is safe because silent failure cannot occur.",
+      "code_snippet": "// token is OUR OWN contract (verified OZ ERC20 — always reverts on failure)\nMyToken public immutable token;  // Deployed by us, source code verified\n\nfunction claimAirdrop() external {\n    require(airdropAmount[msg.sender] > 0);\n    uint256 amount = airdropAmount[msg.sender];\n    airdropAmount[msg.sender] = 0;\n    token.transfer(msg.sender, amount);  // OZ ERC20 — reverts on fail, safe\n}",
+      "context_notes": "Token is own OZ ERC20 contract — always reverts, never returns false. Unchecked return is acceptable here."
+    },
+    {
+      "case_id": "unchecked-fp-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Solidity 0.8+ native ETH transfer dùng .transfer() (không phải low-level call). .transfer() luôn revert nếu fail, không có unchecked return issue. Pattern này khác với .call().",
+      "finding_title": "address.transfer() — Solidity built-in that always reverts on failure",
+      "finding_content": "Uses Solidity's built-in .transfer() method which always reverts on failure. This is different from low-level .call() and does not have unchecked return value issue.",
+      "code_snippet": "function refund(address payable user, uint256 amount) external onlyVault {\n    // SAFE: .transfer() always reverts on failure (2300 gas stipend)\n    user.transfer(amount);\n    emit Refunded(user, amount);\n}",
+      "context_notes": "Solidity .transfer() != low-level .call(). Built-in .transfer() reverts automatically if recipient rejects. No return value to check."
+    },
+    {
+      "case_id": "unchecked-uncertain-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "call() return bị ignore nhưng pattern này là intentional fire-and-forget (ví dụ: sending optional notification). Không rõ đây là lỗi hay thiết kế cố ý. Cần review intent của developer.",
+      "finding_title": "Unchecked call() in fire-and-forget notification — may be intentional design",
+      "finding_content": "Low-level call to notify() discards return value. Could be intentional (notification failure should not block main flow) or an oversight.",
+      "code_snippet": "function executeOrder(uint256 orderId) external {\n    _processOrder(orderId);\n    // Fire-and-forget: notify watcher contract (optional)\n    watcherContract.call(abi.encodeWithSignature(\"onOrderExecuted(uint256)\", orderId));\n    // Deliberately not checking return — watcher failure should not block order\n}",
+      "context_notes": "Comment suggests intentional ignore of return value. Fire-and-forget notification pattern. Developer intent not definitively clear from snippet."
+    },
+    {
+      "case_id": "unchecked-uncertain-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "transfer() trên token không rõ nguồn gốc — có thể là ERC20 chuẩn (an toàn) hoặc non-standard token không revert. Cần biết địa chỉ hoặc source code của token.",
+      "finding_title": "Unchecked transfer() on unverified token — behavior depends on token standard compliance",
+      "finding_content": "Token type is not verifiable from snippet. If it is standard ERC20 (reverts on fail), this is safe. If it is a non-standard token, it may silently fail.",
+      "code_snippet": "function distribute(address token, address recipient, uint256 amount) external onlyAdmin {\n    // token parameter — unknown if ERC20 compliant or non-standard\n    IERC20(token).transfer(recipient, amount);  // return ignored\n}",
+      "context_notes": "token is a parameter — could be any ERC20 including non-standard ones. Cannot determine risk without knowing which tokens are used."
+    },
+    {
+      "case_id": "unchecked-uncertain-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Wrapper function _safeCall() wrapping call(). Không thấy implementation của _safeCall — có thể đã check return value bên trong, hoặc không. Cần xem source của _safeCall.",
+      "finding_title": "call() result passed to _safeCall() wrapper — wrapper implementation unknown",
+      "finding_content": "Low-level call result is passed to an internal _safeCall wrapper. Cannot determine if the wrapper properly validates return value without its source.",
+      "code_snippet": "function execute(address target, bytes calldata data) external onlyOperator {\n    (bool success, bytes memory result) = target.call(data);\n    _safeCall(success, result);  // wrapper — implementation not shown\n}",
+      "context_notes": "_safeCall() is an internal function not shown here. Could be require(success) equivalent or could be no-op."
+    },
+    {
+      "case_id": "unchecked-uncertain-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "try/catch block được dùng với external call — return value không bị completely bỏ qua (catch xử lý failure). Nhưng catch body chỉ emit event không revert. Liệu silent swallow có chấp nhận được không phụ thuộc vào business logic.",
+      "finding_title": "External call in try/catch with silent catch — failure swallowed or intentionally logged",
+      "finding_content": "External call uses try/catch. Failure is caught but only emits an event without reverting. May be intentional resilience or may hide critical errors.",
+      "code_snippet": "function notifyRecipients(address[] calldata recipients, uint256 amount) external {\n    for (uint i = 0; i < recipients.length; i++) {\n        try IRecipient(recipients[i]).onReceive(amount) {\n            // success\n        } catch {\n            // Failure swallowed — only logged\n            emit RecipientNotifyFailed(recipients[i]);\n        }\n    }\n}",
+      "context_notes": "try/catch used — failure not completely ignored. But catch only emits event. Whether silent swallow is acceptable depends on protocol semantics."
+    },
+    {
+      "case_id": "unchecked-tp-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Loop với nhiều ERC20 transfer() không check return. Nếu một transfer fail (non-reverting token), loop tiếp tục. State đã được cập nhật trước đó vẫn tính phần không được transfer — số dư không nhất quán.",
+      "finding_title": "Loop with multiple unchecked ERC20 transfers — inconsistent state on partial failure",
+      "finding_content": "Batch airdrop loops over recipients calling transfer() without checking return. A silent failure mid-loop leaves state inconsistent — some recipients credited in accounting but not actually paid.",
+      "code_snippet": "function batchAirdrop(address[] calldata recipients, uint256[] calldata amounts) external onlyOwner {\n    for (uint i = 0; i < recipients.length; i++) {\n        claimed[recipients[i]] = true;  // state updated before confirmed transfer\n        token.transfer(recipients[i], amounts[i]);  // return ignored\n    }\n}",
+      "context_notes": "claimed[recipients[i]] = true set before transfer confirmed. If transfer silently fails, recipient is marked claimed but never paid."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "unchecked-hard-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Mặc dù success được capture nhưng chỉ dùng để emit event, không revert. Logic tiếp tục sau failed call. Functional equivalent of unchecked return.",
+      "finding_title": "Return value captured but not used to revert — success logged but not enforced",
+      "finding_content": "Success bool is captured from call() but only used in event emission. Execution continues regardless of failure, making the check semantically equivalent to unchecked.",
+      "code_snippet": "function sendPayment(address payable recipient, uint256 amount) external {\n    (bool success,) = recipient.call{value: amount}(\"\");\n    emit PaymentAttempted(recipient, amount, success);  // only logged, not enforced\n    // VULNERABILITY: execution continues even if success == false\n    totalSent += amount;  // accounting updated regardless\n}",
+      "context_notes": "success is captured but not used in require/if revert. totalSent incremented even if transfer failed."
+    },
+    {
+      "case_id": "unchecked-hard-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm dùng assembly để gọi external và check returndatasize() cùng với revert condition thủ công. Assembly-level check tương đương với require(success) nhưng ở mức thấp hơn.",
+      "finding_title": "Assembly-level call with manual returndatasize check — low-level but properly guarded",
+      "finding_content": "Uses inline assembly for call with manual success check and revert. Static analyzer flags as unchecked but assembly implements proper return value validation.",
+      "code_snippet": "function executeCall(address target, bytes calldata data) external onlyOperator {\n    assembly {\n        let ptr := mload(0x40)\n        calldatacopy(ptr, data.offset, data.length)\n        let success := call(gas(), target, 0, ptr, data.length, 0, 0)\n        // Manual return value check in assembly\n        if iszero(success) {\n            returndatacopy(0, 0, returndatasize())\n            revert(0, returndatasize())\n        }\n    }\n}",
+      "context_notes": "Assembly call() result checked via iszero(success) + revert. Functionally equivalent to require(success). Not unchecked — static analyzer false alarm."
+    },
+    {
+      "case_id": "unchecked-hard-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm là internal và return value của call() được return lại cho caller. Không biết caller có check return value không. Cần xem caller để xác định.",
+      "finding_title": "Internal function returns call success to caller — caller check unknown",
+      "finding_content": "Internal function captures and returns success bool. Whether callers validate this return is not visible from this snippet alone.",
+      "code_snippet": "function _executeCall(\n    address target,\n    bytes calldata data\n) internal returns (bool success, bytes memory result) {\n    (success, result) = target.call(data);\n    // Returns success to caller — whether caller checks it is unknown\n}",
+      "context_notes": "Internal function returns success. Callers must be analyzed to determine if return value is checked."
+    },
+    {
+      "case_id": "unchecked-hard-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "transferFrom() được dùng với USDT (Tether) — đây là non-standard ERC20 nổi tiếng không revert khi fail mà return false. Return value bị ignore → silent accounting corruption.",
+      "finding_title": "Unchecked USDT transferFrom — known non-reverting token with silent failure",
+      "finding_content": "Uses USDT (Tether) transferFrom without checking return value. USDT is a known non-reverting ERC20 that returns false on failure instead of reverting.",
+      "code_snippet": "// USDT address on Ethereum mainnet\naddress constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;\n\nfunction depositUSDT(uint256 amount) external {\n    // VULNERABILITY: USDT.transferFrom returns false on failure (does not revert)\n    IERC20(USDT).transferFrom(msg.sender, address(this), amount);\n    // execution continues if USDT.transferFrom returns false\n    userDeposits[msg.sender] += amount;  // accounting corrupted on failure\n}",
+      "context_notes": "USDT is explicitly hardcoded — known non-reverting ERC20. This is a well-documented attack vector for USDT/BNB/non-standard tokens."
+    }
+  ]
+}
+

@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho pattern Arbitrary From in transferFrom (SOL-ARBITRARY-FROM-001) — Đợt 4A. 12 dev cases phủ đủ 3 nhãn: TP (from address là parameter do attacker kiểm soát, không phải msg.sender), FP (from là msg.sender hoặc có explicit allowance check), Uncertain (không đủ context về allowance flow). 4 hard test cases.",
+    "pattern": "SOL-ARBITRARY-FROM-001",
+    "cwe": "CWE-284",
+    "labels": {
+      "TP": "True Positive — from address là parameter tùy ý không bị validate, cho phép drain token của bất kỳ ai đã approve contract",
+      "FP": "False Positive — from chỉ là msg.sender hoặc có allowance/approval check đầy đủ",
+      "Uncertain": "Không đủ context về allowance mechanism hoặc upstream permission check"
+    },
+    "split": {
+      "dev": "arbfrom-tp-001 đến arbfrom-uncertain-004 (12 cases — dùng để tune checklist/prompt)",
+      "test": "arbfrom-hard-* (4 hard cases — KHÔNG dùng để tune)"
+    },
+    "created_at": "2026-11-03T00:00:00Z",
+    "phase": "Đợt 4A — Multi-group Expansion"
+  },
+  "dev_cases": [
+    {
+      "case_id": "arbfrom-tp-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "from address là parameter hàm không bị validate. Nếu bất kỳ ai đã approve contract này (e.g. thông qua permit), attacker có thể gọi hàm với from=victim để drain token của victim.",
+      "finding_title": "transferFrom with arbitrary from parameter — any approved user can be drained",
+      "finding_content": "The `deposit` function calls `token.transferFrom(from, address(this), amount)` where `from` is a function parameter. Any caller can drain tokens from any address that approved this contract.",
+      "code_snippet": "function deposit(address from, uint256 amount) external {\n    // VULNERABILITY: from is arbitrary — can be any address that approved this contract\n    token.transferFrom(from, address(this), amount);\n    balances[msg.sender] += amount;\n}",
+      "context_notes": "from is a function parameter, not msg.sender. No validation that msg.sender == from or msg.sender has allowance over from's tokens."
+    },
+    {
+      "case_id": "arbfrom-tp-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm swap nhận from address từ calldata. Attacker có thể specify victim address làm from để transfer token từ victim sang contract, sau đó nhận lại output token tương ứng.",
+      "finding_title": "Swap function with arbitrary from — victim tokens transferred without consent",
+      "finding_content": "DEX swap function takes `tokenIn`, `amountIn`, and `from` as parameters. Attacker specifies victim as `from` to drain approved tokens and receive swap output.",
+      "code_snippet": "function swap(\n    address tokenIn,\n    address tokenOut,\n    uint256 amountIn,\n    address from  // VULNERABILITY: attacker-controlled source address\n) external returns (uint256 amountOut) {\n    IERC20(tokenIn).transferFrom(from, address(this), amountIn);\n    amountOut = _getAmountOut(amountIn, tokenIn, tokenOut);\n    IERC20(tokenOut).transfer(msg.sender, amountOut);\n}",
+      "context_notes": "from is passed in by caller. No require(from == msg.sender). Attacker profits: drains victim's tokenIn, receives tokenOut."
+    },
+    {
+      "case_id": "arbfrom-tp-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Relayer pattern: hàm execute relay nhận from từ signed message nhưng không verify signature. Attacker có thể forge message với victim's address làm from.",
+      "finding_title": "Meta-transaction relay without signature verification — from field is unvalidated",
+      "finding_content": "Relay function accepts `from` field from meta-transaction struct but performs no signature verification before calling transferFrom.",
+      "code_snippet": "struct MetaTx {\n    address from;\n    address to;\n    uint256 amount;\n    uint256 nonce;\n    // No signature fields\n}\n\nfunction executeRelay(MetaTx calldata tx_) external {\n    // VULNERABILITY: no signature check — from can be any address\n    token.transferFrom(tx_.from, tx_.to, tx_.amount);\n    emit Relayed(tx_.from, tx_.to, tx_.amount);\n}",
+      "context_notes": "MetaTx struct has no signature field. executeRelay doesn't verify ECDSA signature. Any relayer can forge from."
+    },
+    {
+      "case_id": "arbfrom-fp-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "from bị hardcode là msg.sender. Không có arbitrary from vulnerability vì người gọi chỉ có thể transfer token của chính mình.",
+      "finding_title": "transferFrom with msg.sender as from — standard safe pattern",
+      "finding_content": "Static rule flags transferFrom call. However, from is always msg.sender, so only the caller's own tokens can be transferred.",
+      "code_snippet": "function deposit(uint256 amount) external {\n    // SAFE: from is always the caller\n    token.transferFrom(msg.sender, address(this), amount);\n    balances[msg.sender] += amount;\n    emit Deposited(msg.sender, amount);\n}",
+      "context_notes": "from hardcoded to msg.sender. No arbitrary from vulnerability. Standard deposit pattern."
+    },
+    {
+      "case_id": "arbfrom-fp-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm yêu cầu from == msg.sender với require statement trước khi gọi transferFrom. Attacker không thể specify địa chỉ khác.",
+      "finding_title": "transferFrom with from == msg.sender require guard",
+      "finding_content": "Function takes `from` parameter but requires it to equal msg.sender before transferFrom call.",
+      "code_snippet": "function depositFrom(address from, uint256 amount) external {\n    require(from == msg.sender, \"unauthorized: from must be caller\");\n    token.transferFrom(from, address(this), amount);\n    balances[from] += amount;\n}",
+      "context_notes": "require(from == msg.sender) enforces that from can only be the caller. No arbitrary from attack possible."
+    },
+    {
+      "case_id": "arbfrom-fp-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "EIP-2612 permit pattern: from address đi kèm với chữ ký ECDSA. Contract verify chữ ký trước khi gọi transferFrom, đảm bảo chỉ chủ tài khoản mới có thể authorize.",
+      "finding_title": "transferFrom via EIP-2612 permit with ECDSA signature — properly authorized",
+      "finding_content": "Uses EIP-2612 permit to authorize transferFrom. ECDSA signature verification ensures only the token owner can authorize the transfer.",
+      "code_snippet": "function depositWithPermit(\n    address from,\n    uint256 amount,\n    uint256 deadline,\n    uint8 v, bytes32 r, bytes32 s\n) external {\n    // EIP-2612: verify signature before transferFrom\n    IERC20Permit(address(token)).permit(from, address(this), amount, deadline, v, r, s);\n    token.transferFrom(from, address(this), amount);\n    balances[from] += amount;\n}",
+      "context_notes": "EIP-2612 permit called before transferFrom. Signature is validated; from must be the key that signed the permit."
+    },
+    {
+      "case_id": "arbfrom-fp-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "from phải nằm trong mapping approvedSenders[msg.sender][from] = true. Chỉ msg.sender mới có thể thêm sender được ủy quyền cho mình. Không thể forge from.",
+      "finding_title": "transferFrom with explicit delegated-sender allowance mapping",
+      "finding_content": "The `from` parameter must be authorized via a delegated-sender mapping. Only the beneficiary (msg.sender) can approve a sender on their behalf.",
+      "code_snippet": "// msg.sender approves `delegate` to deposit on their behalf\nmapping(address => mapping(address => bool)) public approvedSenders;\n\nfunction approveDelegate(address delegate) external {\n    approvedSenders[msg.sender][delegate] = true;\n}\n\nfunction depositFor(address from, address beneficiary, uint256 amount) external {\n    require(approvedSenders[beneficiary][msg.sender], \"not approved delegate\");\n    token.transferFrom(from, address(this), amount);\n    balances[beneficiary] += amount;\n}",
+      "context_notes": "approvedSenders[beneficiary][msg.sender] check ensures delegation is explicit. Not arbitrary from."
+    },
+    {
+      "case_id": "arbfrom-uncertain-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "from được lấy từ _getUser(userId). Cần xem implementation của _getUser() để xác định userId có thể bị attacker kiểm soát hay không.",
+      "finding_title": "transferFrom with from resolved from _getUser(userId) — resolution logic unknown",
+      "finding_content": "The from address is resolved by _getUser(userId). Without _getUser implementation, cannot determine if userId is attacker-controlled.",
+      "code_snippet": "function withdrawFor(uint256 userId, uint256 amount) external onlyOperator {\n    address from = _getUser(userId);  // implementation not shown\n    require(from != address(0), \"user not found\");\n    token.transferFrom(from, treasury, amount);\n}",
+      "context_notes": "_getUser() is an internal function not shown in this snippet. Whether userId maps to attacker input is unknown."
+    },
+    {
+      "case_id": "arbfrom-uncertain-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "from được recover từ signature nhưng không rõ nonce được verify chống replay attack hay không. Nếu không có nonce check, signature có thể bị replay.",
+      "finding_title": "transferFrom with ECDSA-recovered from — nonce replay protection unknown",
+      "finding_content": "from address is recovered from ECDSA signature, but the snippet does not show whether the nonce prevents signature replay attacks.",
+      "code_snippet": "function executeMetaTx(\n    bytes32 messageHash,\n    bytes calldata signature,\n    address to,\n    uint256 amount\n) external {\n    address from = ECDSA.recover(messageHash, signature);\n    // MISSING: nonce check not shown\n    token.transferFrom(from, to, amount);\n}",
+      "context_notes": "ECDSA recovery done but no nonce/replay protection shown. If replay exists, old signatures can drain tokens again."
+    },
+    {
+      "case_id": "arbfrom-uncertain-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "from được truyền từ Gelato executor. Gelato có thể forward calldata tùy ý. Không rõ Gelato enforces from validation hay không; cần đọc Gelato relay documentation.",
+      "finding_title": "Relayed transferFrom via Gelato — trust model of relay depends on Gelato implementation",
+      "finding_content": "Function is called via Gelato relay. The `from` parameter comes from relay calldata. Security depends on Gelato's caller validation model.",
+      "code_snippet": "// Called via Gelato relay with ERC2771 context\nfunction depositRelayed(address from, uint256 amount) external onlyGelatoRelay {\n    // from comes from Gelato relay calldata\n    token.transferFrom(from, address(this), amount);\n    balances[from] += amount;\n}",
+      "context_notes": "onlyGelatoRelay modifier present. Whether Gelato validates from against message signer is external dependency — cannot confirm from snippet alone."
+    },
+    {
+      "case_id": "arbfrom-uncertain-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "transferFrom được gọi trong abstract function. Không có implementation đủ để xác định from từ đâu đến.",
+      "finding_title": "Abstract base with transferFrom — from source unknown without derived contract",
+      "finding_content": "Base contract performs transferFrom in abstract method. The source of `from` is determined by derived implementation not shown here.",
+      "code_snippet": "abstract contract BaseVault {\n    IERC20 public immutable token;\n\n    function _getFromAddress() internal view virtual returns (address);\n\n    function _doDeposit(uint256 amount) internal {\n        address from = _getFromAddress();  // abstract\n        token.transferFrom(from, address(this), amount);\n    }\n}",
+      "context_notes": "_getFromAddress() is abstract. Need derived contract to determine if from can be attacker-controlled."
+    },
+    {
+      "case_id": "arbfrom-tp-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Batch transfer function cho phép caller specify mảng from[] và amount[]. Không có check from[i] == msg.sender. Attacker có thể drain toàn bộ token của mọi victim đã approve contract.",
+      "finding_title": "Batch transferFrom with arbitrary from[] array — mass token draining attack",
+      "finding_content": "Batch transfer iterates over caller-provided from array and calls transferFrom for each. Anyone who approved this contract can be drained in a single transaction.",
+      "code_snippet": "function batchTransfer(\n    address[] calldata from,   // VULNERABILITY: arbitrary victim list\n    address[] calldata to,\n    uint256[] calldata amounts\n) external {\n    require(from.length == to.length && to.length == amounts.length);\n    for (uint i = 0; i < from.length; i++) {\n        // No check: from[i] == msg.sender\n        token.transferFrom(from[i], to[i], amounts[i]);\n    }\n}",
+      "context_notes": "from[] array passed by caller. No authorization check per entry. One transaction can drain many victims simultaneously."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "arbfrom-hard-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Mặc dù có require(operators[msg.sender]), nhưng bất kỳ operator nào cũng có thể drain token của bất kỳ người dùng nào. Operator role được cấp tự do không có governance. Privilege escalation qua operator registration.",
+      "finding_title": "Operator-controlled arbitrary from — operators can drain any approved user",
+      "finding_content": "Only operators can call the function, but operators can drain any user. Operator registration has no governance, allowing self-promotion to drain tokens.",
+      "code_snippet": "mapping(address => bool) public operators;\n\nfunction registerOperator() external {\n    operators[msg.sender] = true;  // Anyone can become operator\n}\n\nfunction operatorTransfer(address from, address to, uint256 amount) external {\n    require(operators[msg.sender], \"not operator\");\n    // VULNERABILITY: operator can drain any from\n    token.transferFrom(from, to, amount);\n}",
+      "context_notes": "registerOperator is open to anyone. Once operator, can drain any address. Operator status = license to drain approved users."
+    },
+    {
+      "case_id": "arbfrom-hard-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "from phải có approved allowance ≥ amount specifically cho msg.sender thông qua approve() ERC20 standard. ERC20 allowance kiểm tra trong transferFrom sẽ revert nếu không đủ allowance. Không phải arbitrary from — ERC20 standard enforces consent.",
+      "finding_title": "transferFrom within ERC20 allowance model — standard consent mechanism enforced",
+      "finding_content": "The function uses transferFrom where from must have approved msg.sender as spender in ERC20 allowance. Standard ERC20 mechanics prevent unauthorized transfer.",
+      "code_snippet": "// Standard ERC20 allowance pattern\nfunction pullPayment(address from, uint256 amount) external {\n    // This will REVERT if from hasn't approved msg.sender for `amount`\n    // ERC20 transferFrom checks: allowance[from][msg.sender] >= amount\n    token.transferFrom(from, msg.sender, amount);\n}",
+      "context_notes": "ERC20 standard transferFrom checks allowance internally. from must have approved msg.sender via approve() or permit(). This is normal pull payment pattern."
+    },
+    {
+      "case_id": "arbfrom-hard-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "transferFrom đến một contract khác thông qua interface. Không biết IToken.transferFrom có phải ERC20 standard hay custom implementation không. Custom token có thể bỏ allowance check.",
+      "finding_title": "transferFrom to non-standard IToken interface — allowance enforcement unknown",
+      "finding_content": "Calls transferFrom on IToken interface which may not be standard ERC20. Custom token implementations may not enforce allowance checks.",
+      "code_snippet": "interface IToken {\n    // Custom token — may not follow ERC20 standard\n    function transferFrom(address from, address to, uint256 amount) external;\n}\n\nfunction collect(address from, uint256 amount) external onlyVault {\n    IToken(token).transferFrom(from, address(this), amount);\n}",
+      "context_notes": "IToken is a custom interface. Without IToken implementation, cannot confirm allowance is enforced."
+    },
+    {
+      "case_id": "arbfrom-hard-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Flash loan callback nhận from address từ initiator data. Initiator có thể set from = victim address để drain victim trong callback. Flash loan contract không validate from nguồn gốc.",
+      "finding_title": "Flash loan callback with arbitrary from — initiator can specify victim address",
+      "finding_content": "Flash loan callback receives data from initiator that includes a from address. No validation that from == initiator allows victim token draining during callback.",
+      "code_snippet": "function onFlashLoan(\n    address initiator,\n    address token,\n    uint256 amount,\n    uint256 fee,\n    bytes calldata data  // attacker-controlled\n) external override onlyLender returns (bytes32) {\n    // VULNERABILITY: from decoded from attacker-controlled data\n    (address from, uint256 pullAmount) = abi.decode(data, (address, uint256));\n    IERC20(token).transferFrom(from, address(this), pullAmount);\n    return keccak256(\"ERC3156FlashBorrower.onFlashLoan\");\n}",
+      "context_notes": "from decoded from initiator-supplied data. Attacker can set from=victim. Flash loan callback context allows draining during single tx."
+    }
+  ]
+}
+

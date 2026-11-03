@@ -22,6 +22,17 @@ load_dotenv()
 PILOT_DATASET_V1_PATH = ROOT / "data/pilot/pilot_dataset.json"
 PILOT_DATASET_V2_PATH = ROOT / "data/pilot/pilot_dataset_v2.json"
 PILOT_DATASET_REENTRANCY_PATH = ROOT / "data/pilot/pilot_dataset_reentrancy.json"
+PILOT_DATASET_DELEGATECALL_PATH = ROOT / "data/pilot/pilot_dataset_delegatecall.json"
+PILOT_DATASET_ARBITRARY_FROM_PATH = ROOT / "data/pilot/pilot_dataset_arbitrary_from.json"
+PILOT_DATASET_UNCHECKED_RETURN_PATH = ROOT / "data/pilot/pilot_dataset_unchecked_return.json"
+PILOT_DATASETS = {
+    "v1": PILOT_DATASET_V1_PATH,
+    "v2": PILOT_DATASET_V2_PATH,
+    "reentrancy": PILOT_DATASET_REENTRANCY_PATH,
+    "delegatecall": PILOT_DATASET_DELEGATECALL_PATH,
+    "arbitrary_from": PILOT_DATASET_ARBITRARY_FROM_PATH,
+    "unchecked_return": PILOT_DATASET_UNCHECKED_RETURN_PATH,
+}
 PILOT_DATASET_PATH = PILOT_DATASET_V1_PATH  # default
 REPORT_OUTPUT_PATH = ROOT / "data/pilot/pilot_benchmark_report.json"
 
@@ -138,6 +149,90 @@ def triage_baseline_2_heuristic(case: dict) -> dict:
             "label": "TP",
             "reason": "External call occurs before state update or without re-entrancy protection.",
             "checklist_answers": ["Reentrancy window detected"],
+        }
+
+    elif pattern == "SOL-DELEGATECALL-001":
+        # Check for immutable implementation or standard Diamond/UUPS pattern
+        if "immutable" in code or "Diamond" in code or "diamondCut" in code or "_authorizeUpgrade" in code:
+            return {
+                "label": "FP",
+                "reason": "Delegatecall target is immutable, EIP-2535 Diamond standard, or UUPS authorized.",
+                "checklist_answers": ["Guarded: Fixed or governed implementation"],
+            }
+        # Check for whitelist + timelock
+        if "approvedImpls" in code or "UPGRADE_DELAY" in code:
+            return {
+                "label": "FP",
+                "reason": "Implementation target gated by whitelist or timelock delay.",
+                "checklist_answers": ["Guarded: Implementation whitelist or timelock"],
+            }
+        # Check for missing context / external resolution
+        if "IFactory" in code or "abstract" in code or "StorageSlot" in code or "modules[" in code or "IENS" in code:
+            return {
+                "label": "Uncertain",
+                "reason": "Implementation address is resolved externally or defined in abstract contract; context required.",
+                "checklist_answers": ["Context Missing: Factory/Beacon/Module resolution logic"],
+            }
+        return {
+            "label": "TP",
+            "reason": "Delegatecall executed with caller-controlled target or un-timelocked mutable implementation.",
+            "checklist_answers": ["Arbitrary or un-timelocked delegatecall target"],
+        }
+
+    elif pattern == "SOL-ARBITRARY-FROM-001":
+        # Check if from is msg.sender
+        if "transferFrom(msg.sender," in code or "require(from == msg.sender" in code:
+            return {
+                "label": "FP",
+                "reason": "from parameter is strictly validated or hardcoded to msg.sender.",
+                "checklist_answers": ["Guarded: from == msg.sender"],
+            }
+        # Check for EIP-2612 permit or explicit allowance mapping
+        if "permit(" in code or "approvedSenders" in code:
+            return {
+                "label": "FP",
+                "reason": "Explicit EIP-2612 permit or delegated-sender allowance mapping authorizes transfer.",
+                "checklist_answers": ["Guarded: Permit or approval mapping present"],
+            }
+        # Check for missing context
+        if "_getUser" in code or "abstract" in code or "Gelato" in code or "IToken" in code or ("recover(" in code and "nonce" not in code):
+            return {
+                "label": "Uncertain",
+                "reason": "from address resolution logic, token standard compliance, or relayer context missing.",
+                "checklist_answers": ["Context Missing: from resolution or token standard"],
+            }
+        return {
+            "label": "TP",
+            "reason": "transferFrom called with caller-controlled from parameter without signature or allowance verification.",
+            "checklist_answers": ["Arbitrary from parameter detected"],
+        }
+
+    elif pattern == "SOL-UNCHECKED-RETURN-001":
+        # Check for SafeERC20 or Solidity built-in transfer
+        if "SafeERC20" in code or "safeTransfer" in code or ".transfer(" in code:
+            return {
+                "label": "FP",
+                "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure.",
+                "checklist_answers": ["Guarded: SafeERC20 or built-in reverting transfer"],
+            }
+        # Check for explicit require(success) or assembly check
+        if re.search(r'require\s*\(\s*(?:success|ok)\b', code) or "iszero(success)" in code:
+            return {
+                "label": "FP",
+                "reason": "Return value of low-level call is explicitly validated and reverts on failure.",
+                "checklist_answers": ["Guarded: Explicit return value verification"],
+            }
+        # Check for missing context / fire-and-forget
+        if "fire-and-forget" in code.lower() or "_safeCall" in code or "try" in code or "internal returns" in code or "token parameter" in case.get("context_notes", "").lower():
+            return {
+                "label": "Uncertain",
+                "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context.",
+                "checklist_answers": ["Context Missing: Developer intent or wrapper definition"],
+            }
+        return {
+            "label": "TP",
+            "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure.",
+            "checklist_answers": ["Unchecked return value"],
         }
 
     return {"label": "TP", "reason": "Default heuristic fallback", "checklist_answers": []}
@@ -466,6 +561,27 @@ CHECKLISTS_BY_PATTERN = {
         "3. Does the function update critical state (balances, ownership, flags) AFTER the external call rather than before?",
         "4. Could a malicious contract receiving ETH or tokens re-enter this function before the state update completes?"
     ],
+    # --- Đợt 4A: Delegatecall pattern ---
+    "SOL-DELEGATECALL-001": [
+        "1. Does the code execute delegatecall with an address that can be passed by caller or modified without governance?",
+        "2. Is the delegatecall target strictly immutable, whitelisted, or protected by multi-signature and timelock?",
+        "3. Can an untrusted party register, upgrade, or point the implementation to an arbitrary malicious contract?",
+        "4. Is crucial context (beacon contract, factory resolution, or upgrade authorization) missing from this snippet?"
+    ],
+    # --- Đợt 4A: Arbitrary From pattern ---
+    "SOL-ARBITRARY-FROM-001": [
+        "1. Does the function call token.transferFrom with a `from` address controlled by caller input?",
+        "2. Is the `from` address strictly required to be `msg.sender` or accompanied by verified EIP-2612 / ECDSA permit?",
+        "3. Could an attacker specify an arbitrary third party who approved the contract to drain their funds?",
+        "4. Is the authorization mechanism (off-chain relayer, user mapping, or token allowance) missing from this snippet?"
+    ],
+    # --- Đợt 4A: Unchecked Return Value pattern ---
+    "SOL-UNCHECKED-RETURN-001": [
+        "1. Does the code perform a low-level call() or token transfer/approve whose bool return value is discarded?",
+        "2. Is the return value checked with require(), if-revert, or wrapped with OpenZeppelin SafeERC20?",
+        "3. Could a silent failure (e.g. non-standard ERC20 returning false) cause fund loss or corrupted accounting?",
+        "4. Is the failure handling implemented in an external wrapper or intentionally fire-and-forget?"
+    ],
 }
 
 
@@ -759,15 +875,15 @@ def main():
     )
     parser.add_argument(
         "--dataset",
-        choices=["v1", "v2", "reentrancy"],
+        choices=["v1", "v2", "reentrancy", "delegatecall", "arbitrary_from", "unchecked_return"],
         default="v1",
-        help="Dataset version: v1=12 cases (default), v2=20 cases, reentrancy=16 reentrancy cases",
+        help="Dataset version: v1 (default), v2, reentrancy, delegatecall, arbitrary_from, unchecked_return",
     )
     parser.add_argument(
         "--split",
         choices=["dev", "test", "all"],
         default="all",
-        help="For v2/reentrancy: which split to evaluate (dev, test, all)",
+        help="For datasets with splits: which split to evaluate (dev, test, all)",
     )
     parser.add_argument(
         "--with-context",
@@ -793,12 +909,7 @@ def main():
     args = parser.parse_args()
 
     # --- Select dataset ---
-    if args.dataset == "reentrancy":
-        dataset_path = PILOT_DATASET_REENTRANCY_PATH
-    elif args.dataset == "v2":
-        dataset_path = PILOT_DATASET_V2_PATH
-    else:
-        dataset_path = PILOT_DATASET_V1_PATH
+    dataset_path = PILOT_DATASETS.get(args.dataset, PILOT_DATASET_V1_PATH)
 
     if not dataset_path.exists():
         logger.error("Pilot dataset not found at %s", dataset_path)
@@ -807,8 +918,8 @@ def main():
     with open(dataset_path, "r", encoding="utf-8") as f:
         dataset = json.load(f)
 
-    # Handle v2 or reentrancy split
-    if args.dataset in ("v2", "reentrancy"):
+    # Handle datasets with dev/test splits
+    if "dev_cases" in dataset:
         if args.split == "dev":
             cases = dataset.get("dev_cases", [])
         elif args.split == "test":

@@ -49,6 +49,12 @@ def map_template_to_pattern(template_id: str) -> str:
         return "SOL-UINT128-NARROWING-001"
     if "REENTRANCY" in tid:
         return "SOL-REENTRANCY-001"
+    if "DELEGATECALL" in tid or "DELEGATE" in tid:
+        return "SOL-DELEGATECALL-001"
+    if "ARBITRARY" in tid or "TRANSFERFROM" in tid:
+        return "SOL-ARBITRARY-FROM-001"
+    if "UNCHECKED" in tid or "RETURN" in tid or "LOWLEVEL" in tid:
+        return "SOL-UNCHECKED-RETURN-001"
     return "SOL-GENERIC-001"
 
 

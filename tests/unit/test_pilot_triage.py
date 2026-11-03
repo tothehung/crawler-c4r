@@ -173,3 +173,98 @@ def test_reentrancy_triage_baselines():
     assert m5["accuracy"] == 100.0
     assert m5["fp_rate"] == 0.0
 
+
+def test_phase4a_datasets_structure():
+    """Kiểm tra cấu trúc và tính toàn vẹn của 3 dataset Phase 4A."""
+    patterns = [
+        ("pilot_dataset_delegatecall.json", "SOL-DELEGATECALL-001"),
+        ("pilot_dataset_arbitrary_from.json", "SOL-ARBITRARY-FROM-001"),
+        ("pilot_dataset_unchecked_return.json", "SOL-UNCHECKED-RETURN-001"),
+    ]
+    valid_labels = {"TP", "FP", "Uncertain"}
+
+    for filename, expected_pattern in patterns:
+        path = ROOT / "data/pilot" / filename
+        assert path.exists(), f"Missing dataset: {filename}"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        assert data["meta"]["pattern"] == expected_pattern
+        assert len(data["dev_cases"]) == 12, f"{filename} dev_cases != 12"
+        assert len(data["test_cases"]) == 4, f"{filename} test_cases != 4"
+
+        for c in data["dev_cases"] + data["test_cases"]:
+            assert c["ground_truth_label"] in valid_labels
+            assert c["pattern_id"] == expected_pattern
+            assert len(c["code_snippet"]) > 0
+
+
+def test_phase4a_context_extractors():
+    """Kiểm tra Context Assembler trích xuất đúng signals cho 3 pattern mới."""
+    from services.context_assembler import assemble_context_from_snippet
+
+    # 1. Delegatecall signals
+    del_code = """
+    contract Proxy {
+        address public immutable implementation;
+        constructor(address _impl) { implementation = _impl; }
+        fallback() external payable {
+            (bool ok,) = implementation.delegatecall(msg.data);
+            require(ok);
+        }
+    }
+    """
+    ctx_del = assemble_context_from_snippet(del_code, "SOL-DELEGATECALL-001", "fallback")
+    assert ctx_del.has_delegatecall is True
+    assert ctx_del.delegatecall_target_fixed is True
+
+    # 2. Arbitrary From signals
+    from_code = """
+    function deposit(address from, uint256 amount) external {
+        require(from == msg.sender, "only caller");
+        token.transferFrom(from, address(this), amount);
+    }
+    """
+    ctx_from = assemble_context_from_snippet(from_code, "SOL-ARBITRARY-FROM-001", "deposit")
+    assert ctx_from.has_transfer_from is True
+    assert ctx_from.from_is_msg_sender is True
+    assert ctx_from.from_has_require_check is True
+
+    # 3. Unchecked Return signals
+    ret_code = """
+    using SafeERC20 for IERC20;
+    function payout(address to, uint256 amount) external {
+        token.safeTransfer(to, amount);
+    }
+    """
+    ctx_ret = assemble_context_from_snippet(ret_code, "SOL-UNCHECKED-RETURN-001", "payout")
+    assert ctx_ret.uses_safe_erc20 is True
+    assert ctx_ret.return_value_checked is True
+
+
+def test_phase4a_baselines_accuracy():
+    """Kiểm tra B4 và B5 đạt độ chính xác 100% trên cả 3 pattern mới."""
+    from scripts.run_pilot_triage import (
+        triage_baseline_4_knowledge_grounded,
+        triage_baseline_5_auditor_critic,
+    )
+
+    filenames = [
+        "pilot_dataset_delegatecall.json",
+        "pilot_dataset_arbitrary_from.json",
+        "pilot_dataset_unchecked_return.json",
+    ]
+    for fn in filenames:
+        path = ROOT / "data/pilot" / fn
+        data = json.loads(path.read_text(encoding="utf-8"))
+        cases = data["dev_cases"] + data["test_cases"]
+
+        p4 = [triage_baseline_4_knowledge_grounded(c, provider="offline") for c in cases]
+        m4 = calculate_metrics(cases, p4)
+        assert m4["accuracy"] == 100.0, f"B4 failed on {fn}"
+        assert m4["fp_rate"] == 0.0
+
+        p5 = [triage_baseline_5_auditor_critic(c, provider="offline", auditor_result=res) for c, res in zip(cases, p4)]
+        m5 = calculate_metrics(cases, p5)
+        assert m5["accuracy"] == 100.0, f"B5 failed on {fn}"
+        assert m5["fp_rate"] == 0.0
+
+
