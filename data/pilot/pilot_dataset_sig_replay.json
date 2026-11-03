@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho pattern Signature Malleability & Replay (SOL-SIG-REPLAY-001) — Đợt 4B. 12 dev cases phủ đủ 3 nhãn: TP (dùng ecrecover thiếu nonce, thiếu chainId/domain separator, hoặc bị signature malleability), FP (dùng OpenZeppelin ECDSA với EIP-712, nonce mapping, và block.chainid), Uncertain (không đủ context về nonce storage hoặc off-chain validator). 4 hard test cases (Wintermute, Cross-chain bridge replay).",
+    "pattern": "SOL-SIG-REPLAY-001",
+    "cwe": "CWE-347",
+    "labels": {
+      "TP": "True Positive — chữ ký có thể bị dùng lại (replay) hoặc bị biến đổi (malleability) để chiếm đoạt tài sản",
+      "FP": "False Positive — đã bảo vệ bằng OpenZeppelin ECDSA, EIP-712 domain separator có chainId, và nonce tăng dần",
+      "Uncertain": "Không đủ ngữ cảnh: nonce check nằm ở contract khác hoặc cơ chế xác thực off-chain không có trong snippet"
+    },
+    "split": {
+      "dev": "sig-tp-001 đến sig-uncertain-004 (12 cases — dùng để tune checklist/prompt)",
+      "test": "sig-hard-* (4 hard cases — KHÔNG dùng để tune)"
+    },
+    "created_at": "2026-11-03T00:00:00Z",
+    "phase": "Đợt 4B — High-Impact Signature Security Expansion"
+  },
+  "dev_cases": [
+    {
+      "case_id": "sig-tp-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm transferWithSig sử dụng ecrecover để xác thực người gửi nhưng hoàn toàn không lưu vết nonce hoặc đánh dấu chữ ký đã dùng (`usedSignatures`). Kẻ tấn công hoặc bất kỳ ai có thể sao chép cùng một chữ ký từ mempool và gọi hàm nhiều lần để rút cạn tài khoản của victim.",
+      "finding_title": "Missing nonce in signature verification allows infinite replay attacks",
+      "finding_content": "The contract verifies signatures via ecrecover but does not track nonces or mark signatures as used. The same signature can be replayed indefinitely until victim balance is zero.",
+      "code_snippet": "function transferWithSig(\n    address from,\n    address to,\n    uint256 amount,\n    bytes32 r, bytes32 s, uint8 v\n) external {\n    bytes32 hash = keccak256(abi.encodePacked(from, to, amount));\n    bytes32 ethSigned = keccak256(abi.encodePacked(\"\\x19Ethereum Signed Message:\\n32\", hash));\n    // VULNERABILITY: No nonce check, no usedSignatures mapping\n    require(ecrecover(ethSigned, v, r, s) == from, \"invalid sig\");\n    balances[from] -= amount;\n    balances[to] += amount;\n}",
+      "context_notes": "No nonce parameter. No mapping(bytes32 => bool) usedSignatures. Infinite replay vulnerability."
+    },
+    {
+      "case_id": "sig-tp-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hash ký không bao gồm `block.chainid` hoặc địa chỉ hợp đồng (`address(this)`). Một chữ ký hợp lệ trên Ethereum mainnet có thể bị kẻ tấn công chụp lại và phát lại (replay) trên Arbitrum, Optimism, hoặc BSC nơi victim deploy cùng một địa chỉ ví.",
+      "finding_title": "Cross-chain replay attack: hash lacks block.chainid and contract address",
+      "finding_content": "The signature hash only contains parameters without domain separator or chainId. A signature valid on one EVM chain can be replayed on other chains.",
+      "code_snippet": "function claimAirdrop(\n    address recipient,\n    uint256 amount,\n    uint256 nonce,\n    uint8 v, bytes32 r, bytes32 s\n) external {\n    require(!usedNonces[recipient][nonce], \"nonce used\");\n    usedNonces[recipient][nonce] = true;\n    // VULNERABILITY: Missing address(this) and block.chainid in hash\n    bytes32 message = keccak256(abi.encode(recipient, amount, nonce));\n    require(ecrecover(message, v, r, s) == signer, \"invalid sig\");\n    token.transfer(recipient, amount);\n}",
+      "context_notes": "Has nonce, but lacks block.chainid and address(this). Vulnerable to cross-chain and cross-contract signature replay."
+    },
+    {
+      "case_id": "sig-tp-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Sử dụng built-in ecrecover trực tiếp mà không kiểm tra giới hạn giá trị `s` (`s <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D57617F3366374759754B4611A7C567`). Trong đường cong secp256k1, với mỗi chữ ký (r, s, v), tồn tại chữ ký đối xứng (r, secp256k1n - s, 27/28 - v) cũng hợp lệ. Nếu hệ thống đánh dấu chữ ký theo hash(signature), kẻ tấn công có thể biến đổi s để bypass check.",
+      "finding_title": "Signature Malleability via raw ecrecover without s-value upper bound check",
+      "finding_content": "Uses raw ecrecover without checking for high-s values. An attacker can malleate the signature into a different valid signature to bypass uniqueness checks.",
+      "code_snippet": "mapping(bytes32 => bool) public executedSigs;\n\nfunction executeAction(bytes calldata action, bytes calldata sig) external {\n    bytes32 sigHash = keccak256(sig);\n    require(!executedSigs[sigHash], \"sig executed\");\n    executedSigs[sigHash] = true; // Flawed replay prevention!\n    \n    (bytes32 r, bytes32 s, uint8 v) = splitSig(sig);\n    // VULNERABILITY: Raw ecrecover does not enforce s <= secp256k1n / 2\n    address signer = ecrecover(keccak256(action), v, r, s);\n    require(signer == admin, \"not admin\");\n    _doAction(action);\n}",
+      "context_notes": "Signature malleability: executedSigs stores keccak256(sig), but high-s malleation yields different sig for same message."
+    },
+    {
+      "case_id": "sig-fp-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Sử dụng OpenZeppelin `ECDSA.recover` kết hợp EIP-712 chuẩn: DOMAIN_SEPARATOR chứa đầy đủ `block.chainid` và `address(this)`, kiểm tra `nonces[signer]++`, và có `deadline >= block.timestamp`. OpenZeppelin ECDSA tự động revert nếu chữ ký có high-s (chống malleability tuyệt đối).",
+      "finding_title": "EIP-712 with OpenZeppelin ECDSA.recover, chainId, incrementing nonce, and deadline",
+      "finding_content": "Standard EIP-712 implementation using OpenZeppelin's vetted ECDSA library. Static scanner flags signature verification but all guards are in place.",
+      "code_snippet": "using ECDSA for bytes32;\n\nmapping(address => uint256) public nonces;\n\nfunction executeWithPermit(\n    address owner,\n    address spender,\n    uint256 value,\n    uint256 deadline,\n    bytes calldata signature\n) external {\n    require(block.timestamp <= deadline, \"expired\");\n    bytes32 structHash = keccak256(abi.encode(\n        PERMIT_TYPEHASH,\n        owner,\n        spender,\n        value,\n        nonces[owner]++,\n        deadline\n    ));\n    bytes32 digest = _hashTypedDataV4(structHash); // EIP-712 with chainId & address(this)\n    // SAFE: ECDSA.recover prevents high-s malleability and returns address(0) on error\n    require(digest.recover(signature) == owner, \"invalid signature\");\n    _approve(owner, spender, value);\n}",
+      "context_notes": "OpenZeppelin ECDSA library. EIP-712 with chainId. Nonce incremented. Deadline enforced. Fully secure."
+    },
+    {
+      "case_id": "sig-fp-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Chữ ký là một lần duy nhất được neo chặt bằng mapping `hasClaimed[user] = true`. Kẻ tấn công không thể replay chữ ký vì state đã bị khóa ngay lập tức ở lần đầu tiên.",
+      "finding_title": "One-time airdrop claim locked by hasClaimed mapping — replay blocked",
+      "finding_content": "Function verifies ECDSA signature for airdrop claim. Replay is prevented by a boolean state flag hasClaimed[msg.sender].",
+      "code_snippet": "mapping(address => bool) public hasClaimed;\n\nfunction claimWithVoucher(\n    uint256 amount,\n    bytes calldata voucherSig\n) external {\n    require(!hasClaimed[msg.sender], \"already claimed\");\n    hasClaimed[msg.sender] = true; // State lock prevents replay\n    bytes32 msgHash = keccak256(abi.encodePacked(address(this), block.chainid, msg.sender, amount));\n    bytes32 ethHash = ECDSA.toEthSignedMessageHash(msgHash);\n    require(ECDSA.recover(ethHash, voucherSig) == voucherIssuer, \"bad voucher\");\n    token.transfer(msg.sender, amount);\n}",
+      "context_notes": "hasClaimed boolean mapping prevents replay. Message includes address(this) and block.chainid. OZ ECDSA used. Safe."
+    },
+    {
+      "case_id": "sig-fp-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "EIP-1271 Smart Contract Wallet verification (`isValidSignature`): chữ ký của contract ví (như Safe / Gnosis Safe). Safe quản lý nonce nội bộ bên trong contract ví khi ký duyệt giao dịch đa chữ ký.",
+      "finding_title": "EIP-1271 isValidSignature support — signature logic handled by smart contract wallet",
+      "finding_content": "Uses EIP-1271 interface for contract wallets. Replay protection is enforced by the smart contract wallet implementation.",
+      "code_snippet": "function verifySigner(address signer, bytes32 hash, bytes memory signature) internal view returns (bool) {\n    if (signer.code.length > 0) {\n        // EIP-1271 smart contract wallet (e.g. Gnosis Safe)\n        return IERC1271(signer).isValidSignature(hash, signature) == 0x1626ba7e;\n    } else {\n        return ECDSA.recover(hash, signature) == signer;\n    }\n}",
+      "context_notes": "EIP-1271 standard for smart contract accounts. Smart contract wallets manage nonces internally. Safe."
+    },
+    {
+      "case_id": "sig-fp-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Order settlement pattern (Seaport/0x protocol): order có `orderHash` được đánh dấu `orderStatus[orderHash].isFilled = true` hoặc `filledAmount == totalAmount`. Chữ ký gắn liền với 1 order duy nhất, không thể lặp lại.",
+      "finding_title": "Order hash fill tracking prevents order signature reuse (0x / Seaport pattern)",
+      "finding_content": "Order signature is bound to unique order hash. The order hash is tracked in orderStatus mapping to prevent replay.",
+      "code_snippet": "mapping(bytes32 => bool) public cancelledOrFilled;\n\nfunction fillOrder(Order calldata order, bytes calldata signature) external {\n    bytes32 orderHash = _hashOrder(order);\n    require(!cancelledOrFilled[orderHash], \"order already filled or cancelled\");\n    cancelledOrFilled[orderHash] = true; // One-time fulfillment gate\n    require(ECDSA.recover(orderHash, signature) == order.maker, \"invalid maker\");\n    _transferAssets(order);\n}",
+      "context_notes": "Order hash uniqueness enforced by state mapping. Standard DEX fill tracking. Replay impossible."
+    },
+    {
+      "case_id": "sig-uncertain-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm gọi `_verifySignature(message, sig)`. Hàm `_verifySignature` là internal helper không hiển thị trong snippet. Không rõ bên trong có kiểm tra nonce, chainId hay s-value không.",
+      "finding_title": "Signature verification delegated to internal helper — implementation not visible",
+      "finding_content": "Calls _verifySignature(msgHash, signature). The implementation of _verifySignature is not provided in this finding snippet.",
+      "code_snippet": "function executeWithdraw(address to, uint256 amount, bytes calldata sig) external onlyOperator {\n    bytes32 msgHash = keccak256(abi.encodePacked(to, amount));\n    // Helper implementation not shown — may or may not check nonce\n    require(_verifySignature(msgHash, sig), \"signature failed\");\n    payable(to).transfer(amount);\n}",
+      "context_notes": "Internal helper _verifySignature not shown. Cannot assess whether nonce or malleability check exists."
+    },
+    {
+      "case_id": "sig-uncertain-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Nonce được truyền vào từ tham số hàm (`uint256 nonce`), nhưng trong snippet không thấy dòng code nào kiểm tra `require(!used[nonce])` hay `used[nonce] = true`. Có thể logic này nằm trong modifier `validNonce(nonce)` được định nghĩa ở contract cha.",
+      "finding_title": "Nonce passed as parameter but validation statement not visible in snippet",
+      "finding_content": "Nonce parameter is present in signature payload, but no state write updating nonce is visible in function body. Modifier may handle it.",
+      "code_snippet": "function updateConfig(bytes calldata configData, uint256 nonce, bytes calldata sig) external withValidNonce(nonce) {\n    bytes32 hash = keccak256(abi.encode(configData, nonce));\n    require(ECDSA.recover(hash, sig) == admin);\n    _applyConfig(configData);\n}",
+      "context_notes": "withValidNonce modifier definition not in snippet. If modifier updates state, safe; if no-op, vulnerable. Context missing."
+    },
+    {
+      "case_id": "sig-uncertain-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm xác minh chữ ký của Gelato / Biconomy off-chain relayer qua ERC-2771 context (`_msgSender()`). Việc chống replay được quản lý bởi Forwarder contract bên ngoài, cần kiểm tra mã nguồn của TrustedForwarder.",
+      "finding_title": "ERC-2771 meta-transaction forwarder context — replay protection in external Forwarder",
+      "finding_content": "Function uses ERC-2771 _msgSender() context. Nonce and replay checks are delegated to external TrustedForwarder contract.",
+      "code_snippet": "function metaTransfer(address to, uint256 amount) external {\n    // In ERC-2771, msg.sender is Forwarder; actual user is _msgSender()\n    address sender = _msgSender();\n    balances[sender] -= amount;\n    balances[to] += amount;\n}",
+      "context_notes": "ERC-2771 pattern. Replay protection is responsibility of TrustedForwarder. Without forwarder source, safety is uncertain."
+    },
+    {
+      "case_id": "sig-uncertain-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Chữ ký ECDSA được gửi sang oracle bên ngoài (`IOracleValidator(validator).checkSignature(sig)`). Cần xem mã nguồn của oracle validator.",
+      "finding_title": "Signature validation delegated to external IOracleValidator — implementation unknown",
+      "finding_content": "Signature is validated by external validator interface. Security properties depend on unknown external contract.",
+      "code_snippet": "function settleTrade(bytes calldata tradeData, bytes calldata sig) external {\n    bool ok = IOracleValidator(validator).checkSignature(tradeData, sig);\n    require(ok, \"oracle sig invalid\");\n    _settle(tradeData);\n}",
+      "context_notes": "External interface call. Cannot verify replay or malleability protections without validator contract source."
+    },
+    {
+      "case_id": "sig-tp-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm mint token có tham số voucher signature nhưng lại tăng nonce của `msg.sender` thay vì nonce của `minter/signer`. Kẻ tấn công có thể lấy chữ ký của một voucher và dùng các tài khoản khác nhau (mỗi tài khoản có nonce=0) để mint lặp đi lặp lại cùng một voucher.",
+      "finding_title": "Flawed nonce indexing: nonces tracked per msg.sender rather than per voucher signer",
+      "finding_content": "Contract increments nonces[msg.sender] instead of tracking used vouchers or signer's nonce. An attacker can use multiple accounts to claim the same voucher repeatedly.",
+      "code_snippet": "mapping(address => uint256) public nonces;\n\nfunction mintWithVoucher(\n    uint256 amount,\n    uint256 voucherId,\n    bytes calldata sig\n) external {\n    // VULNERABILITY: Tracks caller nonce instead of voucherId uniqueness!\n    require(nonces[msg.sender] == 0, \"already minted\");\n    nonces[msg.sender] = 1;\n    \n    bytes32 hash = keccak256(abi.encodePacked(amount, voucherId));\n    require(ECDSA.recover(hash, sig) == authority, \"bad voucher\");\n    _mint(msg.sender, amount);\n}",
+      "context_notes": "Attacker generates 100 fresh addresses, calls mintWithVoucher from each. Each fresh caller has nonces[msg.sender] == 0. One voucher drained 100 times."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "sig-hard-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Wintermute / Profanity style flaw: hàm ecrecover kiểm tra signer == expected, nhưng ecrecover trả về address(0) khi signature bị lỗi hoặc malformed. Nếu biến `signer` hoặc `owner` trong contract bị uninitialized (chưa gán giá trị, mặc định là address(0)), bất kỳ signature rác nào cũng sẽ pass qua check (address(0) == address(0)).",
+      "finding_title": "ecrecover address(0) return on failure matches uninitialized admin address(0)",
+      "finding_content": "Raw ecrecover returns address(0) on invalid signature. If the target admin address is uninitialized (address(0)), any garbage signature succeeds.",
+      "code_snippet": "address public emergencyAdmin; // Default uninitialized: address(0)\n\nfunction emergencyShutdown(bytes32 hash, uint8 v, bytes32 r, bytes32 s) external {\n    // VULNERABILITY: If signature is malformed, ecrecover returns address(0)\n    // If emergencyAdmin is address(0), check succeeds!\n    require(ecrecover(hash, v, r, s) == emergencyAdmin, \"unauthorized\");\n    isShutdown = true;\n}",
+      "context_notes": "ecrecover returns 0 on failure. If emergencyAdmin is uninitialized (address(0)), ecrecover() == emergencyAdmin evaluates to 0 == 0 -> TRUE. Attacker passes any garbage sig."
+    },
+    {
+      "case_id": "sig-hard-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "EIP-712 DOMAIN_SEPARATOR được tính toán động (dynamically recomputed) mỗi khi `block.chainid != cachedChainId`. Điều này bảo vệ an toàn tuyệt đối chống cả hard fork replay lẫn cross-chain replay trong các kiến trúc proxy/upgradeable.",
+      "finding_title": "Dynamic EIP-712 domain separator cache with hard-fork & cross-chain recomputation",
+      "finding_content": "Recomputes DOMAIN_SEPARATOR if block.chainid changes after hard fork. OpenZeppelin standard for secure EIP-712 typed data hashing.",
+      "code_snippet": "function _domainSeparatorV4() internal view returns (bytes32) {\n    if (block.chainid == _cachedChainId) {\n        return _cachedDomainSeparator;\n    }\n    return _buildDomainSeparator(_TYPE_HASH, _HASHED_NAME, _HASHED_VERSION);\n}",
+      "context_notes": "OZ standard EIP-712 implementation. Dynamic chainId invalidation. Safe from hard fork and cross-chain replay."
+    },
+    {
+      "case_id": "sig-hard-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Chữ ký là BLS aggregated signature hoặc Schnorr signature trên alt-bn128 curve được verify qua precompile `0x08`. Không thể suy luận các thuộc tính malleability từ kiến thức ECDSA thông thường; cần phân tích mật mã học đường cong bn128.",
+      "finding_title": "BLS / alt-bn128 precompile signature verification — non-ECDSA curve properties required",
+      "finding_content": "Signature verification uses alt-bn128 pairing precompile at 0x08. Mathematical malleability properties cannot be deduced from standard EVM ECDSA rules.",
+      "code_snippet": "function verifyAggregated(bytes memory points) external view returns (bool) {\n    // Calls BN256 pairing precompile at address(0x08)\n    (bool ok, bytes memory result) = address(0x08).staticcall(points);\n    require(ok && result.length > 0);\n    return abi.decode(result, (uint256)) == 1;\n}",
+      "context_notes": "Cryptographic precompile 0x08 (alt_bn128 pairing). Not standard ECDSA. Advanced mathematical verification required."
+    },
+    {
+      "case_id": "sig-hard-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Cross-Chain Bridge Replay: Bridge validator ký duyệt giao dịch rút tiền bao gồm amount và recipient, nhưng `chainId` được truyền vào như một tham số hàm do caller cung cấp mà không được so sánh với `block.chainid` thực tế của chuỗi đang chạy.",
+      "finding_title": "Bridge signature verifies caller-supplied chainId parameter instead of block.chainid",
+      "finding_content": "The contract verifies that chainId is in the signed message, but accepts chainId as a function parameter without checking require(chainId == block.chainid).",
+      "code_snippet": "function bridgeWithdraw(\n    address recipient,\n    uint256 amount,\n    uint256 chainId, // Caller-supplied chainId parameter\n    bytes calldata sig\n) external {\n    // Flawed check: validates that sig matches param, but doesn't check param against real chain!\n    bytes32 hash = keccak256(abi.encodePacked(recipient, amount, chainId));\n    require(ECDSA.recover(hash, sig) == bridgeValidator, \"bad validator\");\n    // MISSING: require(chainId == block.chainid, \"wrong chain\");\n    token.transfer(recipient, amount);\n}",
+      "context_notes": "Deceptive flaw: caller supplies chainId=1, signature valid for chain 1. Attacker calls function on Polygon (chain 137). Function passes because hash matches, but tokens drained on wrong chain!"
+    }
+  ]
+}

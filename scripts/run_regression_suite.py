@@ -131,9 +131,17 @@ def main():
     unchecked_return_path = ROOT / "data/pilot/pilot_dataset_unchecked_return.json"
     eval_unchecked_return = evaluate_dataset("Pilot Unchecked Return (SOL-UNCHECKED-RETURN-001)", unchecked_return_path)
 
-    # Step 7: Quality Gate Invariant Verification
+    # Step 7: Benchmark Oracle Manipulation (16 cases)
+    oracle_manip_path = ROOT / "data/pilot/pilot_dataset_oracle_manip.json"
+    eval_oracle = evaluate_dataset("Pilot Oracle Manipulation (SOL-ORACLE-MANIP-001)", oracle_manip_path)
+
+    # Step 8: Benchmark Signature Security (16 cases)
+    sig_replay_path = ROOT / "data/pilot/pilot_dataset_sig_replay.json"
+    eval_sig = evaluate_dataset("Pilot Signature Security (SOL-SIG-REPLAY-001)", sig_replay_path)
+
+    # Step 9: Quality Gate Invariant Verification
     logger.info("==================================================================")
-    logger.info("STEP 7: Kiểm tra Invariants Chất Lượng (Quality Gates — 5 Datasets)...")
+    logger.info("STEP 9: Kiểm tra Invariants Chất Lượng (Quality Gates — 7 Datasets, 116 Cases)...")
     logger.info("==================================================================")
 
     datasets_to_check = [
@@ -142,6 +150,8 @@ def main():
         ("Delegatecall", eval_delegatecall),
         ("Arbitrary From", eval_arbitrary_from),
         ("Unchecked Return", eval_unchecked_return),
+        ("Oracle Manip", eval_oracle),
+        ("Signature Security", eval_sig),
     ]
 
     for name, eval_data in datasets_to_check:
@@ -176,11 +186,11 @@ def main():
     report = {
         "metadata": {
             "title": "W3GoAudit Regression Suite Execution Report",
-            "phase": "Đợt 4A — Multi-group Expansion (5 Patterns, 84 cases)",
+            "phase": "Đợt 4B — Comprehensive Multi-group Expansion (7 Patterns, 116 cases)",
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "elapsed_seconds": round(elapsed, 2),
             "status": "PASSED" if all_passed else "FAILED",
-            "total_benchmark_cases": 84,
+            "total_benchmark_cases": 116,
             "patterns_covered": [
                 "SOL-UINT128-NARROWING-001",
                 "SOL-ACCESS-CONTROL-001",
@@ -188,6 +198,8 @@ def main():
                 "SOL-DELEGATECALL-001",
                 "SOL-ARBITRARY-FROM-001",
                 "SOL-UNCHECKED-RETURN-001",
+                "SOL-ORACLE-MANIP-001",
+                "SOL-SIG-REPLAY-001",
             ],
         },
         "invariants": invariants_checked,
@@ -197,6 +209,8 @@ def main():
             "pilot_delegatecall": eval_delegatecall,
             "pilot_arbitrary_from": eval_arbitrary_from,
             "pilot_unchecked_return": eval_unchecked_return,
+            "pilot_oracle_manip": eval_oracle,
+            "pilot_sig_replay": eval_sig,
         },
     }
 

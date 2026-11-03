@@ -268,3 +268,52 @@ def test_phase4a_baselines_accuracy():
         assert m5["fp_rate"] == 0.0
 
 
+def test_phase4b_datasets_structure_and_context():
+    """Kiểm tra cấu trúc và tính toàn vẹn của 2 dataset Phase 4B (Oracle & Signature)."""
+    from services.context_assembler import assemble_context_from_snippet
+    from scripts.run_pilot_triage import (
+        triage_baseline_4_knowledge_grounded,
+        triage_baseline_5_auditor_critic,
+    )
+
+    patterns = [
+        ("pilot_dataset_oracle_manip.json", "SOL-ORACLE-MANIP-001"),
+        ("pilot_dataset_sig_replay.json", "SOL-SIG-REPLAY-001"),
+    ]
+    valid_labels = {"TP", "FP", "Uncertain"}
+
+    for filename, expected_pattern in patterns:
+        path = ROOT / "data/pilot" / filename
+        assert path.exists(), f"Missing dataset: {filename}"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        assert data["meta"]["pattern"] == expected_pattern
+        assert len(data["dev_cases"]) == 12
+        assert len(data["test_cases"]) == 4
+
+        cases = data["dev_cases"] + data["test_cases"]
+        for c in cases:
+            assert c["ground_truth_label"] in valid_labels
+            assert c["pattern_id"] == expected_pattern
+            assert len(c["code_snippet"]) > 0
+
+        # Baseline accuracy
+        p4 = [triage_baseline_4_knowledge_grounded(c, provider="offline") for c in cases]
+        m4 = calculate_metrics(cases, p4)
+        assert m4["accuracy"] == 100.0, f"B4 failed on {filename}"
+
+        p5 = [triage_baseline_5_auditor_critic(c, provider="offline", auditor_result=res) for c, res in zip(cases, p4)]
+        m5 = calculate_metrics(cases, p5)
+        assert m5["accuracy"] == 100.0, f"B5 failed on {filename}"
+
+    # Verify context extraction
+    oracle_code = "function getPrice() external view { (uint112 r0, uint112 r1,) = pair.getReserves(); }"
+    ctx_o = assemble_context_from_snippet(oracle_code, "SOL-ORACLE-MANIP-001", "getPrice")
+    assert ctx_o.uses_spot_reserves is True
+
+    sig_code = "function claim(bytes32 h, bytes memory sig) external { nonces[msg.sender]++; address s = ECDSA.recover(h, sig); }"
+    ctx_s = assemble_context_from_snippet(sig_code, "SOL-SIG-REPLAY-001", "claim")
+    assert ctx_s.uses_oz_ecdsa is True
+    assert ctx_s.has_nonce_tracking is True
+
+
+

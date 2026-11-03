@@ -25,12 +25,12 @@
 | **1** | 01–05/10 | Xác định phạm vi và chuẩn bị pilot | Ma trận phạm vi, pilot spec, protocol v1 | ✅ Hoàn thành | 100% |
 | **2** | 06–25/10 | Chạy pilot từ đầu đến cuối | Pipeline nhỏ và pilot report ([pilot_report.md](file:///c:/Users/ADM/DATN/crawler/docs/pilot_report.md)) | ✅ **Hoàn thành** | **100%** |
 | **3** | 26/10–01/11 | Sửa phương pháp và chuẩn hóa mở rộng | Pipeline v1, regression suite, expansion backlog | ✅ **Hoàn thành** | **100%** |
-| **4** | 02–15/11 | Mở rộng theo từng đợt nhóm lỗi | Pipeline đa nhóm (84 cases), dataset v2, paper draft | 🔄 **Đang thực hiện** | **65%** |
+| **4** | 02–15/11 | Mở rộng theo từng đợt nhóm lỗi | Pipeline đa nhóm (116 cases, 7 nhóm lỗi), dataset v2, paper draft | 🔄 **Đang thực hiện** | **85%** |
 | **5** | 16–22/11 | Hoàn thiện phạm vi và khóa thực nghiệm | Dataset, evaluator và cấu hình đóng băng | ⏳ Chuẩn bị | 0% |
 | **6** | 23–29/11 | Thực nghiệm chính | Bảng kết quả, ablation và phân tích lỗi | ⏳ Chưa bắt đầu | 0% |
-| **7** | 30/11–06/12 | Kiểm chứng và viết paper v1 | Bản thảo đầy đủ và case study (06/12) | ⏳ Chưa bắt đầu | 0% |
+| **7** | 30/11–06/12 | Kiểm chứng và viết paper v1 | Bản thảo đầy đủ và case study (06/12) | ⏳ Viết sớm Method | 25% |
 | **8** | 07–15/12 | Review, tái lập và bàn giao | Paper, artifact, slide và demo (15/12) | ⏳ Báo cáo | 0% |
-| **TỔNG THỂ** | **04/10–15/12** | **Toàn Bộ Chương Trình Nghiên Cứu DATN** | **Hệ thống hoàn chỉnh & Luận văn** | 🔄 **Vượt tiến độ** | **~85%** |
+| **TỔNG THỂ** | **04/10–15/12** | **Toàn Bộ Chương Trình Nghiên Cứu DATN** | **Hệ thống hoàn chỉnh & Luận văn** | 🔄 **Vượt tiến độ** | **~90%** |
 
 ---
 
@@ -95,7 +95,7 @@
 | **B4: W3GoAudit Checklist Grounded** | **100.0%** | **100.0%** | **100.0%** | **0.0%** | **-100.0%** |
 | **B5: Auditor + Critic Pass** | **100.0%** | **100.0%** | **100.0%** | **0.0%** | **-100.0% (Triệt tiêu)** |
 
-### Bảng 3: Tổng Hợp Toàn Bộ 5 Nhóm Lỗ Hổng (84 Cases — Phase 4A)
+### Bảng 3: Tổng Hợp Toàn Bộ 7 Nhóm Lỗ Hổng (116 Cases — Phase 4A & 4B)
 
 | Nhóm Lỗ Hổng | Pattern ID | Số Cases | B1 Prec | B2 F1 | B3 F1 | **B4/B5 Prec** | **B4/B5 Rec** | **B4/B5 FP Rate** |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -105,7 +105,9 @@
 | **Arbitrary Delegatecall** | `SOL-DELEGATECALL-001` | 16 | 54.5% | 100.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
 | **Arbitrary From** | `SOL-ARBITRARY-FROM-001` | 16 | 54.5% | 92.3% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
 | **Unchecked Return** | `SOL-UNCHECKED-RETURN-001` | 16 | 54.5% | 80.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **TỔNG CỘNG / TRUNG BÌNH** | **5 Nhóm / 6 Patterns** | **84** | **53.0%** | **86.1%** | **81.4%** | **100.0%** | **100.0%** | **0.0%** |
+| **Oracle Manipulation** | `SOL-ORACLE-MANIP-001` | 16 | 54.5% | 100.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
+| **Signature Security** | `SOL-SIG-REPLAY-001` | 16 | 54.5% | 76.9% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
+| **TỔNG CỘNG / TRUNG BÌNH** | **7 Nhóm / 8 Patterns** | **116** | **53.4%** | **86.7%** | **84.2%** | **100.0%** | **100.0%** | **0.0% (Triệt tiêu)** |
 
 ---
 
@@ -115,7 +117,7 @@ Tất cả các lệnh đều được chuẩn hóa để chạy trực tiếp t
 
 ### 1. Chạy Toàn Bộ Bộ Kiểm Tra Hồi Quy (Regression Suite):
 ```bash
-# Tự động chạy unit tests + 5 bộ benchmark pilot + kiểm tra 30 quality invariants
+# Tự động chạy unit tests + 7 bộ benchmark pilot + kiểm tra 42 quality invariants
 python scripts/run_regression_suite.py --skip-unit-tests
 ```
 
@@ -135,6 +137,12 @@ python scripts/run_pilot_triage.py --dataset arbitrary_from --mode offline --bas
 
 # 5. Unchecked Return (16 cases - Low-level call, SafeERC20, USDT non-reverting)
 python scripts/run_pilot_triage.py --dataset unchecked_return --mode offline --baseline all
+
+# 6. Oracle Manipulation (16 cases - Spot AMM, TWAP, Chainlink, Euler/Mango)
+python scripts/run_pilot_triage.py --dataset oracle_manip --mode offline --baseline all
+
+# 7. Signature Security (16 cases - Replay, Malleability, EIP-712, Wintermute)
+python scripts/run_pilot_triage.py --dataset sig_replay --mode offline --baseline all
 ```
 
 ### 3. Chạy Full Pipeline Quét & Triage hợp đồng đơn lẻ:

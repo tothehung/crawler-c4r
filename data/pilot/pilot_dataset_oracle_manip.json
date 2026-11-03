@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Pilot triage dataset cho pattern Spot Price Oracle Manipulation (SOL-ORACLE-MANIP-001) — Đợt 4B. 12 dev cases phủ đủ 3 nhãn: TP (dùng spot price từ getReserves/balanceOf dễ bị thao túng qua flashloan), FP (dùng Chainlink TWAP hoặc Uniswap V3 observe với period >= 30m, hoặc pool nội bộ không có external interaction), Uncertain (không đủ context về oracle wrapper). 4 hard test cases (Euler/Cream/Mango-style exploits).",
+    "pattern": "SOL-ORACLE-MANIP-001",
+    "cwe": "CWE-682",
+    "labels": {
+      "TP": "True Positive — giá lấy từ spot reserve/balance tức thời, kẻ tấn công có thể dùng flash loan thao túng tỷ giá và vay kiệt quỹ",
+      "FP": "False Positive — dùng TWAP đủ dài (>= 30 min) hoặc Chainlink price feed với đầy đủ staleness check",
+      "Uncertain": "Không đủ ngữ cảnh: oracle là external contract interface, không rõ là TWAP hay spot price"
+    },
+    "split": {
+      "dev": "oracle-tp-001 đến oracle-uncertain-004 (12 cases — dùng để tune checklist/prompt)",
+      "test": "oracle-hard-* (4 hard cases — KHÔNG dùng để tune)"
+    },
+    "created_at": "2026-11-03T00:00:00Z",
+    "phase": "Đợt 4B — High-Impact DeFi Vulnerability Expansion"
+  },
+  "dev_cases": [
+    {
+      "case_id": "oracle-tp-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Giá tài sản thế chấp được tính trực tiếp từ tỷ lệ reserves tức thời của Uniswap V2 pair (reserve1 / reserve0). Kẻ tấn công có thể dùng flash loan swap một lượng token khổng lồ để làm lệch giá dự trữ, sau đó thế chấp token được định giá cao bất thường để rút cạn quỹ cho vay.",
+      "finding_title": "Spot price from Uniswap V2 getReserves() used directly as collateral valuation",
+      "finding_content": "The lending protocol computes token price directly from Uniswap V2 pair getReserves(). An attacker can manipulate reserves via flash loan within the same block to inflate collateral value.",
+      "code_snippet": "function getCollateralValue(address pair, uint256 tokenAmount) public view returns (uint256) {\n    (uint112 reserve0, uint112 reserve1,) = IUniswapV2Pair(pair).getReserves();\n    // VULNERABILITY: Spot reserve ratio can be manipulated via flash swap\n    uint256 price = (uint256(reserve1) * 1e18) / uint256(reserve0);\n    return (tokenAmount * price) / 1e18;\n}",
+      "context_notes": "Direct spot price formula from Uniswap V2 reserves. Zero TWAP period. Exploitable within single transaction via flash loan."
+    },
+    {
+      "case_id": "oracle-tp-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Giá LP token được tính bằng token0.balanceOf(pair) / totalSupply. Attacker có thể trực tiếp chuyển token vào pair trước khi gọi hàm để nhân tạo làm phình giá LP share, sau đó mint lượng lớn cổ phần hoặc mượn quá mức.",
+      "finding_title": "LP token pricing relies on balanceOf(pair) instead of invariant virtual reserves",
+      "finding_content": "Pricing function uses balanceOf(pair) which can be manipulated by direct ERC20 transfers without going through mint/burn mechanisms.",
+      "code_snippet": "function getLpValue(address lpToken, uint256 lpAmount) external view returns (uint256) {\n    uint256 total = IERC20(lpToken).totalSupply();\n    // VULNERABILITY: balanceOf(pair) can be manipulated by donating tokens\n    uint256 balance0 = IERC20(token0).balanceOf(lpToken);\n    return (lpAmount * balance0 * 2) / total;\n}",
+      "context_notes": "balanceOf(lpToken) is prone to donation attack / inflation attack. Classic flashloan exploit vector."
+    },
+    {
+      "case_id": "oracle-tp-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Uniswap V3 slot0 sqrtPriceX96 được đọc trực tiếp để định giá. Tài liệu chính thức của Uniswap V3 đã cảnh báo nghiêm cấm dùng slot0 làm oracle vì nó phản ánh giá spot hiện tại và có thể bị skew bằng flash loan.",
+      "finding_title": "Uniswap V3 slot0 sqrtPriceX96 used as price oracle instead of TWAP observe()",
+      "finding_content": "The contract queries pool.slot0() for current sqrtPriceX96. Uniswap documentation explicitly warns that slot0 is manipulable and observe() must be used.",
+      "code_snippet": "function getAssetPrice(address pool) external view returns (uint256) {\n    // VULNERABILITY: slot0 returns instantaneous spot price\n    (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(pool).slot0();\n    uint256 price = uint256(sqrtPriceX96) * uint256(sqrtPriceX96) * 1e18 >> 192;\n    return price;\n}",
+      "context_notes": "slot0 is spot price. Uniswap docs specifically state: 'slot0 is the most recent data point and can easily be manipulated. Use observe() instead.'"
+    },
+    {
+      "case_id": "oracle-fp-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hàm sử dụng Uniswap V3 observe() với khoảng thời gian TWAP là 1800 giây (30 phút). Để thao túng giá TWAP 30 phút qua nhiều block, kẻ tấn công phải duy trì vị thế lệch giá lớn qua nhiều block và chịu rủi ro bị arbitrage bot thanh trừng, chi phí tấn công vượt xa lợi nhuận.",
+      "finding_title": "Uniswap V3 30-minute TWAP oracle via observe() — safe against single-block flash loan",
+      "finding_content": "Uses Uniswap V3 observe() with 1800-second window. Static scanner flags price query on pool interface but misses the TWAP arithmetic.",
+      "code_snippet": "function getTwapPrice(address pool, uint32 twapInterval) public view returns (uint256) {\n    require(twapInterval >= 1800, \"interval too short\"); // 30 min minimum\n    uint32[] memory secondsAgos = new uint32[](2);\n    secondsAgos[0] = twapInterval;\n    secondsAgos[1] = 0;\n    (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);\n    int56 timeWeightedAverageTick = (tickCumulatives[1] - tickCumulatives[0]) / int56(uint56(twapInterval));\n    return OracleLibrary.getQuoteAtTick(int24(timeWeightedAverageTick), 1e18, token0, token1);\n}",
+      "context_notes": "TWAP window >= 30 minutes. Immune to single-block flash loans. Proper multi-block TWAP implementation."
+    },
+    {
+      "case_id": "oracle-fp-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Dùng Chainlink AggregatorV3Interface với đầy đủ 4 lớp kiểm tra an toàn: (1) roundId > 0, (2) answer > 0, (3) updatedAt không quá 1 giờ, (4) answeredInRound >= roundId. Giá đến từ mạng lưới oracle phi tập trung, không phụ thuộc AMM tại chỗ.",
+      "finding_title": "Chainlink price feed with full validation: staleness, round completeness, positive price",
+      "finding_content": "Chainlink price aggregator query with complete guard checks including timestamp staleness and round completion.",
+      "code_snippet": "function getChainlinkPrice(address feed) public view returns (uint256) {\n    (\n        uint80 roundId,\n        int256 price,\n        ,\n        uint256 updatedAt,\n        uint80 answeredInRound\n    ) = AggregatorV3Interface(feed).latestRoundData();\n    require(price > 0, \"invalid price\");\n    require(updatedAt >= block.timestamp - 3600, \"stale price\");\n    require(answeredInRound >= roundId, \"stale round\");\n    return uint256(price);\n}",
+      "context_notes": "Chainlink decentralized oracle with all standard validation checks: >0, updatedAt <= 1 hour, answeredInRound >= roundId. Secure."
+    },
+    {
+      "case_id": "oracle-fp-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Spot price chỉ được dùng nội bộ trong hàm view cho giao diện người dùng (frontend UI quote) mà không bao giờ ghi state hay ảnh hưởng đến tính toán collateral/settlement trong hợp đồng.",
+      "finding_title": "Spot price query used solely for UI preview quote — no financial state mutations",
+      "finding_content": "The spot price function is a non-mutating view function providing estimated UI quotes. Settlements use separate Chainlink oracle.",
+      "code_snippet": "function previewQuote(uint256 amountIn) external view returns (uint256 estimatedOut) {\n    // For UI display only — settlement uses Chainlink in executeTrade()\n    (uint112 r0, uint112 r1,) = pair.getReserves();\n    return (amountIn * uint256(r1)) / uint256(r0);\n}",
+      "context_notes": "Read-only preview. Settlement execution verifies slippage and uses Chainlink. Safe from financial exploit."
+    },
+    {
+      "case_id": "oracle-fp-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Fair LP Pricing formula của Alpha Finance (sqrt(k) * 2 * sqrt(price0 * price1)): giá LP được neo vào Chainlink underlying prices và hằng số k virtual reserves, loại bỏ hoàn toàn khả năng thao túng bằng swap thông thường.",
+      "finding_title": "Fair LP Pricing (Alpha Finance model) using Chainlink underlying assets",
+      "finding_content": "Implements Alpha Finance's fair LP pricing algorithm which combines invariant k with independent Chainlink price feeds, immune to AMM manipulation.",
+      "code_snippet": "function getFairLpPrice(address pair) public view returns (uint256) {\n    (uint112 r0, uint112 r1,) = IUniswapV2Pair(pair).getReserves();\n    uint256 k = uint256(r0) * uint256(r1);\n    uint256 p0 = getChainlinkPrice(token0);\n    uint256 p1 = getChainlinkPrice(token1);\n    // Alpha Finance fair LP formula: 2 * sqrt(k) * sqrt(p0 * p1) / totalSupply\n    return (2 * Math.sqrt(k) * Math.sqrt(p0 * p1)) / IUniswapV2Pair(pair).totalSupply();\n}",
+      "context_notes": "Alpha Finance fair LP pricing model. Highly respected defense against flashloan manipulation of LP tokens."
+    },
+    {
+      "case_id": "oracle-uncertain-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hợp đồng gọi IOracle(oracle).getPrice(token). Không có thông tin gì về implementation của IOracle — có thể là Chainlink, có thể là Uniswap V2 spot, có thể là TWAP.",
+      "finding_title": "External IOracle interface call — underlying pricing mechanism unknown",
+      "finding_content": "Queries IOracle.getPrice(token). Without oracle contract source or deployment address, cannot determine if it is spot AMM or TWAP.",
+      "code_snippet": "interface IOracle {\n    function getPrice(address token) external view returns (uint256);\n}\n\nfunction calculateBorrowPower(address user) external view returns (uint256 totalPower) {\n    for (uint i = 0; i < userCollateral[user].length; i++) {\n        address token = userCollateral[user][i].token;\n        uint256 price = IOracle(oracle).getPrice(token); // Oracle implementation unknown\n        totalPower += userCollateral[user][i].amount * price;\n    }\n}",
+      "context_notes": "IOracle is a generic interface. Could be secure Chainlink or vulnerable spot AMM. Context missing."
+    },
+    {
+      "case_id": "oracle-uncertain-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Dùng Chainlink latestRoundData nhưng không thấy staleness check trong snippet. Tuy nhiên hàm có thể được wrap bên ngoài bởi OracleRelay có modifier validatePrice. Cần xem caller.",
+      "finding_title": "Chainlink call without visible staleness check in snippet — caller may wrap validation",
+      "finding_content": "Chainlink price queried without local timestamp validation. Caller contract may enforce freshness check before calling.",
+      "code_snippet": "function _getRawPrice(address feed) internal view returns (uint256) {\n    (, int256 price,,,) = AggregatorV3Interface(feed).latestRoundData();\n    require(price > 0, \"negative price\");\n    return uint256(price);\n}",
+      "context_notes": "Internal helper function. Staleness check (updatedAt >= block.timestamp - X) missing locally, but callers may validate."
+    },
+    {
+      "case_id": "oracle-uncertain-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Uniswap V3 observe() được gọi nhưng `period` là biến lưu trong storage variable `twapPeriod`. Không thấy giá trị khởi tạo của `twapPeriod` (nếu period = 10s là unsafe, nếu >= 1800s là safe).",
+      "finding_title": "Uniswap V3 TWAP with dynamic twapPeriod — period duration not in snippet",
+      "finding_content": "Calls observe() with twapPeriod from storage. Safety depends on period length (>= 30m vs short seconds) which is not visible.",
+      "code_snippet": "uint32 public twapPeriod; // Initial value not shown\n\nfunction getPrice(address pool) external view returns (uint256) {\n    uint32[] memory secondsAgos = new uint32[](2);\n    secondsAgos[0] = twapPeriod;\n    secondsAgos[1] = 0;\n    (int56[] memory ticks,) = IUniswapV3Pool(pool).observe(secondsAgos);\n    // Safety depends entirely on twapPeriod value\n}",
+      "context_notes": "twapPeriod variable not initialized in snippet. If 0 or small, vulnerable; if large, safe. Requires deployment config."
+    },
+    {
+      "case_id": "oracle-uncertain-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Hàm định giá dùng Curve get_virtual_price() kết hợp min_price từ pool. Phụ thuộc vào loại pool Curve (stETH pool vs tri-crypto). Cần xem pool registry.",
+      "finding_title": "Curve get_virtual_price() with external oracle fallback — pool composition unknown",
+      "finding_content": "Uses Curve get_virtual_price(). While get_virtual_price is monotonic in pure stableswaps, read-only reentrancy can corrupt it in newer pools.",
+      "code_snippet": "function getCurveLpPrice(address curvePool) external view returns (uint256) {\n    uint256 vp = ICurvePool(curvePool).get_virtual_price();\n    uint256 minPrice = IOracle(oracle).getMinAssetPrice(curvePool);\n    return (vp * minPrice) / 1e18;\n}",
+      "context_notes": "Curve get_virtual_price() vulnerable to read-only reentrancy if pool has raw ETH interactions, but safe in pure ERC20 pools."
+    },
+    {
+      "case_id": "oracle-tp-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Hàm tính giá token theo tỷ lệ balance của vault: vault.totalAssets() / vault.totalSupply(). Attacker có thể flash loan nạp token trực tiếp vào vault để tăng totalAssets, làm phình giá share ngay trước khi borrow.",
+      "finding_title": "ERC4626 share price inflation via direct asset donation — flash loan collateral manipulation",
+      "finding_content": "ERC4626 share price computed as totalAssets() / totalSupply(). Direct asset transfer inflates totalAssets without minting shares, manipulating collateral price.",
+      "code_snippet": "function getSharePrice(address vault) public view returns (uint256) {\n    uint256 totalShares = IERC4626(vault).totalSupply();\n    if (totalShares == 0) return 1e18;\n    // VULNERABILITY: totalAssets() can be inflated by direct transfer\n    return (IERC4626(vault).totalAssets() * 1e18) / totalShares;\n}",
+      "context_notes": "Classic ERC4626 inflation attack vector. Direct transfer increases totalAssets, causing massive collateral price spike in single tx."
+    }
+  ],
+  "test_cases": [
+    {
+      "case_id": "oracle-hard-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Mango Markets style exploit: attacker dùng 2 tài khoản, 1 tài khoản pump giá token illiquid trên DEX spot pool, tài khoản thứ hai thế chấp token đã bị thổi giá lên 10x để vay cạn toàn bộ USDT, USDC, BTC của lending pool. Heuristic thấy có oracle call tưởng an toàn nhưng oracle đọc từ illiquid spot market.",
+      "finding_title": "Mango Markets style: Spot oracle on low-liquidity market allows astronomical collateral overvaluation",
+      "finding_content": "The oracle references a low-liquidity spot orderbook/pool. Attacker manipulates the orderbook with small capital, inflating collateral by 10x to drain solvent assets.",
+      "code_snippet": "function calculateHealth(address account) external view returns (int256 health) {\n    for (uint i = 0; i < markets.length; i++) {\n        uint256 spotPrice = ISpotMarket(markets[i]).getBestBid(); // Spot market with low depth\n        health += deposits[account][markets[i]] * int256(spotPrice);\n        health -= borrows[account][markets[i]] * int256(spotPrice);\n    }\n}",
+      "context_notes": "Mango Markets vulnerability class. Illiquid spot orderbook/market used for health factor. Price easily pushed 10x."
+    },
+    {
+      "case_id": "oracle-hard-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "FP",
+      "ground_truth_reason": "Hệ thống kết hợp Dual Oracle: lấy giá từ cả Chainlink và 30-min Uniswap V3 TWAP, rồi chọn giá MIN (đối với collateral) hoặc MAX (đối với borrow). Kể cả khi 1 oracle bị lệch giá, cơ chế Bound Guard ép sai số không vượt quá 2% so với oracle độc lập kia. Hoàn toàn an toàn.",
+      "finding_title": "Dual Oracle with Min/Max bounding and 2% deviation threshold — industry gold standard",
+      "finding_content": "Uses both Chainlink and Uniswap V3 TWAP with strict deviation circuit breaker (reverts if delta > 2%). Immune to single-oracle failures.",
+      "code_snippet": "function getGuardedPrice(address token) external view returns (uint256) {\n    uint256 clPrice = getChainlinkPrice(token);\n    uint256 twapPrice = getUniswapV3Twap(token, 1800);\n    // Circuit breaker: revert if oracles diverge > 2%\n    uint256 diff = clPrice > twapPrice ? clPrice - twapPrice : twapPrice - clPrice;\n    require((diff * 100) / clPrice <= 2, \"oracle divergence exceeds 2%\");\n    // Conservative: use lowest price for collateral evaluation\n    return clPrice < twapPrice ? clPrice : twapPrice;\n}",
+      "context_notes": "Dual Oracle pattern (Chainlink + TWAP) with 2% divergence cap. Conservative min choice. Gold standard architecture."
+    },
+    {
+      "case_id": "oracle-hard-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "Uncertain",
+      "ground_truth_reason": "Pyth Network oracle: giá đi kèm với `conf` (confidence interval) và `publishTime`. Không thấy `maxConfidenceRatio` hoặc verification của Pyth signature trong hàm này. Cần xem Pyth fee & entropy consumer context.",
+      "finding_title": "Pyth Network price feed — confidence interval enforcement and update fee logic unknown",
+      "finding_content": "Uses Pyth Network real-time oracle. Security depends on checking price.conf interval and Pyth update fee payment in caller tx.",
+      "code_snippet": "function getPythPrice(bytes32 priceId) public view returns (uint256) {\n    PythStructs.Price memory pythPrice = IPyth(pythContract).getPriceUnsafe(priceId);\n    // Unsafe: getPriceUnsafe called without fee-paid getPriceNoOlderThan\n    require(pythPrice.price > 0);\n    return uint256(uint64(pythPrice.price));\n}",
+      "context_notes": "getPriceUnsafe() used. Does not check confidence interval (conf). Whether caller called updatePriceFeeds with fresh signature is unknown."
+    },
+    {
+      "case_id": "oracle-hard-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "fixture_kind": "synthetic",
+      "difficulty": "hard",
+      "ground_truth_label": "TP",
+      "ground_truth_reason": "Euler Finance / Sentiment style: token lToken được định giá bằng cách lấy balance token trong pool chia cho total lToken. Tuy nhiên, attacker có thể thực hiện donation token vào pool trong khi đang mượn đòn bẩy cao, ép tỷ giá nhảy vọt trong cùng 1 khối.",
+      "finding_title": "Sentiment / Euler style donation-induced exchange rate manipulation during leverage borrow",
+      "finding_content": "Exchange rate between underlying and pool share is updated dynamically from instantaneous pool balance, enabling donation attack during leveraged borrow.",
+      "code_snippet": "function exchangeRate(address pool) public view returns (uint256) {\n    uint256 totalShares = ILendingPool(pool).totalShares();\n    if (totalShares == 0) return 1e18;\n    // VULNERABILITY: pool totalUnderlying includes direct donations in current block\n    uint256 totalUnderlying = IERC20(underlying).balanceOf(pool);\n    return (totalUnderlying * 1e18) / totalShares;\n}",
+      "context_notes": "Sentiment $1M exploit & Euler $197M exploit root cause: dynamic exchangeRate based on balanceOf(pool) manipulable via donation."
+    }
+  ]
+}

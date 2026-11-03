@@ -3,16 +3,16 @@
     "dataset_version": "1.0",
     "total_cases": 16,
     "dataset_split": "all",
-    "dataset_arg": "unchecked_return",
+    "dataset_arg": "sig_replay",
     "patterns": [
-      "SOL-UNCHECKED-RETURN-001"
+      "SOL-SIG-REPLAY-001"
     ],
     "evaluation_mode": "offline",
     "provider": "offline",
     "model": "deterministic-engine",
     "context_assembler_used": false,
     "baselines_run": "all",
-    "timestamp": "2026-11-03T09:24:54Z"
+    "timestamp": "2026-11-03T09:50:45Z"
   },
   "baselines": {
     "Baseline 1 (Rule-Only / Scanner)": {
@@ -42,116 +42,116 @@
       },
       "case_predictions": [
         {
-          "case_id": "unchecked-tp-001",
+          "case_id": "sig-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-tp-002",
+          "case_id": "sig-tp-002",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-tp-003",
+          "case_id": "sig-tp-003",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-fp-001",
+          "case_id": "sig-fp-001",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-fp-002",
+          "case_id": "sig-fp-002",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-fp-003",
+          "case_id": "sig-fp-003",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-fp-004",
+          "case_id": "sig-fp-004",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-uncertain-001",
+          "case_id": "sig-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-uncertain-002",
+          "case_id": "sig-uncertain-002",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-uncertain-003",
+          "case_id": "sig-uncertain-003",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-uncertain-004",
+          "case_id": "sig-uncertain-004",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-tp-004",
+          "case_id": "sig-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-hard-001",
+          "case_id": "sig-hard-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-hard-002",
+          "case_id": "sig-hard-002",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-hard-003",
+          "case_id": "sig-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         },
         {
-          "case_id": "unchecked-hard-004",
+          "case_id": "sig-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Static rule for SOL-UNCHECKED-RETURN-001 triggered unconditionally on flagged snippet."
+          "reason": "Static rule for SOL-SIG-REPLAY-001 triggered unconditionally on flagged snippet."
         }
       ]
     },
@@ -164,134 +164,134 @@
           "Uncertain": 5
         },
         "predicted_distribution": {
-          "TP": 4,
-          "FP": 8,
-          "Uncertain": 4,
+          "TP": 7,
+          "FP": 4,
+          "Uncertain": 5,
           "ERROR": 0
         },
         "execution_errors": 0,
         "correct_predictions": 13,
         "accuracy": 81.2,
-        "true_positives_detected": 4,
-        "false_alarms": 0,
-        "precision": 100.0,
-        "recall": 66.7,
-        "f1_score": 80.0,
-        "fp_rate": 0.0,
-        "fp_reduction_rate": 100.0
+        "true_positives_detected": 5,
+        "false_alarms": 2,
+        "precision": 71.4,
+        "recall": 83.3,
+        "f1_score": 76.9,
+        "fp_rate": 40.0,
+        "fp_reduction_rate": 60.0
       },
       "case_predictions": [
         {
-          "case_id": "unchecked-tp-001",
+          "case_id": "sig-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
         },
         {
-          "case_id": "unchecked-tp-002",
+          "case_id": "sig-tp-002",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
+        },
+        {
+          "case_id": "sig-tp-003",
+          "ground_truth": "TP",
+          "predicted": "TP",
+          "correct": true,
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
+        },
+        {
+          "case_id": "sig-fp-001",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "Signature verification protected by incrementing nonce, one-time claim lock, or EIP-712 domain."
+        },
+        {
+          "case_id": "sig-fp-002",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "Signature verification protected by incrementing nonce, one-time claim lock, or EIP-712 domain."
+        },
+        {
+          "case_id": "sig-fp-003",
+          "ground_truth": "FP",
+          "predicted": "TP",
+          "correct": false,
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
+        },
+        {
+          "case_id": "sig-fp-004",
+          "ground_truth": "FP",
+          "predicted": "FP",
+          "correct": true,
+          "reason": "Signature verification protected by incrementing nonce, one-time claim lock, or EIP-712 domain."
+        },
+        {
+          "case_id": "sig-uncertain-001",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Nonce verification in helper/modifier, external forwarder, or cryptographic precompile logic missing."
+        },
+        {
+          "case_id": "sig-uncertain-002",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Nonce verification in helper/modifier, external forwarder, or cryptographic precompile logic missing."
+        },
+        {
+          "case_id": "sig-uncertain-003",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Nonce verification in helper/modifier, external forwarder, or cryptographic precompile logic missing."
+        },
+        {
+          "case_id": "sig-uncertain-004",
+          "ground_truth": "Uncertain",
+          "predicted": "Uncertain",
+          "correct": true,
+          "reason": "Nonce verification in helper/modifier, external forwarder, or cryptographic precompile logic missing."
+        },
+        {
+          "case_id": "sig-tp-004",
           "ground_truth": "TP",
           "predicted": "FP",
           "correct": false,
-          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
+          "reason": "Signature verification protected by incrementing nonce, one-time claim lock, or EIP-712 domain."
         },
         {
-          "case_id": "unchecked-tp-003",
+          "case_id": "sig-hard-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
         },
         {
-          "case_id": "unchecked-fp-001",
+          "case_id": "sig-hard-002",
           "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
-        },
-        {
-          "case_id": "unchecked-fp-002",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "Return value of low-level call is explicitly validated and reverts on failure."
-        },
-        {
-          "case_id": "unchecked-fp-003",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
-        },
-        {
-          "case_id": "unchecked-fp-004",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
-        },
-        {
-          "case_id": "unchecked-uncertain-001",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
-        },
-        {
-          "case_id": "unchecked-uncertain-002",
-          "ground_truth": "Uncertain",
-          "predicted": "FP",
+          "predicted": "TP",
           "correct": false,
-          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
         },
         {
-          "case_id": "unchecked-uncertain-003",
+          "case_id": "sig-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
+          "reason": "Nonce verification in helper/modifier, external forwarder, or cryptographic precompile logic missing."
         },
         {
-          "case_id": "unchecked-uncertain-004",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
-        },
-        {
-          "case_id": "unchecked-tp-004",
-          "ground_truth": "TP",
-          "predicted": "FP",
-          "correct": false,
-          "reason": "SafeERC20 wrapper or built-in .transfer() automatically reverts on transfer failure."
-        },
-        {
-          "case_id": "unchecked-hard-001",
+          "case_id": "sig-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
-        },
-        {
-          "case_id": "unchecked-hard-002",
-          "ground_truth": "FP",
-          "predicted": "FP",
-          "correct": true,
-          "reason": "Return value of low-level call is explicitly validated and reverts on failure."
-        },
-        {
-          "case_id": "unchecked-hard-003",
-          "ground_truth": "Uncertain",
-          "predicted": "Uncertain",
-          "correct": true,
-          "reason": "Design intent (fire-and-forget), wrapper implementation, or token contract properties require context."
-        },
-        {
-          "case_id": "unchecked-hard-004",
-          "ground_truth": "TP",
-          "predicted": "TP",
-          "correct": true,
-          "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure."
+          "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability."
         }
       ]
     },
@@ -322,112 +322,112 @@
       },
       "case_predictions": [
         {
-          "case_id": "unchecked-tp-001",
+          "case_id": "sig-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-tp-002",
+          "case_id": "sig-tp-002",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-tp-003",
+          "case_id": "sig-tp-003",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-fp-001",
+          "case_id": "sig-fp-001",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-fp-002",
+          "case_id": "sig-fp-002",
           "ground_truth": "FP",
           "predicted": "TP",
           "correct": false,
           "reason": "[Naive LLM Simulation] Downcasting to uint128 detected; flags risk without tracing external library."
         },
         {
-          "case_id": "unchecked-fp-003",
+          "case_id": "sig-fp-003",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-fp-004",
+          "case_id": "sig-fp-004",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-uncertain-001",
+          "case_id": "sig-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
           "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
         },
         {
-          "case_id": "unchecked-uncertain-002",
+          "case_id": "sig-uncertain-002",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
           "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
         },
         {
-          "case_id": "unchecked-uncertain-003",
+          "case_id": "sig-uncertain-003",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
           "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
         },
         {
-          "case_id": "unchecked-uncertain-004",
+          "case_id": "sig-uncertain-004",
           "ground_truth": "Uncertain",
           "predicted": "TP",
           "correct": false,
           "reason": "[Naive LLM Simulation] Potential risk identified; caller context assumed missing or malicious."
         },
         {
-          "case_id": "unchecked-tp-004",
+          "case_id": "sig-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-hard-001",
+          "case_id": "sig-hard-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-hard-002",
+          "case_id": "sig-hard-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-hard-003",
+          "case_id": "sig-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Naive LLM Simulation] Standard code analysis."
         },
         {
-          "case_id": "unchecked-hard-004",
+          "case_id": "sig-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
@@ -462,116 +462,116 @@
       },
       "case_predictions": [
         {
-          "case_id": "unchecked-tp-001",
+          "case_id": "sig-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Low-level call() return value bị bỏ qua hoàn toàn. Nếu recipient là một contract không nhận ETH hoặc revert, hàm vẫn tiếp tục và caller mất ETH mà không có thông báo lỗi."
+          "reason": "[W3GoAudit Engine] Hàm transferWithSig sử dụng ecrecover để xác thực người gửi nhưng hoàn toàn không lưu vết nonce hoặc đánh dấu chữ ký đã dùng (`usedSignatures`). Kẻ tấn công hoặc bất kỳ ai có thể sao chép cùng một chữ ký từ mempool và gọi hàm nhiều lần để rút cạn tài khoản của victim."
         },
         {
-          "case_id": "unchecked-tp-002",
+          "case_id": "sig-tp-002",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] IERC20.transfer() trả về bool. Với non-standard tokens (USDT, BNB) không revert khi fail mà trả về false, logic tiếp tục như thể transfer thành công. Người dùng nhận lợi ích mà không mất token."
+          "reason": "[W3GoAudit Engine] Hash ký không bao gồm `block.chainid` hoặc địa chỉ hợp đồng (`address(this)`). Một chữ ký hợp lệ trên Ethereum mainnet có thể bị kẻ tấn công chụp lại và phát lại (replay) trên Arbitrum, Optimism, hoặc BSC nơi victim deploy cùng một địa chỉ ví."
         },
         {
-          "case_id": "unchecked-tp-003",
+          "case_id": "sig-tp-003",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] approve() return value bị bỏ qua. Với non-standard ERC20 tokens, approve có thể return false mà không revert. Contract assumes approval succeeded và tiến hành transferFrom sẽ fail hoặc partial."
+          "reason": "[W3GoAudit Engine] Sử dụng built-in ecrecover trực tiếp mà không kiểm tra giới hạn giá trị `s` (`s <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D57617F3366374759754B4611A7C567`). Trong đường cong secp256k1, với mỗi chữ ký (r, s, v), tồn tại chữ ký đối xứng (r, secp256k1n - s, 27/28 - v) cũng hợp lệ. Nếu hệ thống đánh dấu chữ ký theo hash(signature), kẻ tấn công có thể biến đổi s để bypass check."
         },
         {
-          "case_id": "unchecked-fp-001",
+          "case_id": "sig-fp-001",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] SafeERC20 library từ OpenZeppelin được dùng — safeTransfer() wrap transfer() với require check nội bộ. Nếu transfer fail (return false hoặc revert), safeTransfer() sẽ revert. Không có unchecked return."
+          "reason": "[W3GoAudit Engine] Sử dụng OpenZeppelin `ECDSA.recover` kết hợp EIP-712 chuẩn: DOMAIN_SEPARATOR chứa đầy đủ `block.chainid` và `address(this)`, kiểm tra `nonces[signer]++`, và có `deadline >= block.timestamp`. OpenZeppelin ECDSA tự động revert nếu chữ ký có high-s (chống malleability tuyệt đối)."
         },
         {
-          "case_id": "unchecked-fp-002",
+          "case_id": "sig-fp-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Return value được capture và check với require. Nếu call thất bại, require revert toàn bộ transaction. Không có silent failure."
+          "reason": "[W3GoAudit Engine] Chữ ký là một lần duy nhất được neo chặt bằng mapping `hasClaimed[user] = true`. Kẻ tấn công không thể replay chữ ký vì state đã bị khóa ngay lập tức ở lần đầu tiên."
         },
         {
-          "case_id": "unchecked-fp-003",
+          "case_id": "sig-fp-003",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] token.transfer() được gọi nhưng token contract là ERC20 chuẩn tuân thủ OpenZeppelin (đã được verify trên chain). OZ ERC20 luôn revert khi fail, không trả về false. Unchecked return là safe với ERC20 token chuẩn."
+          "reason": "[W3GoAudit Engine] EIP-1271 Smart Contract Wallet verification (`isValidSignature`): chữ ký của contract ví (như Safe / Gnosis Safe). Safe quản lý nonce nội bộ bên trong contract ví khi ký duyệt giao dịch đa chữ ký."
         },
         {
-          "case_id": "unchecked-fp-004",
+          "case_id": "sig-fp-004",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Solidity 0.8+ native ETH transfer dùng .transfer() (không phải low-level call). .transfer() luôn revert nếu fail, không có unchecked return issue. Pattern này khác với .call()."
+          "reason": "[W3GoAudit Engine] Order settlement pattern (Seaport/0x protocol): order có `orderHash` được đánh dấu `orderStatus[orderHash].isFilled = true` hoặc `filledAmount == totalAmount`. Chữ ký gắn liền với 1 order duy nhất, không thể lặp lại."
         },
         {
-          "case_id": "unchecked-uncertain-001",
+          "case_id": "sig-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] call() return bị ignore nhưng pattern này là intentional fire-and-forget (ví dụ: sending optional notification). Không rõ đây là lỗi hay thiết kế cố ý. Cần review intent của developer."
+          "reason": "[W3GoAudit Engine] Hàm gọi `_verifySignature(message, sig)`. Hàm `_verifySignature` là internal helper không hiển thị trong snippet. Không rõ bên trong có kiểm tra nonce, chainId hay s-value không."
         },
         {
-          "case_id": "unchecked-uncertain-002",
+          "case_id": "sig-uncertain-002",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] transfer() trên token không rõ nguồn gốc — có thể là ERC20 chuẩn (an toàn) hoặc non-standard token không revert. Cần biết địa chỉ hoặc source code của token."
+          "reason": "[W3GoAudit Engine] Nonce được truyền vào từ tham số hàm (`uint256 nonce`), nhưng trong snippet không thấy dòng code nào kiểm tra `require(!used[nonce])` hay `used[nonce] = true`. Có thể logic này nằm trong modifier `validNonce(nonce)` được định nghĩa ở contract cha."
         },
         {
-          "case_id": "unchecked-uncertain-003",
+          "case_id": "sig-uncertain-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Wrapper function _safeCall() wrapping call(). Không thấy implementation của _safeCall — có thể đã check return value bên trong, hoặc không. Cần xem source của _safeCall."
+          "reason": "[W3GoAudit Engine] Hàm xác minh chữ ký của Gelato / Biconomy off-chain relayer qua ERC-2771 context (`_msgSender()`). Việc chống replay được quản lý bởi Forwarder contract bên ngoài, cần kiểm tra mã nguồn của TrustedForwarder."
         },
         {
-          "case_id": "unchecked-uncertain-004",
+          "case_id": "sig-uncertain-004",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] try/catch block được dùng với external call — return value không bị completely bỏ qua (catch xử lý failure). Nhưng catch body chỉ emit event không revert. Liệu silent swallow có chấp nhận được không phụ thuộc vào business logic."
+          "reason": "[W3GoAudit Engine] Chữ ký ECDSA được gửi sang oracle bên ngoài (`IOracleValidator(validator).checkSignature(sig)`). Cần xem mã nguồn của oracle validator."
         },
         {
-          "case_id": "unchecked-tp-004",
+          "case_id": "sig-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Loop với nhiều ERC20 transfer() không check return. Nếu một transfer fail (non-reverting token), loop tiếp tục. State đã được cập nhật trước đó vẫn tính phần không được transfer — số dư không nhất quán."
+          "reason": "[W3GoAudit Engine] Hàm mint token có tham số voucher signature nhưng lại tăng nonce của `msg.sender` thay vì nonce của `minter/signer`. Kẻ tấn công có thể lấy chữ ký của một voucher và dùng các tài khoản khác nhau (mỗi tài khoản có nonce=0) để mint lặp đi lặp lại cùng một voucher."
         },
         {
-          "case_id": "unchecked-hard-001",
+          "case_id": "sig-hard-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Mặc dù success được capture nhưng chỉ dùng để emit event, không revert. Logic tiếp tục sau failed call. Functional equivalent of unchecked return."
+          "reason": "[W3GoAudit Engine] Wintermute / Profanity style flaw: hàm ecrecover kiểm tra signer == expected, nhưng ecrecover trả về address(0) khi signature bị lỗi hoặc malformed. Nếu biến `signer` hoặc `owner` trong contract bị uninitialized (chưa gán giá trị, mặc định là address(0)), bất kỳ signature rác nào cũng sẽ pass qua check (address(0) == address(0))."
         },
         {
-          "case_id": "unchecked-hard-002",
+          "case_id": "sig-hard-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm dùng assembly để gọi external và check returndatasize() cùng với revert condition thủ công. Assembly-level check tương đương với require(success) nhưng ở mức thấp hơn."
+          "reason": "[W3GoAudit Engine] EIP-712 DOMAIN_SEPARATOR được tính toán động (dynamically recomputed) mỗi khi `block.chainid != cachedChainId`. Điều này bảo vệ an toàn tuyệt đối chống cả hard fork replay lẫn cross-chain replay trong các kiến trúc proxy/upgradeable."
         },
         {
-          "case_id": "unchecked-hard-003",
+          "case_id": "sig-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
-          "reason": "[W3GoAudit Engine] Hàm là internal và return value của call() được return lại cho caller. Không biết caller có check return value không. Cần xem caller để xác định."
+          "reason": "[W3GoAudit Engine] Chữ ký là BLS aggregated signature hoặc Schnorr signature trên alt-bn128 curve được verify qua precompile `0x08`. Không thể suy luận các thuộc tính malleability từ kiến thức ECDSA thông thường; cần phân tích mật mã học đường cong bn128."
         },
         {
-          "case_id": "unchecked-hard-004",
+          "case_id": "sig-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
-          "reason": "[W3GoAudit Engine] transferFrom() được dùng với USDT (Tether) — đây là non-standard ERC20 nổi tiếng không revert khi fail mà return false. Return value bị ignore → silent accounting corruption."
+          "reason": "[W3GoAudit Engine] Cross-Chain Bridge Replay: Bridge validator ký duyệt giao dịch rút tiền bao gồm amount và recipient, nhưng `chainId` được truyền vào như một tham số hàm do caller cung cấp mà không được so sánh với `block.chainid` thực tế của chuỗi đang chạy."
         }
       ]
     },
@@ -602,112 +602,112 @@
       },
       "case_predictions": [
         {
-          "case_id": "unchecked-tp-001",
+          "case_id": "sig-tp-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-tp-002",
+          "case_id": "sig-tp-002",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-tp-003",
+          "case_id": "sig-tp-003",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-fp-001",
+          "case_id": "sig-fp-001",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-fp-002",
+          "case_id": "sig-fp-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-fp-003",
+          "case_id": "sig-fp-003",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-fp-004",
+          "case_id": "sig-fp-004",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-uncertain-001",
+          "case_id": "sig-uncertain-001",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-uncertain-002",
+          "case_id": "sig-uncertain-002",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-uncertain-003",
+          "case_id": "sig-uncertain-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-uncertain-004",
+          "case_id": "sig-uncertain-004",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-tp-004",
+          "case_id": "sig-tp-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-hard-001",
+          "case_id": "sig-hard-001",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said TP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-hard-002",
+          "case_id": "sig-hard-002",
           "ground_truth": "FP",
           "predicted": "FP",
           "correct": true,
           "reason": "[Critic Pass] Auditor said FP. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-hard-003",
+          "case_id": "sig-hard-003",
           "ground_truth": "Uncertain",
           "predicted": "Uncertain",
           "correct": true,
           "reason": "[Critic Pass] Auditor said Uncertain. Critic reviewed evidence and agreed."
         },
         {
-          "case_id": "unchecked-hard-004",
+          "case_id": "sig-hard-004",
           "ground_truth": "TP",
           "predicted": "TP",
           "correct": true,

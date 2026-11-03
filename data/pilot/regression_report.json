@@ -1,18 +1,20 @@
 {
   "metadata": {
     "title": "W3GoAudit Regression Suite Execution Report",
-    "phase": "Đợt 4A — Multi-group Expansion (5 Patterns, 84 cases)",
-    "timestamp": "2026-11-03T09:29:29Z",
-    "elapsed_seconds": 0.0,
+    "phase": "Đợt 4B — Comprehensive Multi-group Expansion (7 Patterns, 116 cases)",
+    "timestamp": "2026-11-03T09:52:01Z",
+    "elapsed_seconds": 0.01,
     "status": "PASSED",
-    "total_benchmark_cases": 84,
+    "total_benchmark_cases": 116,
     "patterns_covered": [
       "SOL-UINT128-NARROWING-001",
       "SOL-ACCESS-CONTROL-001",
       "SOL-REENTRANCY-001",
       "SOL-DELEGATECALL-001",
       "SOL-ARBITRARY-FROM-001",
-      "SOL-UNCHECKED-RETURN-001"
+      "SOL-UNCHECKED-RETURN-001",
+      "SOL-ORACLE-MANIP-001",
+      "SOL-SIG-REPLAY-001"
     ]
   },
   "invariants": [
@@ -163,6 +165,66 @@
     },
     {
       "check": "Unchecked Return B5 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Oracle Manip B4 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Oracle Manip B4 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Oracle Manip B4 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Oracle Manip B5 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Oracle Manip B5 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Oracle Manip B5 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Signature Security B4 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Signature Security B4 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Signature Security B4 FP Rate <= 5%",
+      "passed": true,
+      "value": "0.0%"
+    },
+    {
+      "check": "Signature Security B5 Precision >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Signature Security B5 Recall >= 95%",
+      "passed": true,
+      "value": "100.0%"
+    },
+    {
+      "check": "Signature Security B5 FP Rate <= 5%",
       "passed": true,
       "value": "0.0%"
     }
@@ -701,6 +763,248 @@
           "recall": 66.7,
           "f1_score": 80.0,
           "fp_rate": 0.0
+        },
+        "Baseline 3 (Naive LLM)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 11,
+            "FP": 4,
+            "Uncertain": 1,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 11,
+          "accuracy": 68.8,
+          "true_positives_detected": 6,
+          "false_alarms": 1,
+          "precision": 85.7,
+          "recall": 100.0,
+          "f1_score": 92.3,
+          "fp_rate": 20.0
+        },
+        "Baseline 4 (W3GoAudit Checklist)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 16,
+          "accuracy": 100.0,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        },
+        "Baseline 5 (Auditor + Critic)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 16,
+          "accuracy": 100.0,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        }
+      }
+    },
+    "pilot_oracle_manip": {
+      "dataset_name": "Pilot Oracle Manipulation (SOL-ORACLE-MANIP-001)",
+      "total_cases": 16,
+      "baselines": {
+        "Baseline 1 (Rule-Only)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 16,
+            "FP": 0,
+            "Uncertain": 0,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 6,
+          "accuracy": 37.5,
+          "true_positives_detected": 6,
+          "false_alarms": 5,
+          "precision": 54.5,
+          "recall": 100.0,
+          "f1_score": 70.6,
+          "fp_rate": 100.0
+        },
+        "Baseline 2 (Heuristic)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 7,
+            "Uncertain": 3,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 14,
+          "accuracy": 87.5,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        },
+        "Baseline 3 (Naive LLM)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 11,
+            "FP": 4,
+            "Uncertain": 1,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 11,
+          "accuracy": 68.8,
+          "true_positives_detected": 6,
+          "false_alarms": 1,
+          "precision": 85.7,
+          "recall": 100.0,
+          "f1_score": 92.3,
+          "fp_rate": 20.0
+        },
+        "Baseline 4 (W3GoAudit Checklist)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 16,
+          "accuracy": 100.0,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        },
+        "Baseline 5 (Auditor + Critic)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 16,
+          "accuracy": 100.0,
+          "true_positives_detected": 6,
+          "false_alarms": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1_score": 100.0,
+          "fp_rate": 0.0
+        }
+      }
+    },
+    "pilot_sig_replay": {
+      "dataset_name": "Pilot Signature Security (SOL-SIG-REPLAY-001)",
+      "total_cases": 16,
+      "baselines": {
+        "Baseline 1 (Rule-Only)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 16,
+            "FP": 0,
+            "Uncertain": 0,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 6,
+          "accuracy": 37.5,
+          "true_positives_detected": 6,
+          "false_alarms": 5,
+          "precision": 54.5,
+          "recall": 100.0,
+          "f1_score": 70.6,
+          "fp_rate": 100.0
+        },
+        "Baseline 2 (Heuristic)": {
+          "total_cases": 16,
+          "ground_truth_distribution": {
+            "TP": 6,
+            "FP": 5,
+            "Uncertain": 5
+          },
+          "predicted_distribution": {
+            "TP": 7,
+            "FP": 4,
+            "Uncertain": 5,
+            "ERROR": 0
+          },
+          "execution_errors": 0,
+          "correct_predictions": 13,
+          "accuracy": 81.2,
+          "true_positives_detected": 5,
+          "false_alarms": 2,
+          "precision": 71.4,
+          "recall": 83.3,
+          "f1_score": 76.9,
+          "fp_rate": 40.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,

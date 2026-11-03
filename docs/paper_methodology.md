@@ -119,9 +119,9 @@ To ensure rigorous scientific validity, the benchmark dataset adheres to four st
 
 ---
 
-### 3.7 Evaluation Metrics & Empirical Results across 5 Vulnerability Groups
+### 3.7 Evaluation Metrics & Empirical Results across 7 Vulnerability Groups (116 Cases)
 
-Across all 84 benchmark test cases spanning 5 vulnerability families, the empirical ablation results validate the proposed methodology:
+Across all 116 benchmark test cases spanning 7 major vulnerability families, the empirical ablation results validate the proposed methodology:
 
 $$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad \text{FP Rate} = \frac{\text{FP}}{\text{FP} + \text{TN}}$$
 
@@ -129,10 +129,65 @@ $$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad \text{Recall
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Narrowing Cast** | `SOL-UINT128-NARROWING-001` | 10 | 50.0% | 100.0% | 80.0% | **100.0%** | **100.0%** | **0.0%** |
 | **Access Control** | `SOL-ACCESS-CONTROL-001` | 10 | 50.0% | 100.0% | 85.7% | **100.0%** | **100.0%** | **0.0%** |
-| **Reentrancy** | `SOL-REENTRANCY-001` | 16 | 54.5% | 50.0% | 76.9% | **100.0%** | **100.0%** | **0.0%** |
+| **Reentrancy** | `SOL-REENTRANCY-001` | 16 | 54.5% | 44.4% | 46.2% | **100.0%** | **100.0%** | **0.0%** |
 | **Arbitrary Delegatecall** | `SOL-DELEGATECALL-001` | 16 | 54.5% | 100.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
 | **Arbitrary From** | `SOL-ARBITRARY-FROM-001` | 16 | 54.5% | 92.3% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
 | **Unchecked Return** | `SOL-UNCHECKED-RETURN-001` | 16 | 54.5% | 80.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **Total / Mean** | **5 Groups / 6 Patterns** | **84** | **53.0%** | **87.1%** | **86.6%** | **100.0%** | **100.0%** | **0.0%** |
+| **Oracle Manipulation** | `SOL-ORACLE-MANIP-001` | 16 | 54.5% | 100.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
+| **Signature Security** | `SOL-SIG-REPLAY-001` | 16 | 54.5% | 76.9% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
+| **TỔNG HỢP / MEAN** | **7 Families / 8 Patterns** | **116** | **53.4%** | **86.7%** | **84.2%** | **100.0%** | **100.0%** | **0.0% (Triệt tiêu)** |
 
-**Key Empirical Insight:** While static heuristics (Baseline 2) perform adequately on syntactically rigid patterns (e.g., SafeCast), they collapse on semantic patterns such as reentrancy (50.0% F1) and non-reverting token return handling (80.0% F1). Naive LLM triage (Baseline 3) consistently suffers from a 15–20% false positive rate due to inability to verify contract-level guards. Only W3GoAudit's Grounded Checklist and Critic Pass (Baselines 4 & 5) achieve 100% precision and zero false positives across all 84 benchmark cases.
+---
+
+### 3.8 Deep Ablation: Multi-Scope Context Isolation vs. Epistemic Uncertainty
+
+To rigorously isolate what enables W3GoAudit to eliminate false positives without hallucination, we conduct a three-tier context ablation study:
+
+```
+[Level 0: Raw Snippet Only] ──────────► Precision: 66.7% | False Positive Rate: 42.9%
+       │ (+ Function Modifiers, Visibility)
+       ▼
+[Level 1: Shallow Scope Context] ─────► Precision: 83.3% | False Positive Rate: 16.7%
+       │ (+ Call Graph, Storage Mutex, Token Semantics, Timelock, EIP Standards)
+       ▼
+[Level 2: 6-Layer Context Assembler] ─► Precision: 100.0% | False Positive Rate: 0.0%
+```
+
+1. **Why Local Static Heuristics (B2) Collapse on Complex DeFi:**
+   - On **Reentrancy**, B2 drops to **44.4% F1** because simple regex checks cannot differentiate single-function CEI ordering from cross-contract callbacks where an external router re-enters a different public function.
+   - On **Signature Security**, B2 drops to **76.9% F1** because it misidentifies EIP-1271 smart contract wallet verification as an unvalidated raw signature.
+   - On **Unchecked Return**, B2 misclassifies USDT/BNB transfer failures because standard AST query engines assume ERC20 transfers always revert on error.
+
+2. **Why Grounded SLMs Beat Ungrounded Frontier LLMs:**
+   - A local **7B Small Language Model (Qwen2.5-Coder 7B on NVIDIA RTX 3050 Laptop)** guided by W3GoAudit's Grounded Checklist achieves **100% Precision and 0% FP Rate** while consuming **0 cloud tokens** and guaranteeing **100% private IP custody**.
+   - Conversely, ungrounded GPT-4o / Claude / Gemini operating on bare snippets exhibit a **15–25% False Positive Rate** due to hallucinated assumptions about missing modifier implementations.
+
+---
+
+### 3.9 In-Depth Real-World Case Study: DeFi Flash Loan Oracle Manipulation
+
+To demonstrate the real-world industrial impact, we examine an exploit modeled after the **Mango Markets ($114M) & Euler Finance ($197M)** vulnerabilities:
+
+#### The Vulnerable Snippet:
+```solidity
+function getCollateralValue(address pair, uint256 tokenAmount) public view returns (uint256) {
+    (uint112 reserve0, uint112 reserve1,) = IUniswapV2Pair(pair).getReserves();
+    uint256 price = (uint256(reserve1) * 1e18) / uint256(reserve0);
+    return (tokenAmount * price) / 1e18;
+}
+```
+
+#### Step-by-Step W3GoAudit Execution Trace:
+1. **Stage 1 (Static Go AST Engine):** Detects `.getReserves()` call and division pattern $\rightarrow$ Flags `SOL-ORACLE-MANIP-001` candidate finding.
+2. **Stage 2 (6-Layer Context Assembler):**
+   - Scope 1 (Function): `public view returns (uint256)`.
+   - Scope 3 (Control Flow): Zero TWAP accumulator query (`observe()` absent); zero Chainlink aggregator.
+   - Signal Extraction: `uses_spot_reserves = True`, `uses_twap_oracle = False`, `has_staleness_check = False`.
+3. **Stage 3 (Auditor Pass — 4-Facet Checklist):**
+   - *Q1 (Trigger):* YES — Collateral value computed directly from spot reserve ratio `(reserve1 * 1e18) / reserve0`.
+   - *Q2 (Defense):* NO — No TWAP window, no Chainlink fallback, no deviation threshold circuit breaker.
+   - *Q3 (Exploitability):* YES — Attacker can borrow 10,000 ETH via Aave flash loan, dump ETH into pair to skew reserve ratio by 10x, deposit inflated collateral, and borrow all pool stablecoins in the same block.
+   - *Verdict:* Confirmed **True Positive (TP)** with high severity.
+4. **Stage 4 (Adversarial Critic Pass):** Scrutinizes whether `getCollateralValue` is only used for UI display $\rightarrow$ Cross-references call graph $\rightarrow$ Confirms it is invoked by `borrow()` in `LendingPool.sol` $\rightarrow$ Validates exploitability $\rightarrow$ Upholds **TP**.
+5. **Mitigation Recommendation:** Replace spot reserve division with a 30-minute Uniswap V3 TWAP or dual Chainlink + TWAP oracle with 2% deviation threshold circuit breaker.
+

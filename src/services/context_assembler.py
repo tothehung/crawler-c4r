@@ -73,6 +73,22 @@ class ContextBundle:
     has_assembly_call: bool = False                 # delegatecall/call in assembly block
     is_fire_and_forget: Optional[bool] = None       # intentional ignore (notification pattern)
 
+    # Oracle Manipulation signals (Đợt 4B — SOL-ORACLE-MANIP-001)
+    uses_spot_reserves: bool = False                # getReserves, slot0, balanceOf(pair)
+    uses_twap_oracle: bool = False                  # observe(), TWAP interval >= 30m
+    uses_chainlink_feed: bool = False               # latestRoundData, AggregatorV3
+    has_staleness_check: bool = False               # updatedAt, answeredInRound
+    is_dual_oracle: bool = False                    # Chainlink + TWAP circuit breaker
+    is_preview_only: bool = False                   # UI preview view function
+
+    # Signature Security signals (Đợt 4B — SOL-SIG-REPLAY-001)
+    uses_raw_ecrecover: bool = False                # raw built-in ecrecover
+    uses_oz_ecdsa: bool = False                     # OpenZeppelin ECDSA.recover
+    has_nonce_tracking: bool = False                # nonces[user]++ or usedSignatures
+    has_chain_id_check: bool = False                # block.chainid in hash/domain
+    has_deadline_check: bool = False                # block.timestamp <= deadline
+    is_eip712_standard: bool = False                # EIP-712 typed data hashing
+
     def to_dict(self) -> dict:
         return asdict(self)
 
@@ -168,6 +184,34 @@ class ContextBundle:
             lines.append(f"Assembly Call: YES — check assembly for manual success validation")
         if self.is_fire_and_forget is not None:
             lines.append(f"Fire-and-Forget: {'YES — intentional ignore (verify design intent)' if self.is_fire_and_forget else 'NO — failure should be handled'}")
+
+        # Oracle signals
+        if self.uses_spot_reserves:
+            lines.append(f"Spot Oracle: YES — queries getReserves/slot0/balanceOf (HIGH MANIPULATION RISK)")
+        if self.uses_twap_oracle:
+            lines.append(f"TWAP Oracle: YES — uses time-weighted average price (observe)")
+        if self.uses_chainlink_feed:
+            lines.append(f"Chainlink Feed: YES — uses AggregatorV3 price feed")
+        if self.has_staleness_check:
+            lines.append(f"Staleness Guard: YES — validates updatedAt / answeredInRound")
+        if self.is_dual_oracle:
+            lines.append(f"Dual Oracle: YES — combines multiple feeds with circuit breaker")
+        if self.is_preview_only:
+            lines.append(f"Usage Context: UI preview only — no financial state mutations")
+
+        # Signature signals
+        if self.uses_raw_ecrecover:
+            lines.append(f"Raw ecrecover: YES (malleability & address(0) risk!)")
+        if self.uses_oz_ecdsa:
+            lines.append(f"OpenZeppelin ECDSA: YES — safe from high-s malleability")
+        if self.has_nonce_tracking:
+            lines.append(f"Nonce Tracking: YES — nonces incremented or signature marked used")
+        if self.has_chain_id_check:
+            lines.append(f"ChainId / Domain: YES — includes block.chainid or EIP-712 domain")
+        if self.has_deadline_check:
+            lines.append(f"Signature Deadline: YES — expires after timestamp")
+        if self.is_eip712_standard:
+            lines.append(f"EIP-712 Standard: YES — typed data signing")
 
         missing_signals = self._missing_signals()
         if missing_signals:
@@ -472,6 +516,48 @@ def _extract_unchecked_return_signals(code: str, ctx: ContextBundle) -> None:
         ctx.is_fire_and_forget = True
 
 
+def _extract_oracle_signals(code: str, ctx: ContextBundle) -> None:
+    """Trích xuất signals cho SOL-ORACLE-MANIP-001 (Đợt 4B)."""
+    if "getReserves(" in code or "slot0(" in code or "balanceOf(" in code:
+        ctx.uses_spot_reserves = True
+
+    if "observe(" in code or "twap" in code.lower():
+        ctx.uses_twap_oracle = True
+
+    if "latestRoundData(" in code or "AggregatorV3" in code or "Chainlink" in code:
+        ctx.uses_chainlink_feed = True
+
+    if "updatedAt" in code or "answeredInRound" in code or "block.timestamp - " in code:
+        ctx.has_staleness_check = True
+
+    if "clPrice" in code and "twapPrice" in code:
+        ctx.is_dual_oracle = True
+
+    if "preview" in code.lower() or "for ui display only" in code.lower():
+        ctx.is_preview_only = True
+
+
+def _extract_signature_signals(code: str, ctx: ContextBundle) -> None:
+    """Trích xuất signals cho SOL-SIG-REPLAY-001 (Đợt 4B)."""
+    if "ecrecover(" in code and "ECDSA.recover" not in code:
+        ctx.uses_raw_ecrecover = True
+
+    if "ECDSA.recover" in code or "using ECDSA for" in code:
+        ctx.uses_oz_ecdsa = True
+
+    if "nonce" in code.lower() and ("++" in code or "usedNonces" in code or "executedSigs" in code or "hasClaimed" in code or "cancelledOrFilled" in code):
+        ctx.has_nonce_tracking = True
+
+    if "block.chainid" in code or "DOMAIN_SEPARATOR" in code or "_domainSeparatorV4" in code:
+        ctx.has_chain_id_check = True
+
+    if "deadline" in code and ("block.timestamp <= deadline" in code or "deadline >=" in code):
+        ctx.has_deadline_check = True
+
+    if "EIP712" in code or "_hashTypedDataV4" in code or "PERMIT_TYPEHASH" in code:
+        ctx.is_eip712_standard = True
+
+
 # ============================================================================
 # Main Assembly Function
 # ============================================================================
@@ -541,6 +627,10 @@ def assemble_context_from_snippet(
         _extract_arbitrary_from_signals(source_to_analyze, ctx)
     if 'UNCHECKED-RETURN' in pattern_id or 'UNCHECKED_RETURN' in pattern_id:
         _extract_unchecked_return_signals(source_to_analyze, ctx)
+    if 'ORACLE' in pattern_id:
+        _extract_oracle_signals(source_to_analyze, ctx)
+    if 'SIG' in pattern_id or 'SIGNATURE' in pattern_id:
+        _extract_signature_signals(source_to_analyze, ctx)
 
     # --- Completeness scoring ---
     signals_present = 0

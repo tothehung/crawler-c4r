@@ -25,6 +25,8 @@ PILOT_DATASET_REENTRANCY_PATH = ROOT / "data/pilot/pilot_dataset_reentrancy.json
 PILOT_DATASET_DELEGATECALL_PATH = ROOT / "data/pilot/pilot_dataset_delegatecall.json"
 PILOT_DATASET_ARBITRARY_FROM_PATH = ROOT / "data/pilot/pilot_dataset_arbitrary_from.json"
 PILOT_DATASET_UNCHECKED_RETURN_PATH = ROOT / "data/pilot/pilot_dataset_unchecked_return.json"
+PILOT_DATASET_ORACLE_MANIP_PATH = ROOT / "data/pilot/pilot_dataset_oracle_manip.json"
+PILOT_DATASET_SIG_REPLAY_PATH = ROOT / "data/pilot/pilot_dataset_sig_replay.json"
 PILOT_DATASETS = {
     "v1": PILOT_DATASET_V1_PATH,
     "v2": PILOT_DATASET_V2_PATH,
@@ -32,6 +34,8 @@ PILOT_DATASETS = {
     "delegatecall": PILOT_DATASET_DELEGATECALL_PATH,
     "arbitrary_from": PILOT_DATASET_ARBITRARY_FROM_PATH,
     "unchecked_return": PILOT_DATASET_UNCHECKED_RETURN_PATH,
+    "oracle_manip": PILOT_DATASET_ORACLE_MANIP_PATH,
+    "sig_replay": PILOT_DATASET_SIG_REPLAY_PATH,
 }
 PILOT_DATASET_PATH = PILOT_DATASET_V1_PATH  # default
 REPORT_OUTPUT_PATH = ROOT / "data/pilot/pilot_benchmark_report.json"
@@ -233,6 +237,48 @@ def triage_baseline_2_heuristic(case: dict) -> dict:
             "label": "TP",
             "reason": "Return value of low-level call or ERC20 transfer/approve discarded, risking silent failure.",
             "checklist_answers": ["Unchecked return value"],
+        }
+
+    elif pattern == "SOL-ORACLE-MANIP-001":
+        # Check for TWAP, Chainlink, fair LP, or dual oracle
+        if "observe(" in code or "AggregatorV3" in code or "FairLp" in code or "previewQuote" in code or "getGuardedPrice" in code or "clPrice" in code:
+            return {
+                "label": "FP",
+                "reason": "Multi-block TWAP, Chainlink decentralized feed, fair LP model, or dual oracle circuit breaker present.",
+                "checklist_answers": ["Guarded: TWAP / Chainlink / Dual Oracle"],
+            }
+        # Check for external wrapper / context missing
+        if "IOracle" in code or "_getRawPrice" in code or "twapPeriod" in code or "ICurvePool" in code or "Pyth" in code:
+            return {
+                "label": "Uncertain",
+                "reason": "Underlying oracle implementation, TWAP window duration, or Pyth feed fee validation missing.",
+                "checklist_answers": ["Context Missing: Oracle contract implementation"],
+            }
+        return {
+            "label": "TP",
+            "reason": "Token or collateral valuation derived directly from spot AMM reserves, slot0, or manipulable balance.",
+            "checklist_answers": ["Spot AMM price manipulation risk"],
+        }
+
+    elif pattern == "SOL-SIG-REPLAY-001":
+        # Check for EIP-712 + OpenZeppelin ECDSA + nonce increment
+        if ("recover(" in code or "isValidSignature" in code) and ("nonces[" in code or "hasClaimed[" in code or "cancelledOrFilled[" in code or "_domainSeparatorV4" in code):
+            return {
+                "label": "FP",
+                "reason": "Signature verification protected by incrementing nonce, one-time claim lock, or EIP-712 domain.",
+                "checklist_answers": ["Guarded: EIP-712 / Nonce tracking present"],
+            }
+        # Check for context missing
+        if "_verifySignature" in code or "withValidNonce" in code or "_msgSender" in code or "IOracleValidator" in code or "precompile" in code or "0x08" in code:
+            return {
+                "label": "Uncertain",
+                "reason": "Nonce verification in helper/modifier, external forwarder, or cryptographic precompile logic missing.",
+                "checklist_answers": ["Context Missing: Signature helper or validator implementation"],
+            }
+        return {
+            "label": "TP",
+            "reason": "Signature verification lacks replay protection (missing nonce/chainId) or vulnerable to malleability.",
+            "checklist_answers": ["Missing replay protection / Malleable signature"],
         }
 
     return {"label": "TP", "reason": "Default heuristic fallback", "checklist_answers": []}
@@ -582,6 +628,20 @@ CHECKLISTS_BY_PATTERN = {
         "3. Could a silent failure (e.g. non-standard ERC20 returning false) cause fund loss or corrupted accounting?",
         "4. Is the failure handling implemented in an external wrapper or intentionally fire-and-forget?"
     ],
+    # --- Đợt 4B: Oracle Manipulation pattern ---
+    "SOL-ORACLE-MANIP-001": [
+        "1. Does the code calculate token prices or collateral health factors directly from instantaneous spot AMM reserves, slot0, or balanceOf?",
+        "2. Is the price derived from a decentralized feed (Chainlink with staleness validation) or multi-block TWAP (>= 30 minutes)?",
+        "3. Can an attacker use a flash loan or large swap within the same transaction to manipulate the price ratio and over-borrow?",
+        "4. Is the underlying oracle implementation, staleness threshold, or pool liquidity depth missing from this snippet?"
+    ],
+    # --- Đợt 4B: Signature Security pattern ---
+    "SOL-SIG-REPLAY-001": [
+        "1. Does the contract verify off-chain signatures to authorize transfers, mints, or privileged actions?",
+        "2. Does the signed payload enforce unique execution via incrementing nonces, EIP-712 domain separator (including block.chainid), and deadline?",
+        "3. Could an attacker replay an existing signature across chains, across transactions, or malleate the signature using high-s values?",
+        "4. Is the nonce storage mapping, external forwarder, or cryptographic precompile implementation missing from this snippet?"
+    ],
 }
 
 
@@ -875,9 +935,9 @@ def main():
     )
     parser.add_argument(
         "--dataset",
-        choices=["v1", "v2", "reentrancy", "delegatecall", "arbitrary_from", "unchecked_return"],
+        choices=["v1", "v2", "reentrancy", "delegatecall", "arbitrary_from", "unchecked_return", "oracle_manip", "sig_replay"],
         default="v1",
-        help="Dataset version: v1 (default), v2, reentrancy, delegatecall, arbitrary_from, unchecked_return",
+        help="Dataset version: v1 (default), v2, reentrancy, delegatecall, arbitrary_from, unchecked_return, oracle_manip, sig_replay",
     )
     parser.add_argument(
         "--split",
