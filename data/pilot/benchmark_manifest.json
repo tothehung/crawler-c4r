@@ -1,0 +1,984 @@
+{
+  "version": "2.0",
+  "title": "W3GoAudit Multi-Group Benchmark Dataset Manifest",
+  "total_cases": 116,
+  "total_patterns": 7,
+  "by_pattern": {
+    "SOL-UINT128-NARROWING-001": {
+      "total": 20,
+      "dev": 12,
+      "test": 8
+    },
+    "SOL-REENTRANCY-001": {
+      "total": 16,
+      "dev": 12,
+      "test": 4
+    },
+    "SOL-DELEGATECALL-001": {
+      "total": 16,
+      "dev": 12,
+      "test": 4
+    },
+    "SOL-ARBITRARY-FROM-001": {
+      "total": 16,
+      "dev": 12,
+      "test": 4
+    },
+    "SOL-UNCHECKED-RETURN-001": {
+      "total": 16,
+      "dev": 12,
+      "test": 4
+    },
+    "SOL-ORACLE-MANIP-001": {
+      "total": 16,
+      "dev": 12,
+      "test": 4
+    },
+    "SOL-SIG-REPLAY-001": {
+      "total": 16,
+      "dev": 12,
+      "test": 4
+    }
+  },
+  "by_label": {
+    "TP": 43,
+    "FP": 37,
+    "Uncertain": 36
+  },
+  "by_kind": {
+    "synthetic": 113,
+    "real_c4r": 0,
+    "real_postmortem": 0,
+    "real": 3
+  },
+  "cases": [
+    {
+      "case_id": "pilot-uint128-tp-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "UnsafeReserve: Silent overflow when casting large reserve amount"
+    },
+    {
+      "case_id": "pilot-uint128-fp-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "GuardedReserve: Casting with explicit bound check (flagged by rule, actually safe)"
+    },
+    {
+      "case_id": "pilot-uint128-uncertain-001",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "UnknownFragment: Internal function with uint128 cast, no caller visible"
+    },
+    {
+      "case_id": "pilot-uint128-tp-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "real",
+      "title": "[H-03] Risk of silent overflow in reserves update — Caviar"
+    },
+    {
+      "case_id": "pilot-uint128-fp-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "SafeCast usage flagged as narrowing — false alarm"
+    },
+    {
+      "case_id": "pilot-uint128-uncertain-002",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Reserve update with narrowing cast — safety depends on token economics"
+    },
+    {
+      "case_id": "pilot-access-tp-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Missing access control on setFeeRecipient — anyone can call"
+    },
+    {
+      "case_id": "pilot-access-fp-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "onlyOwner through inheritance — flagged but protected"
+    },
+    {
+      "case_id": "pilot-access-uncertain-001",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Setter with no visible modifier — custom access pattern possible"
+    },
+    {
+      "case_id": "pilot-access-tp-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "real",
+      "title": "Protocol fee recipient can be set by any caller"
+    },
+    {
+      "case_id": "pilot-access-fp-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Permissionless update — by design, not a vulnerability"
+    },
+    {
+      "case_id": "pilot-access-uncertain-002",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Admin function behind timelock — safety depends on delay configuration"
+    },
+    {
+      "case_id": "pilot-hard-uint128-fp-safecast-indirect",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Indirect SafeCast via internal wrapper — Naive LLM may flag as TP"
+    },
+    {
+      "case_id": "pilot-hard-uint128-tp-unchecked-scope",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Unsafe cast inside unchecked block — Naive LLM may misinterpret as safe"
+    },
+    {
+      "case_id": "pilot-hard-access-fp-multisig",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Admin function protected by Gnosis Safe multi-sig — Naive LLM may not recognize pattern"
+    },
+    {
+      "case_id": "pilot-hard-access-tp-timelock-zero-delay",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "onlyTimelock with zero delay — Naive LLM assigns FP, actually TP"
+    },
+    {
+      "case_id": "pilot-hard-access-uncertain-role-inheritance",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "AccessControl with role-based guard — Naive LLM may assign FP, actually Uncertain"
+    },
+    {
+      "case_id": "pilot-hard-uint128-uncertain-assembly",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "uint128 truncation via inline assembly — Naive LLM likely misclassifies"
+    },
+    {
+      "case_id": "pilot-hard-access-fp-proxy-initializer",
+      "pattern_id": "SOL-ACCESS-CONTROL-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Proxy initializer flagged as missing access control — Naive LLM false positive"
+    },
+    {
+      "case_id": "pilot-hard-uint128-tp-arithmetic-overflow",
+      "pattern_id": "SOL-UINT128-NARROWING-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Off-by-one in require guard — Naive LLM assigns FP, actually TP"
+    },
+    {
+      "case_id": "reentrancy-tp-001",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Classic Reentrancy: balance updated after external call in withdraw()"
+    },
+    {
+      "case_id": "reentrancy-fp-001",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Withdrawal with correct CEI pattern — static rule false alarm"
+    },
+    {
+      "case_id": "reentrancy-fp-002",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "External call guarded by nonReentrant modifier — false alarm"
+    },
+    {
+      "case_id": "reentrancy-uncertain-001",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "External call with unknown modifier — needs full contract context"
+    },
+    {
+      "case_id": "reentrancy-tp-002",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "real",
+      "title": "MISO-style: Reentrancy in commitETH via external call before accounting update"
+    },
+    {
+      "case_id": "reentrancy-fp-003",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "ERC20 transfer flagged as reentrancy — safe by design"
+    },
+    {
+      "case_id": "reentrancy-uncertain-002",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Token transfer where token type is unknown — could be ERC777"
+    },
+    {
+      "case_id": "reentrancy-tp-003",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Read-only reentrancy via cross-function state read during external call"
+    },
+    {
+      "case_id": "reentrancy-fp-004",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "ETH transfer via .transfer() — 2300 gas limit prevents reentrancy"
+    },
+    {
+      "case_id": "reentrancy-tp-004",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Cross-function reentrancy: nonReentrant on A does not protect C"
+    },
+    {
+      "case_id": "reentrancy-uncertain-003",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Flash loan callback with unclear token type and missing base contract context"
+    },
+    {
+      "case_id": "reentrancy-uncertain-004",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "safeTransfer pattern — implementation not visible"
+    },
+    {
+      "case_id": "reentrancy-hard-tp-cross-contract",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Cross-contract reentrancy via intermediary — Naive LLM misses it"
+    },
+    {
+      "case_id": "reentrancy-hard-fp-checks-first",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Pre-cleared balance before external call — safe despite unusual code order"
+    },
+    {
+      "case_id": "reentrancy-hard-uncertain-conditional-guard",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Conditional reentrancy guard — safe only when isEmergency is false"
+    },
+    {
+      "case_id": "reentrancy-hard-tp-price-manipulation",
+      "pattern_id": "SOL-REENTRANCY-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Read-only reentrancy for price oracle manipulation — Naive LLM assigns FP"
+    },
+    {
+      "case_id": "delegatecall-tp-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Arbitrary delegatecall: target address is function parameter controlled by caller"
+    },
+    {
+      "case_id": "delegatecall-tp-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Delegatecall to mutable implementation slot without timelock"
+    },
+    {
+      "case_id": "delegatecall-tp-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Delegatecall to registry-registered library — registry writable by anyone"
+    },
+    {
+      "case_id": "delegatecall-fp-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Delegatecall to immutable implementation — address fixed at deploy time"
+    },
+    {
+      "case_id": "delegatecall-fp-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Delegatecall with implementation whitelist + timelock governance"
+    },
+    {
+      "case_id": "delegatecall-fp-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "EIP-2535 Diamond Proxy fallback — standard governed facet routing"
+    },
+    {
+      "case_id": "delegatecall-fp-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "UUPS Proxy upgradeTo with _authorizeUpgrade onlyOwner — OZ standard"
+    },
+    {
+      "case_id": "delegatecall-uncertain-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Delegatecall to factory-resolved implementation — factory logic unknown"
+    },
+    {
+      "case_id": "delegatecall-uncertain-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Abstract base with delegatecall to _getTarget() — derived implementation unknown"
+    },
+    {
+      "case_id": "delegatecall-uncertain-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "ERC1967 beacon proxy — beacon upgrade authorization unknown from snippet"
+    },
+    {
+      "case_id": "delegatecall-uncertain-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Module registry delegatecall — registerModule access control unknown from snippet"
+    },
+    {
+      "case_id": "delegatecall-tp-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Multicall with delegatecall — arbitrary calldata allows self-call with msg.sender spoofing"
+    },
+    {
+      "case_id": "delegatecall-hard-001",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Trusted module registry with onlyOwner but no timelock — single point of failure"
+    },
+    {
+      "case_id": "delegatecall-hard-002",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Mutable implementation with multi-layer protection: role + timelock + authorization hook"
+    },
+    {
+      "case_id": "delegatecall-hard-003",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Delegatecall to ENS-resolved plugin address — ENS manipulation risk unclear"
+    },
+    {
+      "case_id": "delegatecall-hard-004",
+      "pattern_id": "SOL-DELEGATECALL-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Delegatecall to CREATE2-derived address without on-chain bytecode verification"
+    },
+    {
+      "case_id": "arbfrom-tp-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom with arbitrary from parameter — any approved user can be drained"
+    },
+    {
+      "case_id": "arbfrom-tp-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Swap function with arbitrary from — victim tokens transferred without consent"
+    },
+    {
+      "case_id": "arbfrom-tp-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Meta-transaction relay without signature verification — from field is unvalidated"
+    },
+    {
+      "case_id": "arbfrom-fp-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom with msg.sender as from — standard safe pattern"
+    },
+    {
+      "case_id": "arbfrom-fp-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom with from == msg.sender require guard"
+    },
+    {
+      "case_id": "arbfrom-fp-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom via EIP-2612 permit with ECDSA signature — properly authorized"
+    },
+    {
+      "case_id": "arbfrom-fp-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom with explicit delegated-sender allowance mapping"
+    },
+    {
+      "case_id": "arbfrom-uncertain-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom with from resolved from _getUser(userId) — resolution logic unknown"
+    },
+    {
+      "case_id": "arbfrom-uncertain-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "transferFrom with ECDSA-recovered from — nonce replay protection unknown"
+    },
+    {
+      "case_id": "arbfrom-uncertain-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Relayed transferFrom via Gelato — trust model of relay depends on Gelato implementation"
+    },
+    {
+      "case_id": "arbfrom-uncertain-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Abstract base with transferFrom — from source unknown without derived contract"
+    },
+    {
+      "case_id": "arbfrom-tp-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Batch transferFrom with arbitrary from[] array — mass token draining attack"
+    },
+    {
+      "case_id": "arbfrom-hard-001",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Operator-controlled arbitrary from — operators can drain any approved user"
+    },
+    {
+      "case_id": "arbfrom-hard-002",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "transferFrom within ERC20 allowance model — standard consent mechanism enforced"
+    },
+    {
+      "case_id": "arbfrom-hard-003",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "transferFrom to non-standard IToken interface — allowance enforcement unknown"
+    },
+    {
+      "case_id": "arbfrom-hard-004",
+      "pattern_id": "SOL-ARBITRARY-FROM-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Flash loan callback with arbitrary from — initiator can specify victim address"
+    },
+    {
+      "case_id": "unchecked-tp-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Unchecked return value of low-level .call() — ETH transfer failure silently ignored"
+    },
+    {
+      "case_id": "unchecked-tp-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Unchecked IERC20.transfer() return value — non-reverting token allows silent failure"
+    },
+    {
+      "case_id": "unchecked-tp-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Unchecked ERC20.approve() return value before transferFrom"
+    },
+    {
+      "case_id": "unchecked-fp-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "SafeERC20.safeTransfer() — return value checked internally by OZ wrapper"
+    },
+    {
+      "case_id": "unchecked-fp-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Low-level call with explicit require(success) check"
+    },
+    {
+      "case_id": "unchecked-fp-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Unchecked ERC20.transfer() on verified OZ-compliant token — always reverts on failure"
+    },
+    {
+      "case_id": "unchecked-fp-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "address.transfer() — Solidity built-in that always reverts on failure"
+    },
+    {
+      "case_id": "unchecked-uncertain-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Unchecked call() in fire-and-forget notification — may be intentional design"
+    },
+    {
+      "case_id": "unchecked-uncertain-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Unchecked transfer() on unverified token — behavior depends on token standard compliance"
+    },
+    {
+      "case_id": "unchecked-uncertain-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "call() result passed to _safeCall() wrapper — wrapper implementation unknown"
+    },
+    {
+      "case_id": "unchecked-uncertain-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "External call in try/catch with silent catch — failure swallowed or intentionally logged"
+    },
+    {
+      "case_id": "unchecked-tp-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Loop with multiple unchecked ERC20 transfers — inconsistent state on partial failure"
+    },
+    {
+      "case_id": "unchecked-hard-001",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Return value captured but not used to revert — success logged but not enforced"
+    },
+    {
+      "case_id": "unchecked-hard-002",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Assembly-level call with manual returndatasize check — low-level but properly guarded"
+    },
+    {
+      "case_id": "unchecked-hard-003",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Internal function returns call success to caller — caller check unknown"
+    },
+    {
+      "case_id": "unchecked-hard-004",
+      "pattern_id": "SOL-UNCHECKED-RETURN-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Unchecked USDT transferFrom — known non-reverting token with silent failure"
+    },
+    {
+      "case_id": "oracle-tp-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Spot price from Uniswap V2 getReserves() used directly as collateral valuation"
+    },
+    {
+      "case_id": "oracle-tp-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "LP token pricing relies on balanceOf(pair) instead of invariant virtual reserves"
+    },
+    {
+      "case_id": "oracle-tp-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Uniswap V3 slot0 sqrtPriceX96 used as price oracle instead of TWAP observe()"
+    },
+    {
+      "case_id": "oracle-fp-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Uniswap V3 30-minute TWAP oracle via observe() — safe against single-block flash loan"
+    },
+    {
+      "case_id": "oracle-fp-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Chainlink price feed with full validation: staleness, round completeness, positive price"
+    },
+    {
+      "case_id": "oracle-fp-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Spot price query used solely for UI preview quote — no financial state mutations"
+    },
+    {
+      "case_id": "oracle-fp-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Fair LP Pricing (Alpha Finance model) using Chainlink underlying assets"
+    },
+    {
+      "case_id": "oracle-uncertain-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "External IOracle interface call — underlying pricing mechanism unknown"
+    },
+    {
+      "case_id": "oracle-uncertain-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Chainlink call without visible staleness check in snippet — caller may wrap validation"
+    },
+    {
+      "case_id": "oracle-uncertain-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Uniswap V3 TWAP with dynamic twapPeriod — period duration not in snippet"
+    },
+    {
+      "case_id": "oracle-uncertain-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Curve get_virtual_price() with external oracle fallback — pool composition unknown"
+    },
+    {
+      "case_id": "oracle-tp-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "ERC4626 share price inflation via direct asset donation — flash loan collateral manipulation"
+    },
+    {
+      "case_id": "oracle-hard-001",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Mango Markets style: Spot oracle on low-liquidity market allows astronomical collateral overvaluation"
+    },
+    {
+      "case_id": "oracle-hard-002",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Dual Oracle with Min/Max bounding and 2% deviation threshold — industry gold standard"
+    },
+    {
+      "case_id": "oracle-hard-003",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Pyth Network price feed — confidence interval enforcement and update fee logic unknown"
+    },
+    {
+      "case_id": "oracle-hard-004",
+      "pattern_id": "SOL-ORACLE-MANIP-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Sentiment / Euler style donation-induced exchange rate manipulation during leverage borrow"
+    },
+    {
+      "case_id": "sig-tp-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Missing nonce in signature verification allows infinite replay attacks"
+    },
+    {
+      "case_id": "sig-tp-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Cross-chain replay attack: hash lacks block.chainid and contract address"
+    },
+    {
+      "case_id": "sig-tp-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Signature Malleability via raw ecrecover without s-value upper bound check"
+    },
+    {
+      "case_id": "sig-fp-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "EIP-712 with OpenZeppelin ECDSA.recover, chainId, incrementing nonce, and deadline"
+    },
+    {
+      "case_id": "sig-fp-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "One-time airdrop claim locked by hasClaimed mapping — replay blocked"
+    },
+    {
+      "case_id": "sig-fp-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "EIP-1271 isValidSignature support — signature logic handled by smart contract wallet"
+    },
+    {
+      "case_id": "sig-fp-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "FP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Order hash fill tracking prevents order signature reuse (0x / Seaport pattern)"
+    },
+    {
+      "case_id": "sig-uncertain-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Signature verification delegated to internal helper — implementation not visible"
+    },
+    {
+      "case_id": "sig-uncertain-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Nonce passed as parameter but validation statement not visible in snippet"
+    },
+    {
+      "case_id": "sig-uncertain-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "ERC-2771 meta-transaction forwarder context — replay protection in external Forwarder"
+    },
+    {
+      "case_id": "sig-uncertain-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "Uncertain",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Signature validation delegated to external IOracleValidator — implementation unknown"
+    },
+    {
+      "case_id": "sig-tp-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "TP",
+      "split": "dev",
+      "kind": "synthetic",
+      "title": "Flawed nonce indexing: nonces tracked per msg.sender rather than per voucher signer"
+    },
+    {
+      "case_id": "sig-hard-001",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "ecrecover address(0) return on failure matches uninitialized admin address(0)"
+    },
+    {
+      "case_id": "sig-hard-002",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "FP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Dynamic EIP-712 domain separator cache with hard-fork & cross-chain recomputation"
+    },
+    {
+      "case_id": "sig-hard-003",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "Uncertain",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "BLS / alt-bn128 precompile signature verification — non-ECDSA curve properties required"
+    },
+    {
+      "case_id": "sig-hard-004",
+      "pattern_id": "SOL-SIG-REPLAY-001",
+      "label": "TP",
+      "split": "test",
+      "kind": "synthetic",
+      "title": "Bridge signature verifies caller-supplied chainId parameter instead of block.chainid"
+    }
+  ]
+}

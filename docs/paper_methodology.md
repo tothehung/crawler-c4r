@@ -1,4 +1,5 @@
 # W3GoAudit: Context-Aware Knowledge-Grounded AI Triage for Smart Contract Vulnerability Detection
+
 ## Section 3: Methodology and System Architecture (Paper Draft v1)
 
 > **Authors:** W3GoAudit Research Team  
@@ -59,6 +60,7 @@ $$\text{Pipeline}: \mathcal{C} \xrightarrow{\text{AST/WQL}} \mathcal{F}_{\text{r
 ### 3.2 Stage 1: High-Recall Static Scanning (w3goaudit Go Engine)
 
 The static scanning layer is engineered in Go for extreme throughput ($> 50{,}000$ lines of code per second). Rather than attempting complex and brittle theorem proving, Stage 1 acts as a **permissive high-recall filter**:
+
 - **AST Generation:** Tree-sitter / custom Solidity grammar parser generating complete Abstract Syntax Trees.
 - **WQL (Web3 Query Language):** Declarative AST queries targeting vulnerable patterns (e.g., Narrowing casts, unchecked return values, external delegatecalls).
 - **Design Philosophy:** Never sacrifice recall in Stage 1. False positives are deliberately permitted to ensure zero genuine vulnerabilities are prematurely discarded.
@@ -82,16 +84,16 @@ Each assembled context bundle receives a deterministic **Completeness Score** $S
 
 ### 3.4 Stage 3: Baseline 4 — Knowledge-Grounded Checklist Verification
 
-Unlike naive LLM prompts ("*Is this code vulnerable?*"), W3GoAudit structures the triage task as a **hierarchical 4-facet verification checklist**:
+Unlike naive LLM prompts ("_Is this code vulnerable?_"), W3GoAudit structures the triage task as a **hierarchical 4-facet verification checklist**:
 
 $$\mathcal{Q}_{\text{pattern}} = \{q_1^{\text{trigger}}, q_2^{\text{defense}}, q_3^{\text{exploit}}, q_4^{\text{context}}\}$$
 
-| Facet | Verification Question Focus | Deterministic Decision Rule |
-| :--- | :--- | :--- |
-| **Q1 (Trigger)** | Does the dangerous primitive actually execute with untrusted values? | If NO $\rightarrow$ False Alarm (**FP**) |
-| **Q2 (Defense)** | Is an effective guard (SafeCast, modifier, CEI, whitelist) present? | If YES $\rightarrow$ False Positive (**FP**) |
-| **Q3 (Exploit)** | Can an attacker satisfy all preconditions to cause financial/state damage? | If NO $\rightarrow$ Non-exploitable |
-| **Q4 (Context)** | Is necessary contract/caller context available to verify safety? | If NO $\rightarrow$ Marked **Uncertain** |
+| Facet            | Verification Question Focus                                                | Deterministic Decision Rule                  |
+| :--------------- | :------------------------------------------------------------------------- | :------------------------------------------- |
+| **Q1 (Trigger)** | Does the dangerous primitive actually execute with untrusted values?       | If NO $\rightarrow$ False Alarm (**FP**)     |
+| **Q2 (Defense)** | Is an effective guard (SafeCast, modifier, CEI, whitelist) present?        | If YES $\rightarrow$ False Positive (**FP**) |
+| **Q3 (Exploit)** | Can an attacker satisfy all preconditions to cause financial/state damage? | If NO $\rightarrow$ Non-exploitable          |
+| **Q4 (Context)** | Is necessary contract/caller context available to verify safety?           | If NO $\rightarrow$ Marked **Uncertain**     |
 
 The AI is constrained to provide verifiable code evidence citations for every question before outputting the final verdict.
 
@@ -100,6 +102,7 @@ The AI is constrained to provide verifiable code evidence citations for every qu
 ### 3.5 Stage 4: Baseline 5 — Adversarial Auditor-Critic Triage
 
 Inspired by the dual-pass architecture of GPTLens, Stage 4 introduces an adversarial **Auditor-Critic Pass**:
+
 - **Pass 1 (Auditor):** Generates checklist evaluations, citation quotes, and initial verdict $\mathcal{V}_{\text{auditor}}$.
 - **Pass 2 (Critic):** Acts as "Devil's Advocate". It specifically scrutinizes:
   - Did the Auditor hallucinate guards or libraries not present in the code snippet?
@@ -112,6 +115,7 @@ Inspired by the dual-pass architecture of GPTLens, Stage 4 introduces an adversa
 ### 3.6 Benchmark Construction & Strict Zero-Leakage Protocol
 
 To ensure rigorous scientific validity, the benchmark dataset adheres to four strict methodological invariants:
+
 1. **Balanced Tri-Label Ground Truth:** Every pattern dataset maintains a strictly balanced distribution across $\{ \text{TP}, \text{FP}, \text{Uncertain} \}$.
 2. **Project-Disjoint Split:** All development cases (`dev_cases`) and held-out hard test cases (`test_cases`) are segregated. Zero test cases are ever utilized for prompt engineering, heuristic tuning, or checklist formulation.
 3. **Ground Truth Integrity:** Uncertain samples are never forcibly converted into binary TP/FP. An AI output of `Uncertain` on an `Uncertain` ground-truth case is counted as correct epistemic alignment.
@@ -125,17 +129,17 @@ Across all 116 benchmark test cases spanning 7 major vulnerability families, the
 
 $$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad \text{FP Rate} = \frac{\text{FP}}{\text{FP} + \text{TN}}$$
 
-| Vulnerability Family | Pattern ID | Total Cases | B1 (Rule) Prec | B2 (Heur) F1 | B3 (Naive) F1 | **B4/B5 Prec** | **B4/B5 Rec** | **B4/B5 FP Rate** |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Narrowing Cast** | `SOL-UINT128-NARROWING-001` | 10 | 50.0% | 100.0% | 80.0% | **100.0%** | **100.0%** | **0.0%** |
-| **Access Control** | `SOL-ACCESS-CONTROL-001` | 10 | 50.0% | 100.0% | 85.7% | **100.0%** | **100.0%** | **0.0%** |
-| **Reentrancy** | `SOL-REENTRANCY-001` | 16 | 54.5% | 44.4% | 46.2% | **100.0%** | **100.0%** | **0.0%** |
-| **Arbitrary Delegatecall** | `SOL-DELEGATECALL-001` | 16 | 54.5% | 100.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **Arbitrary From** | `SOL-ARBITRARY-FROM-001` | 16 | 54.5% | 92.3% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **Unchecked Return** | `SOL-UNCHECKED-RETURN-001` | 16 | 54.5% | 80.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **Oracle Manipulation** | `SOL-ORACLE-MANIP-001` | 16 | 54.5% | 100.0% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **Signature Security** | `SOL-SIG-REPLAY-001` | 16 | 54.5% | 76.9% | 92.3% | **100.0%** | **100.0%** | **0.0%** |
-| **TỔNG HỢP / MEAN** | **7 Families / 8 Patterns** | **116** | **53.4%** | **86.7%** | **84.2%** | **100.0%** | **100.0%** | **0.0% (Triệt tiêu)** |
+| Vulnerability Family       | Pattern ID                  | Total Cases | B1 (Rule) Prec | B2 (Heur) F1 | B3 (Naive) F1 | **B4/B5 Prec** | **B4/B5 Rec** |   **B4/B5 FP Rate**   |
+| :------------------------- | :-------------------------- | :---------: | :------------: | :----------: | :-----------: | :------------: | :-----------: | :-------------------: |
+| **Narrowing Cast**         | `SOL-UINT128-NARROWING-001` |     10      |     50.0%      |    100.0%    |     80.0%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Access Control**         | `SOL-ACCESS-CONTROL-001`    |     10      |     50.0%      |    100.0%    |     85.7%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Reentrancy**             | `SOL-REENTRANCY-001`        |     16      |     54.5%      |    44.4%     |     46.2%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Arbitrary Delegatecall** | `SOL-DELEGATECALL-001`      |     16      |     54.5%      |    100.0%    |     92.3%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Arbitrary From**         | `SOL-ARBITRARY-FROM-001`    |     16      |     54.5%      |    92.3%     |     92.3%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Unchecked Return**       | `SOL-UNCHECKED-RETURN-001`  |     16      |     54.5%      |    80.0%     |     92.3%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Oracle Manipulation**    | `SOL-ORACLE-MANIP-001`      |     16      |     54.5%      |    100.0%    |     92.3%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **Signature Security**     | `SOL-SIG-REPLAY-001`        |     16      |     54.5%      |    76.9%     |     92.3%     |   **100.0%**   |  **100.0%**   |       **0.0%**        |
+| **TỔNG HỢP / MEAN**        | **7 Families / 8 Patterns** |   **116**   |   **53.4%**    |  **86.7%**   |   **84.2%**   |   **100.0%**   |  **100.0%**   | **0.0% (Triệt tiêu)** |
 
 ---
 
@@ -169,6 +173,7 @@ To rigorously isolate what enables W3GoAudit to eliminate false positives withou
 To demonstrate the real-world industrial impact, we examine an exploit modeled after the **Mango Markets ($114M) & Euler Finance ($197M)** vulnerabilities:
 
 #### The Vulnerable Snippet:
+
 ```solidity
 function getCollateralValue(address pair, uint256 tokenAmount) public view returns (uint256) {
     (uint112 reserve0, uint112 reserve1,) = IUniswapV2Pair(pair).getReserves();
@@ -178,16 +183,16 @@ function getCollateralValue(address pair, uint256 tokenAmount) public view retur
 ```
 
 #### Step-by-Step W3GoAudit Execution Trace:
+
 1. **Stage 1 (Static Go AST Engine):** Detects `.getReserves()` call and division pattern $\rightarrow$ Flags `SOL-ORACLE-MANIP-001` candidate finding.
 2. **Stage 2 (6-Layer Context Assembler):**
    - Scope 1 (Function): `public view returns (uint256)`.
    - Scope 3 (Control Flow): Zero TWAP accumulator query (`observe()` absent); zero Chainlink aggregator.
    - Signal Extraction: `uses_spot_reserves = True`, `uses_twap_oracle = False`, `has_staleness_check = False`.
 3. **Stage 3 (Auditor Pass — 4-Facet Checklist):**
-   - *Q1 (Trigger):* YES — Collateral value computed directly from spot reserve ratio `(reserve1 * 1e18) / reserve0`.
-   - *Q2 (Defense):* NO — No TWAP window, no Chainlink fallback, no deviation threshold circuit breaker.
-   - *Q3 (Exploitability):* YES — Attacker can borrow 10,000 ETH via Aave flash loan, dump ETH into pair to skew reserve ratio by 10x, deposit inflated collateral, and borrow all pool stablecoins in the same block.
-   - *Verdict:* Confirmed **True Positive (TP)** with high severity.
+   - _Q1 (Trigger):_ YES — Collateral value computed directly from spot reserve ratio `(reserve1 * 1e18) / reserve0`.
+   - _Q2 (Defense):_ NO — No TWAP window, no Chainlink fallback, no deviation threshold circuit breaker.
+   - _Q3 (Exploitability):_ YES — Attacker can borrow 10,000 ETH via Aave flash loan, dump ETH into pair to skew reserve ratio by 10x, deposit inflated collateral, and borrow all pool stablecoins in the same block.
+   - _Verdict:_ Confirmed **True Positive (TP)** with high severity.
 4. **Stage 4 (Adversarial Critic Pass):** Scrutinizes whether `getCollateralValue` is only used for UI display $\rightarrow$ Cross-references call graph $\rightarrow$ Confirms it is invoked by `borrow()` in `LendingPool.sol` $\rightarrow$ Validates exploitability $\rightarrow$ Upholds **TP**.
 5. **Mitigation Recommendation:** Replace spot reserve division with a 30-minute Uniswap V3 TWAP or dual Chainlink + TWAP oracle with 2% deviation threshold circuit breaker.
-
