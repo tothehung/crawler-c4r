@@ -1,0 +1,114 @@
+{
+  "manifest_version": "1.0.0",
+  "project": "W3GoAudit DATN 2026",
+  "phase": "Phase 5 Freeze & Phase 6 Evaluation",
+  "locked_at": "2026-11-20T00:00:00Z",
+  "git_commit": "0d426d36fe444a9edabe57a1d0a61809aa91ead8",
+  "scanner": {
+    "name": "w3goaudit.exe",
+    "version": "1.0.0",
+    "engine_type": "Go AST / WQL Static Engine",
+    "supported_rules_count": 8,
+    "rules_in_scope": [
+      "sol-narrowing-cast",
+      "sol-missing-auth",
+      "sol-reentrancy-eth",
+      "sol-oracle-spot-read",
+      "sol-sig-missing-nonce",
+      "sol-unchecked-call",
+      "sol-slippage-zero",
+      "sol-msg-value-loop"
+    ]
+  },
+  "dataset": {
+    "filename": "data/pilot/frozen_benchmark_v2.json",
+    "sha256": "bd9542c6a72bb1315a8526839baac46f02278a050a0d893bfc97b24a7092b9f1",
+    "total_cases": 116,
+    "split": {
+      "development_set": 84,
+      "held_out_test_set": 32
+    },
+    "ground_truth_distribution": {
+      "TP": 43,
+      "FP": 37,
+      "Uncertain": 36
+    },
+    "vulnerability_families_count": 7,
+    "leakage_protection": {
+      "dev_test_separated_by_project": true,
+      "no_test_case_in_prompt_few_shots": true,
+      "audit_conclusions_stripped_from_input": true
+    }
+  },
+  "model_configurations": {
+    "primary_local": {
+      "provider": "ollama",
+      "model_id": "qwen2.5-coder:7b",
+      "acceleration": "CUDA GPU",
+      "temperature": 0.1,
+      "top_p": 0.95,
+      "max_tokens": 512,
+      "seed": 42
+    },
+    "cloud_alternates": [
+      {
+        "provider": "gemini",
+        "model_id": "gemini-1.5-flash",
+        "temperature": 0.1
+      },
+      {
+        "provider": "groq",
+        "model_id": "llama-3.3-70b-versatile",
+        "temperature": 0.1
+      }
+    ]
+  },
+  "baselines": [
+    {
+      "id": "B1",
+      "name": "Rule-Only (Scanner Raw Alerts)",
+      "description": "Direct acceptance of all static scanner findings without triage."
+    },
+    {
+      "id": "B2",
+      "name": "Syntactic Heuristics",
+      "description": "Rule-based regex / AST keyword filtering without semantic multi-contract reasoning."
+    },
+    {
+      "id": "B3",
+      "name": "Naive LLM (Zero-Shot)",
+      "description": "Isolated function code snippet passed to LLM without external context or vulnerability checklists."
+    },
+    {
+      "id": "B4",
+      "name": "W3GoAudit Grounded Checklist",
+      "description": "Full 6-layer Context Assembler + 8-facet Grounded Security Checklist prompt."
+    },
+    {
+      "id": "B5",
+      "name": "Dual-Pass Auditor + Counterfactual Critic",
+      "description": "Pass 1 Auditor triage followed by Pass 2 Critic verification targeting false positive / false negative biases."
+    }
+  ],
+  "context_assembly_policy": {
+    "version": "2.0.0",
+    "layers": [
+      "L1: Function Signature & AST Visibility",
+      "L2: Contract State Variables & Mutability",
+      "L3: Applied Modifiers & Access Control Checks",
+      "L4: Contract Inheritance & Interface Conformance",
+      "L5: External Call Targets & Callback Sinks",
+      "L6: Library Usage & Math SafeCast Wrappers"
+    ],
+    "min_completeness_score": 0.70,
+    "taint_scope": "contract_bounded"
+  },
+  "quality_gates": {
+    "total_invariants": 42,
+    "target_pass_rate": 1.0,
+    "max_allowed_fp_rate_on_b5": 0.05,
+    "min_allowed_tp_recall_on_b5": 0.95,
+    "max_label_flipping_rate": 0.02
+  }
+}
+

@@ -1,0 +1,31 @@
+{
+  "benchmark_cases_count": 116,
+  "ground_truth_distribution": {
+    "TP": 43,
+    "FP": 37,
+    "Uncertain": 36
+  },
+  "manual_baseline": {
+    "total_time_seconds": 26392.5,
+    "total_time_hours": 7.33,
+    "avg_time_per_finding_seconds": 227.5,
+    "auditor_accuracy_percent": 88.8
+  },
+  "w3goaudit_assisted": {
+    "total_time_seconds": 3017.0,
+    "total_time_hours": 0.84,
+    "avg_time_per_finding_seconds": 26.0,
+    "auditor_accuracy_percent": 100.0
+  },
+  "improvements": {
+    "time_saved_hours": 6.49,
+    "time_reduction_percent": 88.6,
+    "workload_prefiltered_percent": 31.9,
+    "accuracy_gain_percent": 11.2
+  },
+  "statistical_tests": {
+    "t_statistic": 102.09,
+    "p_value": 1e-15,
+    "significance": "p < 0.001 (Highly Statistically Significant)"
+  }
+}

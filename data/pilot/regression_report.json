@@ -2,7 +2,7 @@
   "metadata": {
     "title": "W3GoAudit Regression Suite Execution Report",
     "phase": "Đợt 4B — Comprehensive Multi-group Expansion (7 Patterns, 116 cases)",
-    "timestamp": "2026-11-03T09:52:01Z",
+    "timestamp": "2026-11-16T12:20:04Z",
     "elapsed_seconds": 0.01,
     "status": "PASSED",
     "total_benchmark_cases": 116,
@@ -255,7 +255,8 @@
           "precision": 50.0,
           "recall": 100.0,
           "f1_score": 66.7,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 20,
@@ -278,7 +279,8 @@
           "precision": 83.3,
           "recall": 71.4,
           "f1_score": 76.9,
-          "fp_rate": 14.3
+          "fp_rate": 14.3,
+          "fp_reduction": 85.7
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 20,
@@ -301,7 +303,8 @@
           "precision": 66.7,
           "recall": 85.7,
           "f1_score": 75.0,
-          "fp_rate": 42.9
+          "fp_rate": 42.9,
+          "fp_reduction": 57.1
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 20,
@@ -324,7 +327,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 20,
@@ -347,7 +351,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     },
@@ -376,7 +381,8 @@
           "precision": 54.5,
           "recall": 100.0,
           "f1_score": 70.6,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 16,
@@ -399,7 +405,8 @@
           "precision": 66.7,
           "recall": 33.3,
           "f1_score": 44.4,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,
@@ -422,7 +429,8 @@
           "precision": 66.7,
           "recall": 66.7,
           "f1_score": 66.7,
-          "fp_rate": 40.0
+          "fp_rate": 40.0,
+          "fp_reduction": 60.0
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 16,
@@ -445,7 +453,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 16,
@@ -468,7 +477,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     },
@@ -497,7 +507,8 @@
           "precision": 54.5,
           "recall": 100.0,
           "f1_score": 70.6,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 16,
@@ -520,7 +531,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,
@@ -543,7 +555,8 @@
           "precision": 85.7,
           "recall": 100.0,
           "f1_score": 92.3,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 16,
@@ -566,7 +579,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 16,
@@ -589,7 +603,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     },
@@ -618,7 +633,8 @@
           "precision": 54.5,
           "recall": 100.0,
           "f1_score": 70.6,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 16,
@@ -641,7 +657,8 @@
           "precision": 85.7,
           "recall": 100.0,
           "f1_score": 92.3,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,
@@ -664,7 +681,8 @@
           "precision": 85.7,
           "recall": 100.0,
           "f1_score": 92.3,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 16,
@@ -687,7 +705,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 16,
@@ -710,7 +729,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     },
@@ -739,7 +759,8 @@
           "precision": 54.5,
           "recall": 100.0,
           "f1_score": 70.6,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 16,
@@ -762,7 +783,8 @@
           "precision": 100.0,
           "recall": 66.7,
           "f1_score": 80.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,
@@ -785,7 +807,8 @@
           "precision": 85.7,
           "recall": 100.0,
           "f1_score": 92.3,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 16,
@@ -808,7 +831,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 16,
@@ -831,7 +855,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     },
@@ -860,7 +885,8 @@
           "precision": 54.5,
           "recall": 100.0,
           "f1_score": 70.6,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 16,
@@ -883,7 +909,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,
@@ -906,7 +933,8 @@
           "precision": 85.7,
           "recall": 100.0,
           "f1_score": 92.3,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 16,
@@ -929,7 +957,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 16,
@@ -952,7 +981,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     },
@@ -981,7 +1011,8 @@
           "precision": 54.5,
           "recall": 100.0,
           "f1_score": 70.6,
-          "fp_rate": 100.0
+          "fp_rate": 100.0,
+          "fp_reduction": 0.0
         },
         "Baseline 2 (Heuristic)": {
           "total_cases": 16,
@@ -1004,7 +1035,8 @@
           "precision": 71.4,
           "recall": 83.3,
           "f1_score": 76.9,
-          "fp_rate": 40.0
+          "fp_rate": 40.0,
+          "fp_reduction": 60.0
         },
         "Baseline 3 (Naive LLM)": {
           "total_cases": 16,
@@ -1027,7 +1059,8 @@
           "precision": 85.7,
           "recall": 100.0,
           "f1_score": 92.3,
-          "fp_rate": 20.0
+          "fp_rate": 20.0,
+          "fp_reduction": 80.0
         },
         "Baseline 4 (W3GoAudit Checklist)": {
           "total_cases": 16,
@@ -1050,7 +1083,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         },
         "Baseline 5 (Auditor + Critic)": {
           "total_cases": 16,
@@ -1073,7 +1107,8 @@
           "precision": 100.0,
           "recall": 100.0,
           "f1_score": 100.0,
-          "fp_rate": 0.0
+          "fp_rate": 0.0,
+          "fp_reduction": 100.0
         }
       }
     }

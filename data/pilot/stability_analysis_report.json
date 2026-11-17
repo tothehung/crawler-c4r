@@ -1,0 +1,126 @@
+{
+  "trials_count": 3,
+  "total_cases": 116,
+  "stable_cases_count": 116,
+  "flipped_cases_count": 0,
+  "stability_rate": 100.0,
+  "flipping_rate": 0.0,
+  "meets_quality_gate": true,
+  "per_family_stability": {
+    "SOL-UINT128-NARROWING-001": {
+      "total": 10,
+      "stable": 10,
+      "flipped": 0
+    },
+    "SOL-ACCESS-CONTROL-001": {
+      "total": 10,
+      "stable": 10,
+      "flipped": 0
+    },
+    "SOL-REENTRANCY-001": {
+      "total": 16,
+      "stable": 16,
+      "flipped": 0
+    },
+    "SOL-DELEGATECALL-001": {
+      "total": 16,
+      "stable": 16,
+      "flipped": 0
+    },
+    "SOL-ARBITRARY-FROM-001": {
+      "total": 16,
+      "stable": 16,
+      "flipped": 0
+    },
+    "SOL-UNCHECKED-RETURN-001": {
+      "total": 16,
+      "stable": 16,
+      "flipped": 0
+    },
+    "SOL-ORACLE-MANIP-001": {
+      "total": 16,
+      "stable": 16,
+      "flipped": 0
+    },
+    "SOL-SIG-REPLAY-001": {
+      "total": 16,
+      "stable": 16,
+      "flipped": 0
+    }
+  },
+  "flipped_cases_detail": [],
+  "trial_metrics": [
+    {
+      "total_cases": 116,
+      "ground_truth_distribution": {
+        "TP": 43,
+        "FP": 37,
+        "Uncertain": 36
+      },
+      "predicted_distribution": {
+        "TP": 43,
+        "FP": 37,
+        "Uncertain": 36,
+        "ERROR": 0
+      },
+      "execution_errors": 0,
+      "correct_predictions": 116,
+      "accuracy": 100.0,
+      "true_positives_detected": 43,
+      "false_alarms": 0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1_score": 100.0,
+      "fp_rate": 0.0,
+      "fp_reduction": 100.0
+    },
+    {
+      "total_cases": 116,
+      "ground_truth_distribution": {
+        "TP": 43,
+        "FP": 37,
+        "Uncertain": 36
+      },
+      "predicted_distribution": {
+        "TP": 43,
+        "FP": 37,
+        "Uncertain": 36,
+        "ERROR": 0
+      },
+      "execution_errors": 0,
+      "correct_predictions": 116,
+      "accuracy": 100.0,
+      "true_positives_detected": 43,
+      "false_alarms": 0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1_score": 100.0,
+      "fp_rate": 0.0,
+      "fp_reduction": 100.0
+    },
+    {
+      "total_cases": 116,
+      "ground_truth_distribution": {
+        "TP": 43,
+        "FP": 37,
+        "Uncertain": 36
+      },
+      "predicted_distribution": {
+        "TP": 43,
+        "FP": 37,
+        "Uncertain": 36,
+        "ERROR": 0
+      },
+      "execution_errors": 0,
+      "correct_predictions": 116,
+      "accuracy": 100.0,
+      "true_positives_detected": 43,
+      "false_alarms": 0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1_score": 100.0,
+      "fp_rate": 0.0,
+      "fp_reduction": 100.0
+    }
+  ]
+}

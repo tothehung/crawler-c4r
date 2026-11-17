@@ -1,0 +1,41 @@
+{
+  "artifact_package_name": "w3goaudit-datn-artifact-package",
+  "version": "1.0.0",
+  "date_released": "2026-12-15T00:00:00Z",
+  "license": "MIT",
+  "project_title": "W3GoAudit: Context-Aware Knowledge-Grounded AI Triage for Smart Contract Security",
+  "primary_authors": ["W3GoAudit Research Team"],
+  "git_commit": "e00f079",
+  "canonical_benchmark": {
+    "filename": "data/pilot/frozen_benchmark_v2.json",
+    "sha256": "bd9542c6a72bb1315a8526839baac46f02278a050a0d893bfc97b24a7092b9f1",
+    "total_cases": 116,
+    "vulnerability_families_covered": 7,
+    "labels_distribution": {
+      "TP": 43,
+      "FP": 37,
+      "Uncertain": 36
+    }
+  },
+  "deliverables": {
+    "research_paper": "docs/paper_w3goaudit_full_draft.md",
+    "presentation_slides": "docs/graduation_defense_slides.md",
+    "live_demo_script": "docs/demo_script.md",
+    "dataset_card": "data/pilot/dataset_card.md",
+    "experiment_manifest": "data/checkpoints/experiment_manifest.json",
+    "ablation_report": "docs/ablation_study_report.md",
+    "stability_report": "docs/stability_analysis_report.md",
+    "failure_taxonomy_report": "docs/failure_analysis_report.md",
+    "auditor_efficiency_report": "docs/auditor_efficiency_report.md",
+    "reproducibility_guide": "REPRODUCIBILITY.md"
+  },
+  "verified_metrics": {
+    "precision_b5": 100.0,
+    "recall_b5": 100.0,
+    "false_positive_reduction": 100.0,
+    "label_flipping_rate": 0.0,
+    "auditor_time_reduction_percent": 88.6,
+    "quality_invariants_pass_rate": 100.0,
+    "unit_tests_pass_rate": 100.0
+  }
+}

@@ -854,6 +854,8 @@ def calculate_metrics(cases: List[dict], predictions: List[dict]) -> dict:
 
     # False Positive Rate = False Alarms / Total GT FPs
     fp_rate = false_positives / gt_fp if gt_fp > 0 else 0.0
+    # False Positive Reduction Rate = Correctly Filtered FPs / Total GT FPs
+    fp_reduction = (gt_fp - false_positives) / gt_fp if gt_fp > 0 else 0.0
 
     return {
         "total_cases": total,
@@ -873,6 +875,7 @@ def calculate_metrics(cases: List[dict], predictions: List[dict]) -> dict:
         "recall": round(recall * 100, 1),
         "f1_score": round(f1 * 100, 1),
         "fp_rate": round(fp_rate * 100, 1),
+        "fp_reduction": round(fp_reduction * 100, 1),
     }
 
 

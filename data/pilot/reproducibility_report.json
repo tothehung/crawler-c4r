@@ -1,0 +1,25 @@
+{
+  "step1_benchmark_integrity": {
+    "file": "data\\pilot\\frozen_benchmark_v2.json",
+    "expected_sha256": "bd9542c6a72bb1315a8526839baac46f02278a050a0d893bfc97b24a7092b9f1",
+    "valid": true
+  },
+  "step2_unit_tests": {
+    "success": true,
+    "stdout": "..................                                                       [100%]\n18 passed in 0.70s",
+    "stderr": "Failed to find real location of C:\\Users\\ADM\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "elapsed_seconds": 2.02
+  },
+  "step3_regression_invariants": {
+    "success": true,
+    "elapsed_seconds": 0.79,
+    "invariants_passed": 42,
+    "invariants_total": 42
+  },
+  "summary": {
+    "all_checks_passed": true,
+    "total_verification_time_seconds": 2.81,
+    "timestamp": "2026-11-16T12:20:04Z",
+    "verdict": "REPRODUCIBLE & PRODUCTION-READY"
+  }
+}
